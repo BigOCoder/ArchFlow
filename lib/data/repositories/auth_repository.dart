@@ -34,8 +34,10 @@ class AuthRepository {
 
       // Create fake response
       return AuthResponse(
-        accessToken: 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        refreshToken: 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+        accessToken:
+            'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
+        refreshToken:
+            'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
         user: UserModel(
           id: 'mock_${DateTime.now().millisecondsSinceEpoch}',
           name: name,
@@ -84,8 +86,10 @@ class AuthRepository {
 
       // Create fake response
       return AuthResponse(
-        accessToken: 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        refreshToken: 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+        accessToken:
+            'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
+        refreshToken:
+            'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
         user: UserModel(
           id: 'mock_${DateTime.now().millisecondsSinceEpoch}',
           name: 'Test User',
@@ -120,8 +124,10 @@ class AuthRepository {
       await Future.delayed(const Duration(milliseconds: 500));
 
       return AuthResponse(
-        accessToken: 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
-        refreshToken: 'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
+        accessToken:
+            'mock_access_token_${DateTime.now().millisecondsSinceEpoch}',
+        refreshToken:
+            'mock_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
         user: UserModel(
           id: 'mock_123',
           name: 'Test User',
@@ -183,7 +189,7 @@ class AuthRepository {
     // ✅ MOCK MODE
     if (useMockTest) {
       if (kDebugMode) print('🟡 MOCK MODE: Get Current User (Backend OFF)');
-      
+
       // Return null to simulate no logged-in user
       return null;
     }

@@ -117,6 +117,8 @@ enum ExpectedTraffic {
   const ExpectedTraffic(this.displayName);
 }
 
+
+
 // ==================== EXTENSION METHODS ====================
 
 // ✨ Extension methods for beautiful display names

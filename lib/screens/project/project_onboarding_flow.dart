@@ -1,5 +1,7 @@
 // lib/screens/project/project_onboarding_flow.dart
+
 import 'package:archflow/provider/projectProvider/project_onboarding_notifier.dart';
+import 'package:archflow/screens/chat/screens/ai_chat_screen.dart';  // ✅ Add this import
 import 'package:archflow/screens/project/project_details_screen5.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,12 +22,13 @@ class ProjectOnboardingFlow extends ConsumerWidget {
       body: IndexedStack(
         index: step,
         children: const [
-          ProjectBasicsScreen(), // Step 0
-          TargetUsersScreen(), // Step 1
-          InitialFeaturesScreen(), // Step 2
-          ProblemStatementScreen(), // Step 3
-          ProjectDetailsScreen(), // Step 4
-          ProjectReviewScreen(), // Step 5
+          ProjectBasicsScreen(),       // Step 0
+          TargetUsersScreen(),          // Step 1
+          InitialFeaturesScreen(),      // Step 2
+          ProblemStatementScreen(),     // Step 3
+          ProjectDetailsScreen(),       // Step 4
+          AIChatScreen(),               // Step 5
+          ProjectReviewScreen(),        // Step 6
         ],
       ),
     );

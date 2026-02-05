@@ -1,13 +1,10 @@
 // lib/core/network/api_client.dart
+import 'package:archflow/core/config/env_config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiClient {
-  static const String baseUrl = 'http://10.239.158.72:8080';
-  // static const String baseUrl - 'http://10.239.158.72:8080'
-  // For Android emulator: 'http://10.0.2.2:10.153.232.72:8080'
-  // For physical device: 'http://YOUR_IP:10.153.232.72:8080'
 
   late final Dio _dio;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
@@ -15,9 +12,11 @@ class ApiClient {
   ApiClient() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
+        baseUrl: EnvConfig.apiBaseUrl, 
+        connectTimeout: Duration(
+          milliseconds: EnvConfig.apiTimeout,
+        ), 
+        receiveTimeout: Duration(milliseconds: EnvConfig.apiTimeout),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

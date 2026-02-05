@@ -1,5 +1,7 @@
 // lib/data/models/app_enums.dart
 
+import 'package:flutter/material.dart';
+
 /// User role selected during registration
 enum UserRole { juniorDeveloper, student }
 
@@ -85,10 +87,7 @@ enum FeaturePriority {
   const FeaturePriority(this.displayName);
 }
 
-// lib/data/models/app_enums.dart
-
 enum ProjectTimeline {
-  // Changed from Timeline2
   oneToThreeMonths('1-2 weeks'),
   threeToSixMonths('1 months'),
   sixToTwelveMonths('3 months'),
@@ -117,7 +116,32 @@ enum ExpectedTraffic {
   const ExpectedTraffic(this.displayName);
 }
 
+/// ✅ NEW: AI Chat conversation phase
+enum ChatPhase {
+  idle,                 // No active conversation
+  ideaDiscussion,       // Exploring the idea
+  requirementGathering, // Structured Q&A
+  architectureDesign,   // Proposing architecture
+  taskPlanning,         // Breaking down tasks
+  execution,            // During development
+}
 
+/// ✅ NEW: Chat message type
+enum MessageType {
+  user,    // Message from user
+  ai,      // Message from AI assistant
+  system,  // System message (errors, notifications)
+}
+
+/// ✅ NEW: Chat message intent/purpose
+enum MessageIntent {
+  conversational,          // General conversation
+  requirementGathering,    // Asking structured questions
+  architectureSuggestion,  // Proposing architecture
+  taskBreakdown,           // Breaking features into tasks
+  codeReview,              // Reviewing code
+  traceability,            // Explaining "why" something exists
+}
 
 // ==================== EXTENSION METHODS ====================
 
@@ -303,6 +327,105 @@ extension ProjectCategoryExtension on ProjectCategory {
         return 'Productivity';
       case ProjectCategory.other:
         return 'Other';
+    }
+  }
+}
+
+/// ✅ NEW: Chat phase extension
+extension ChatPhaseExtension on ChatPhase {
+  String get displayName {
+    switch (this) {
+      case ChatPhase.idle:
+        return 'Ready to Start';
+      case ChatPhase.ideaDiscussion:
+        return 'Exploring Your Idea';
+      case ChatPhase.requirementGathering:
+        return 'Gathering Requirements';
+      case ChatPhase.architectureDesign:
+        return 'Designing Architecture';
+      case ChatPhase.taskPlanning:
+        return 'Planning Tasks';
+      case ChatPhase.execution:
+        return 'Execution Mode';
+    }
+  }
+  
+  IconData get icon {
+    switch (this) {
+      case ChatPhase.idle:
+        return Icons.chat;
+      case ChatPhase.ideaDiscussion:
+        return Icons.lightbulb_outline;
+      case ChatPhase.requirementGathering:
+        return Icons.checklist;
+      case ChatPhase.architectureDesign:
+        return Icons.account_tree;
+      case ChatPhase.taskPlanning:
+        return Icons.task_alt;
+      case ChatPhase.execution:
+        return Icons.code;
+    }
+  }
+  
+  String get description {
+    switch (this) {
+      case ChatPhase.idle:
+        return 'Let\'s start a conversation';
+      case ChatPhase.ideaDiscussion:
+        return 'Understanding your project vision';
+      case ChatPhase.requirementGathering:
+        return 'Defining clear requirements';
+      case ChatPhase.architectureDesign:
+        return 'Planning system architecture';
+      case ChatPhase.taskPlanning:
+        return 'Breaking down into actionable tasks';
+      case ChatPhase.execution:
+        return 'Building and reviewing code';
+    }
+  }
+}
+
+/// ✅ NEW: Message type extension
+extension MessageTypeExtension on MessageType {
+  String get displayName {
+    switch (this) {
+      case MessageType.user:
+        return 'User';
+      case MessageType.ai:
+        return 'AI Assistant';
+      case MessageType.system:
+        return 'System';
+    }
+  }
+  
+  IconData get icon {
+    switch (this) {
+      case MessageType.user:
+        return Icons.person;
+      case MessageType.ai:
+        return Icons.psychology;
+      case MessageType.system:
+        return Icons.info_outline;
+    }
+  }
+}
+
+/// ✅ NEW: Message intent extension
+extension MessageIntentExtension on MessageIntent {
+  String get displayName {
+    switch (this) {
+      case MessageIntent.conversational:
+        return 'Conversation';
+      case MessageIntent.requirementGathering:
+        return 'Requirements';
+      case MessageIntent.architectureSuggestion:
+        return 'Architecture';
+      case MessageIntent.taskBreakdown:
+        return 'Task Planning';
+      case MessageIntent.codeReview:
+        return 'Code Review';
+      case MessageIntent.traceability:
+        return 'Traceability';
     }
   }
 }

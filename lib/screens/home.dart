@@ -1,6 +1,6 @@
 import 'package:archflow/screens/auth/login/login_screen.dart';
 import 'package:archflow/screens/auth/register/register_screen.dart';
-import 'package:archflow/screens/project/project_onboarding_flow.dart';
+import 'package:archflow/screens/project/architecture_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:archflow/themeData/app_color.dart';
@@ -97,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => const ProjectOnboardingFlow(),
+                            builder: (_) => const ArchitectureSelectionScreen(),
                           ),
                         );
                       },

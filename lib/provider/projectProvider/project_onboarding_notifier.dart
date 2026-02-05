@@ -11,10 +11,14 @@ class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
 
   void nextStep() {
     if (state.isEditMode) {
-      state = state.copyWith(step: 5, isEditMode: false);
+      // Exit edit mode and go to review screen (step 6)
+      state = state.copyWith(step: 6, isEditMode: false);
     } else {
-      // Normal flow - just increment
-      state = state.copyWith(step: state.step + 1);
+      // Normal flow - increment but don't exceed step 6
+      if (state.step < 6) {
+        // ✅ FIXED: Added upper bound check
+        state = state.copyWith(step: state.step + 1);
+      }
     }
   }
 
@@ -25,10 +29,13 @@ class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
   }
 
   void goToStep(int step) {
-    state = state.copyWith(
-      step: step,
-      isEditMode: true, // Enable edit mode
-    );
+    // ✅ ADDED: Validate step range
+    if (step >= 0 && step <= 6) {
+      state = state.copyWith(
+        step: step,
+        isEditMode: true, // Enable edit mode
+      );
+    }
   }
 
   /// Update Project Basics

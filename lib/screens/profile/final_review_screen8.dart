@@ -1,6 +1,6 @@
 import 'package:archflow/data/models/app_enums.dart';
 import 'package:archflow/provider/authProvider/onboarding_notifier.dart';
-import 'package:archflow/screens/auth/login/login_screen.dart';
+import 'package:archflow/screens/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:archflow/themeData/app_color.dart';
@@ -188,7 +188,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
 
   void _finish() {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      MaterialPageRoute(builder: (_) => const DashboardScreen()),
       (_) => false,
     );
   }

@@ -1,6 +1,6 @@
 import 'package:archflow/core/config/env_config.dart';
-import 'package:archflow/screens/home.dart';
-import 'package:archflow/themeData/app_theme.dart';
+import 'package:archflow/features/dashboard/presentation/screens/home.dart';
+import 'package:archflow/shared/widgets/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

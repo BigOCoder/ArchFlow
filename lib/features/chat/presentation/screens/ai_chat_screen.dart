@@ -1,9 +1,9 @@
 import 'package:archflow/core/constants/app_enums.dart';
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/chat/presentation/providers/chat_provider.dart';
 import 'package:archflow/features/chat/presentation/widgets/chat_input_field.dart';
 import 'package:archflow/features/chat/presentation/widgets/chat_message_bubble.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
-import 'package:archflow/shared/widgets/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

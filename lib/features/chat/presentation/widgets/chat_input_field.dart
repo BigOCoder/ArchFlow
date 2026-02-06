@@ -1,6 +1,4 @@
-// lib/screens/chat/widgets/chat_input_field.dart
-
-import 'package:archflow/shared/widgets/app_color.dart';
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
 class ChatInputField extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/profile/presentation/screens/onboarding_flow.dart';
-import 'package:archflow/shared/widgets/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

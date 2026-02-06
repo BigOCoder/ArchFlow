@@ -2,8 +2,8 @@
 
 
 import 'package:archflow/core/constants/app_enums.dart';
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/chat/data/models/chat_message_model.dart';
-import 'package:archflow/shared/widgets/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 

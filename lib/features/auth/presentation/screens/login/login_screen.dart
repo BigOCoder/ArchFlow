@@ -1,11 +1,11 @@
 
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/auth/presentation/providers/auth_provider.dart';
 import 'package:archflow/features/auth/presentation/screens/login/reset_password_screen.dart';
 import 'package:archflow/features/auth/presentation/screens/register/register_screen.dart';
 import 'package:archflow/features/auth/presentation/widgets/remember_me_row.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
-import 'package:archflow/shared/widgets/app_color.dart';
 import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'; // ✅ ADD

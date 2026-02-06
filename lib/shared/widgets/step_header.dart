@@ -1,6 +1,7 @@
-import 'package:archflow/shared/widgets/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../core/theme/app_color.dart';
 
 class StepHeader extends StatelessWidget {
   final int currentStep;

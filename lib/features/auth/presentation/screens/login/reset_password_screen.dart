@@ -1,6 +1,6 @@
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/auth/presentation/screens/register/otp_verification_screen.dart';
-import 'package:archflow/shared/widgets/app_color.dart';
 import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

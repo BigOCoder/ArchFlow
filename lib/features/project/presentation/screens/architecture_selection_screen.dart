@@ -1,6 +1,6 @@
 // lib/screens/project/architecture_selection_screen.dart
 
-import 'package:archflow/shared/widgets/app_color.dart';
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

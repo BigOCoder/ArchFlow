@@ -1,12 +1,12 @@
 
 import 'package:archflow/core/constants/app_enums.dart';
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/auth/presentation/providers/auth_provider.dart';
 import 'package:archflow/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:archflow/features/auth/presentation/widgets/terms_checkbox.dart';
 import 'package:archflow/features/legal/terms_and_conditions_screen.dart';
 import 'package:archflow/features/profile/presentation/screens/onboarding_flow.dart';
-import 'package:archflow/shared/widgets/app_color.dart';
 import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';

@@ -1,8 +1,8 @@
 import 'package:archflow/core/constants/app_enums.dart';
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
-import 'package:archflow/shared/widgets/app_color.dart';
 import 'package:archflow/shared/widgets/app_dropdown.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';

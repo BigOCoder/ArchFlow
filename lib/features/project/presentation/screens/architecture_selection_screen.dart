@@ -1,6 +1,7 @@
 // lib/screens/project/architecture_selection_screen.dart
 
 import 'package:archflow/core/theme/app_color.dart';
+import 'package:archflow/features/team/presentation/screens/team_management_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -170,7 +171,9 @@ class ArchitectureSelectionScreen extends StatelessWidget {
                   description:
                       'Organize your development team by assigning roles, responsibilities, and tasks.',
                   gradientColors: const [Color(0xFF30CFD0), Color(0xFF330867)],
-                  onTap: () => _navigateToUnderDevelopment(context),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => TeamManagementScreen()),
+                  ),
                 ),
               ],
             ),

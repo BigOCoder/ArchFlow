@@ -37,15 +37,16 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
     state = state.copyWith(csBackground: bg);
   }
 
+  void setCoreSubjects(List<String> subjects) {
+    state = state.copyWith(coreSubjects: subjects);
+  }
+
   // 🧠 Skills
   void setSkills(List<SkillEntry> skills) {
     state = state.copyWith(skills: skills);
   }
 
-  void setCoreSubjects(List<String> subjects) {
-    state = state.copyWith(coreSubjects: subjects);
-  }
-
+  // 🎯 Primary Goal
   void setPrimaryGoal(PrimaryGoal goal) {
     state = state.copyWith(primaryGoal: goal);
   }
@@ -54,6 +55,12 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
     state = state.copyWith(timeline: timeline);
   }
 
+  // 💻 Tech Stack - ✅ ADD THIS METHOD
+  void setTechStack(List<String> techStack) {
+    state = state.copyWith(techStack: techStack);
+  }
+
+  // 🏗 Architecture
   void setArchitectureLevel(ArchitectureLevel level) {
     state = state.copyWith(architectureLevel: level);
   }
@@ -62,6 +69,7 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
     state = state.copyWith(familiarConcepts: concepts);
   }
 
+  // 🗄 Database
   void setDatabaseType(DatabaseType type) {
     state = state.copyWith(databaseType: type);
   }
@@ -74,6 +82,7 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
     state = state.copyWith(databasesUsed: databases);
   }
 
+  // 🐞 Coding Comfort
   void setCodingFrequency(CodingFrequency value) {
     state = state.copyWith(codingFrequency: value);
   }
@@ -86,12 +95,16 @@ class OnboardingNotifier extends Notifier<OnboardingState> {
     state = state.copyWith(problemSolvingAreas: areas);
   }
 
-  void goToStep(int step, {int? returnStep}) {
-    state = state.copyWith(step: step, returnStep: returnStep);
+  // ✅ Edit Mode Methods
+  void goToStep(int step, {bool editMode = false}) {
+    state = state.copyWith(step: step, isEditingFromReview: editMode);
+  }
+
+  void clearEditMode() {
+    state = state.copyWith(isEditingFromReview: false);
   }
 }
 
-final onboardingProvider =
-    NotifierProvider<OnboardingNotifier, OnboardingState>(
-      OnboardingNotifier.new,
-    );
+final onboardingProvider = NotifierProvider<OnboardingNotifier, OnboardingState>(
+  OnboardingNotifier.new,
+);

@@ -17,8 +17,7 @@ class StepHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final progress = currentStep / totalSteps;
 
@@ -38,9 +37,7 @@ class StepHeader extends StatelessWidget {
                 backgroundColor: isDark
                     ? AppColors.darkDivider
                     : AppColors.lightDivider,
-                valueColor: const AlwaysStoppedAnimation(
-                  AppColors.brandGreen,
-                ),
+                valueColor: const AlwaysStoppedAnimation(AppColors.brandGreen),
               ),
 
               /// 🔢 STEP NUMBER
@@ -77,8 +74,8 @@ class StepHeader extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
               ),
             ),
           ],

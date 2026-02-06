@@ -1,12 +1,11 @@
-
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/auth/presentation/providers/onboarding_notifier.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:archflow/features/profile/presentation/screens/onboarding_flow.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 
 class FinalReviewScreen extends ConsumerStatefulWidget {
@@ -206,7 +205,9 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
         : 'Intermediate Path';
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return false;
+      },
       child: Scaffold(
         backgroundColor: isDark
             ? AppColors.darkBackground
@@ -229,10 +230,8 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const StepHeader(currentStep: 8, title: 'Final Review'),
-
               const SizedBox(height: 24),
 
-              /// 🎯 HERO CARD - Your Goal
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -378,9 +377,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
-
                             const Spacer(),
-
                             ClipRRect(
                               borderRadius: BorderRadius.circular(4),
                               child: LinearProgressIndicator(
@@ -410,7 +407,6 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                 const SizedBox(height: 32),
               ],
 
-              /// 📚 DETAILS CARDS
               /// 🎓 Education Background (Step 1)
               _infoCard(
                 isDark: isDark,
@@ -419,7 +415,11 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                 onEdit: () {
                   ref
                       .read(onboardingProvider.notifier)
-                      .goToStep(0, returnStep: 7); // ✅ Fixed
+                      .goToStep(0, editMode: true);
+                  Navigator.of(context).pushReplacement(
+                    // ✅ CHANGED from pop()
+                    MaterialPageRoute(builder: (_) => const OnboardingFlow()),
+                  );
                 },
                 children: [
                   _infoRow(
@@ -441,7 +441,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                 ],
               ),
 
-              /// 💻 Skills & Proficiency (Step 2) - ADDED
+              /// 💻 Skills & Proficiency (Step 2)
               if (s.skills.isNotEmpty)
                 _infoCard(
                   isDark: isDark,
@@ -450,7 +450,11 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   onEdit: () {
                     ref
                         .read(onboardingProvider.notifier)
-                        .goToStep(1, returnStep: 7); // ✅ Added
+                        .goToStep(1, editMode: true);
+                    Navigator.of(context).pushReplacement(
+                      // ✅ CHANGED from pop()
+                      MaterialPageRoute(builder: (_) => const OnboardingFlow()),
+                    );
                   },
                   children: s.skills.map((skill) {
                     return _infoRow(
@@ -461,7 +465,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   }).toList(),
                 ),
 
-              /// 🎯 Primary Goal & Timeline (Step 3) - ADDED
+              /// 🎯 Primary Goal & Timeline (Step 3)
               _infoCard(
                 isDark: isDark,
                 icon: Icons.flag_outlined,
@@ -469,7 +473,11 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                 onEdit: () {
                   ref
                       .read(onboardingProvider.notifier)
-                      .goToStep(2, returnStep: 7); // ✅ Added
+                      .goToStep(2, editMode: true);
+                  Navigator.of(context).pushReplacement(
+                    // ✅ CHANGED from pop()
+                    MaterialPageRoute(builder: (_) => const OnboardingFlow()),
+                  );
                 },
                 children: [
                   _infoRow(
@@ -485,6 +493,36 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                 ],
               ),
 
+              /// 💻 Tech Stack Knowledge (Step 4)
+              if (s.techStack.isNotEmpty)
+                _infoCard(
+                  isDark: isDark,
+                  icon: Icons.computer_outlined,
+                  title: 'Tech Stack Knowledge',
+                  onEdit: () {
+                    ref
+                        .read(onboardingProvider.notifier)
+                        .goToStep(3, editMode: true);
+                    Navigator.of(context).pushReplacement(
+                      // ✅ CHANGED from pop()
+                      MaterialPageRoute(builder: (_) => const OnboardingFlow()),
+                    );
+                  },
+                  children: [
+                    _infoRow('Frontend', s.techStack[0], isDark: isDark),
+                    _infoRow(
+                      'Backend',
+                      s.techStack.length > 1 ? s.techStack[1] : '—',
+                      isDark: isDark,
+                    ),
+                    _infoRow(
+                      'API Knowledge',
+                      s.techStack.length > 2 ? s.techStack[2] : '—',
+                      isDark: isDark,
+                    ),
+                  ],
+                ),
+
               /// 🏗 Architecture Knowledge (Step 5)
               _infoCard(
                 isDark: isDark,
@@ -493,7 +531,11 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                 onEdit: () {
                   ref
                       .read(onboardingProvider.notifier)
-                      .goToStep(4, returnStep: 7); // ✅ Fixed
+                      .goToStep(4, editMode: true);
+                  Navigator.of(context).pushReplacement(
+                    // ✅ CHANGED from pop()
+                    MaterialPageRoute(builder: (_) => const OnboardingFlow()),
+                  );
                 },
                 children: [
                   _infoRow(
@@ -518,7 +560,11 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                 onEdit: () {
                   ref
                       .read(onboardingProvider.notifier)
-                      .goToStep(5, returnStep: 7); // ✅ Fixed
+                      .goToStep(5, editMode: true);
+                  Navigator.of(context).pushReplacement(
+                    // ✅ CHANGED from pop()
+                    MaterialPageRoute(builder: (_) => const OnboardingFlow()),
+                  );
                 },
                 children: [
                   _infoRow(
@@ -548,7 +594,11 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                 onEdit: () {
                   ref
                       .read(onboardingProvider.notifier)
-                      .goToStep(6, returnStep: 7); // ✅ Fixed
+                      .goToStep(6, editMode: true);
+                  Navigator.of(context).pushReplacement(
+                    // ✅ CHANGED from pop()
+                    MaterialPageRoute(builder: (_) => const OnboardingFlow()),
+                  );
                 },
                 children: [
                   _infoRow(

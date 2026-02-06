@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class ProjectDetailsScreen extends ConsumerStatefulWidget {
   const ProjectDetailsScreen({super.key});
 
@@ -210,13 +209,15 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                Text(
-                  'Provide technical and planning details for your project.',
-                  style: GoogleFonts.lato(
-                    fontSize: 14,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
+                Center(
+                  child: Text(
+                    'Provide technical and planning details for your project.',
+                    style: GoogleFonts.lato(
+                      fontSize: 14,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 32),

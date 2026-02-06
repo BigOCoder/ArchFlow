@@ -1,10 +1,10 @@
-
+import 'package:archflow/features/profile/presentation/screens/final_review_screen8.dart';
+import 'package:flutter/material.dart';
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/auth/presentation/providers/onboarding_notifier.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -82,7 +82,19 @@ class _EducationBackgroundScreenState
     notifier.setEducationLevel(_educationLevel!);
     notifier.setCsBackground(_csBackground!);
     notifier.setCoreSubjects(selectedSubjects);
-    notifier.nextStep();
+
+    final isEditing = ref.read(onboardingProvider).isEditingFromReview;
+
+    if (isEditing) {
+      // Return to Final Review
+      notifier.clearEditMode();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const FinalReviewScreen()),
+      );
+    } else {
+      // Normal flow
+      notifier.nextStep(); // Or Navigator.push for screen 7
+    }
   }
 
   Widget _sectionCard({
@@ -124,17 +136,17 @@ class _EducationBackgroundScreenState
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return WillPopScope(
-      onWillPop: () async {
-        ref.read(onboardingProvider.notifier).previousStep();
-        return false;
+    return PopScope(
+      canPop: false, // ✅ Prevents system back
+      onPopInvoked: (didPop) {
+        // Do nothing - user cannot go back from screen 1
       },
       child: Scaffold(
         backgroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.lightBackground,
         appBar: AppBar(
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: false, // ✅ No back arrow
           title: Padding(
             padding: const EdgeInsets.only(left: 8),
             child: Text(

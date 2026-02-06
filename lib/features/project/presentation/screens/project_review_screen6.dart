@@ -2,6 +2,7 @@ import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:archflow/features/integrations/presentation/screens/github_integration_screen.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
 import 'package:archflow/features/project/presentation/providers/project_provider.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
@@ -249,7 +250,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
       ref.read(projectOnboardingProvider.notifier).reset();
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+        MaterialPageRoute(builder: (_) => const GitHubIntegrationScreen()),
         (_) => false,
       );
     } else {

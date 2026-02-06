@@ -2,6 +2,7 @@ import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/auth/presentation/providers/onboarding_notifier.dart';
+import 'package:archflow/features/profile/presentation/screens/final_review_screen8.dart';
 import 'package:archflow/shared/widgets/app_dropdown.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,10 @@ class _DatabaseKnowledgeScreenState
     }
   }
 
+  void _handleBackPressed() {
+    ref.read(onboardingProvider.notifier).previousStep();
+  }
+
   /// ---------------- HELPERS ----------------
   void _loadDatabases(DatabaseType type) {
     _databases.clear();
@@ -110,7 +115,18 @@ class _DatabaseKnowledgeScreenState
     notifier.setDatabaseType(_databaseType!);
     notifier.setDatabaseComfortLevel(_comfortLevel!);
     notifier.setDatabasesUsed(selected);
-    notifier.nextStep();
+    final isEditing = ref.read(onboardingProvider).isEditingFromReview;
+
+    if (isEditing) {
+      // Return to Final Review
+      notifier.clearEditMode();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const FinalReviewScreen()),
+      );
+    } else {
+      // Normal flow
+      notifier.nextStep(); // Or Navigator.push for screen 7
+    }
   }
 
   /// ---------------- BUILD ----------------
@@ -118,133 +134,45 @@ class _DatabaseKnowledgeScreenState
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+    return WillPopScope(
+      onWillPop: () async {
+        _handleBackPressed();
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+            ),
+            onPressed: _handleBackPressed,
           ),
-          onPressed: () {
-            ref.read(onboardingProvider.notifier).previousStep();
-          },
+          title: Text(
+            'Database Knowledge',
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.bold,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+            ),
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const StepHeader(currentStep: 6, title: 'Database Knowledge'),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const StepHeader(currentStep: 6, title: 'database experience?'),
 
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            Text(
-              'Tell us about your database experience.',
-              style: GoogleFonts.lato(
-                fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
-              ),
-            ),
-
-            const SizedBox(height: 32),
-
-            /// 🗄 DATABASE TYPE
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: isDark
-                      ? AppColors.darkDivider
-                      : AppColors.lightDivider,
-                ),
-              ),
-              child: AppDropdown<DatabaseType>(
-                label: 'Database Type',
-                icon: Icons.storage,
-                value: _databaseType,
-                hasError: false,
-                entries: DatabaseType.values
-                    .map(
-                      (type) => DropdownMenuEntry(
-                        value: type,
-                        label: type.displayName,
-                      ),
-                    )
-                    .toList(),
-                onSelected: (v) {
-                  setState(() {
-                    _databaseType = v;
-                    if (v != null) {
-                      _loadDatabases(v);
-                    }
-                  });
-                },
-              ),
-            ),
-
-            /// 🧠 DATABASES USED
-            if (_databaseType != null)
-              Container(
-                margin: const EdgeInsets.only(bottom: 24),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightSurface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkDivider
-                        : AppColors.lightDivider,
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Databases Used',
-                      style: GoogleFonts.lato(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ..._databases.keys.map((db) {
-                      return CheckboxListTile(
-                        value: _databases[db],
-                        onChanged: (v) =>
-                            setState(() => _databases[db] = v ?? false),
-                        title: Text(
-                          db,
-                          style: GoogleFonts.lato(
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
-                          ),
-                        ),
-                        activeColor: AppColors.brandGreen,
-                      );
-                    }),
-                  ],
-                ),
-              ),
-
-            /// ⚡ COMFORT LEVEL
-            if (_databaseType != null)
+              /// 🗄 DATABASE TYPE
               Container(
                 margin: const EdgeInsets.only(bottom: 20),
                 padding: const EdgeInsets.all(16),
@@ -259,48 +187,139 @@ class _DatabaseKnowledgeScreenState
                         : AppColors.lightDivider,
                   ),
                 ),
-                child: AppDropdown<ComfortLevel>(
-                  label: 'Comfort Level',
-                  icon: Icons.trending_up,
-                  value: _comfortLevel,
+                child: AppDropdown<DatabaseType>(
+                  label: 'Database Type',
+                  icon: Icons.storage,
+                  value: _databaseType,
                   hasError: false,
-                  entries: ComfortLevel.values
+                  entries: DatabaseType.values
                       .map(
-                        (level) => DropdownMenuEntry(
-                          value: level,
-                          label: level.displayName,
+                        (type) => DropdownMenuEntry(
+                          value: type,
+                          label: type.displayName,
                         ),
                       )
                       .toList(),
                   onSelected: (v) {
                     setState(() {
-                      _comfortLevel = v;
+                      _databaseType = v;
+                      if (v != null) {
+                        _loadDatabases(v);
+                      }
                     });
                   },
                 ),
               ),
 
-            const SizedBox(height: 12),
-
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
-                onPressed: _canProceed ? _submit : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.brandGreen,
-                  foregroundColor: Colors.white,
+              /// 🧠 DATABASES USED
+              if (_databaseType != null)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 24),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.darkSurface
+                        : AppColors.lightSurface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark
+                          ? AppColors.darkDivider
+                          : AppColors.lightDivider,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Databases Used',
+                        style: GoogleFonts.lato(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ..._databases.keys.map((db) {
+                        return CheckboxListTile(
+                          value: _databases[db],
+                          onChanged: (v) =>
+                              setState(() => _databases[db] = v ?? false),
+                          title: Text(
+                            db,
+                            style: GoogleFonts.lato(
+                              color: isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary,
+                            ),
+                          ),
+                          activeColor: AppColors.brandGreen,
+                        );
+                      }),
+                    ],
+                  ),
                 ),
-                child: Text(
-                  'Next',
-                  style: GoogleFonts.lato(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+
+              /// ⚡ COMFORT LEVEL
+              if (_databaseType != null)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.darkSurface
+                        : AppColors.lightSurface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark
+                          ? AppColors.darkDivider
+                          : AppColors.lightDivider,
+                    ),
+                  ),
+                  child: AppDropdown<ComfortLevel>(
+                    label: 'Comfort Level',
+                    icon: Icons.trending_up,
+                    value: _comfortLevel,
+                    hasError: false,
+                    entries: ComfortLevel.values
+                        .map(
+                          (level) => DropdownMenuEntry(
+                            value: level,
+                            label: level.displayName,
+                          ),
+                        )
+                        .toList(),
+                    onSelected: (v) {
+                      setState(() {
+                        _comfortLevel = v;
+                      });
+                    },
+                  ),
+                ),
+
+              const SizedBox(height: 12),
+
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: _canProceed ? _submit : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.brandGreen,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text(
+                    'Next',
+                    style: GoogleFonts.lato(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

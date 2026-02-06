@@ -118,29 +118,29 @@ enum ExpectedTraffic {
 
 /// ✅ NEW: AI Chat conversation phase
 enum ChatPhase {
-  idle,                 // No active conversation
-  ideaDiscussion,       // Exploring the idea
+  idle, // No active conversation
+  ideaDiscussion, // Exploring the idea
   requirementGathering, // Structured Q&A
-  architectureDesign,   // Proposing architecture
-  taskPlanning,         // Breaking down tasks
-  execution,            // During development
+  architectureDesign, // Proposing architecture
+  taskPlanning, // Breaking down tasks
+  execution, // During development
 }
 
 /// ✅ NEW: Chat message type
 enum MessageType {
-  user,    // Message from user
-  ai,      // Message from AI assistant
-  system,  // System message (errors, notifications)
+  user, // Message from user
+  ai, // Message from AI assistant
+  system, // System message (errors, notifications)
 }
 
 /// ✅ NEW: Chat message intent/purpose
 enum MessageIntent {
-  conversational,          // General conversation
-  requirementGathering,    // Asking structured questions
-  architectureSuggestion,  // Proposing architecture
-  taskBreakdown,           // Breaking features into tasks
-  codeReview,              // Reviewing code
-  traceability,            // Explaining "why" something exists
+  conversational, // General conversation
+  requirementGathering, // Asking structured questions
+  architectureSuggestion, // Proposing architecture
+  taskBreakdown, // Breaking features into tasks
+  codeReview, // Reviewing code
+  traceability, // Explaining "why" something exists
 }
 
 // ==================== EXTENSION METHODS ====================
@@ -287,9 +287,9 @@ extension CodingFrequencyExtension on CodingFrequency {
   String get displayName {
     switch (this) {
       case CodingFrequency.rarely:
-        return 'Rarely (Few times a month)';
+        return 'Rarely';
       case CodingFrequency.sometimes:
-        return 'Sometimes (Few times a week)';
+        return 'Sometimes';
       case CodingFrequency.daily:
         return 'Daily';
     }
@@ -300,11 +300,11 @@ extension DebuggingConfidenceExtension on DebuggingConfidence {
   String get displayName {
     switch (this) {
       case DebuggingConfidence.low:
-        return 'Low - Need Help Often';
+        return 'Low';
       case DebuggingConfidence.medium:
-        return 'Medium - Can Figure Out Most';
+        return 'Medium ';
       case DebuggingConfidence.high:
-        return 'High - Confident & Independent';
+        return 'High';
     }
   }
 }
@@ -349,7 +349,7 @@ extension ChatPhaseExtension on ChatPhase {
         return 'Execution Mode';
     }
   }
-  
+
   IconData get icon {
     switch (this) {
       case ChatPhase.idle:
@@ -366,7 +366,7 @@ extension ChatPhaseExtension on ChatPhase {
         return Icons.code;
     }
   }
-  
+
   String get description {
     switch (this) {
       case ChatPhase.idle:
@@ -397,7 +397,7 @@ extension MessageTypeExtension on MessageType {
         return 'System';
     }
   }
-  
+
   IconData get icon {
     switch (this) {
       case MessageType.user:

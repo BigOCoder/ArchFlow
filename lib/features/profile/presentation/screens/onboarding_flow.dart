@@ -4,7 +4,6 @@ import 'package:archflow/features/profile/presentation/screens/architecture_expo
 import 'package:archflow/features/profile/presentation/screens/coding_comfort_screen7.dart';
 import 'package:archflow/features/profile/presentation/screens/database_knowledge_screen6.dart';
 import 'package:archflow/features/profile/presentation/screens/education_background_screen1.dart';
-import 'package:archflow/features/profile/presentation/screens/final_review_screen8.dart';
 import 'package:archflow/features/profile/presentation/screens/primary_goal_screen3.dart';
 import 'package:archflow/features/profile/presentation/screens/skills_proficiency_screen2.dart';
 import 'package:archflow/features/profile/presentation/screens/tech_stack_knowledge_screen4.dart';
@@ -29,7 +28,6 @@ class OnboardingFlow extends ConsumerWidget {
           ArchitectureExposureScreen(),
           DatabaseKnowledgeScreen(),
           CodingComfortScreen(),
-          FinalReviewScreen(),
         ],
       ),
     );

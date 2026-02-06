@@ -1,7 +1,7 @@
-
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/auth/presentation/providers/onboarding_notifier.dart';
+import 'package:archflow/features/profile/presentation/screens/final_review_screen8.dart';
 import 'package:archflow/shared/widgets/app_dropdown.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +22,26 @@ class _TechStackKnowledgeScreenState
   String? _backend;
   String? _apiKnowledge;
 
+  /// ---------------- STATE RESTORE ----------------
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final onboarding = ref.read(onboardingProvider);
+    final techStack = onboarding.techStack;
+
+    // Restore saved values if they exist
+    if (techStack.isNotEmpty && _frontend == null) {
+      _frontend = techStack.length > 0 ? techStack[0] : null;
+      _backend = techStack.length > 1 ? techStack[1] : null;
+      _apiKnowledge = techStack.length > 2 ? techStack[2] : null;
+    }
+  }
+
+  void _handleBackPressed() {
+    ref.read(onboardingProvider.notifier).previousStep();
+  }
+
   bool get _canProceed =>
       _frontend != null && _backend != null && _apiKnowledge != null;
 
@@ -36,11 +56,25 @@ class _TechStackKnowledgeScreenState
       return;
     }
 
-    debugPrint('Frontend: $_frontend');
-    debugPrint('Backend: $_backend');
-    debugPrint('API Knowledge: $_apiKnowledge');
+    // Save tech stack as a list
+    final techStack = [_frontend!, _backend!, _apiKnowledge!];
+    
+    final notifier = ref.read(onboardingProvider.notifier);
+    notifier.setTechStack(techStack);
 
-    ref.read(onboardingProvider.notifier).nextStep();
+    // ✅ NEW: Check if we're editing from Final Review
+    final isEditing = ref.read(onboardingProvider).isEditingFromReview;
+
+    if (isEditing) {
+      // Return to Final Review
+      notifier.clearEditMode();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const FinalReviewScreen()),
+      );
+    } else {
+      // Normal flow: go to next step
+      notifier.nextStep();
+    }
   }
 
   Widget _section({
@@ -56,14 +90,10 @@ class _TechStackKnowledgeScreenState
       padding: const EdgeInsets.all(16),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
+        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark
-              ? AppColors.darkDivider
-              : AppColors.lightDivider,
+          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
         ),
       ),
       child: AppDropdown<String>(
@@ -72,12 +102,7 @@ class _TechStackKnowledgeScreenState
         value: value,
         hasError: false,
         entries: items
-            .map(
-              (e) => DropdownMenuEntry<String>(
-                value: e,
-                label: e,
-              ),
-            )
+            .map((e) => DropdownMenuEntry<String>(value: e, label: e))
             .toList(),
         onSelected: onChanged,
       ),
@@ -86,121 +111,110 @@ class _TechStackKnowledgeScreenState
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+    return WillPopScope(
+      onWillPop: () async {
+        _handleBackPressed();
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _handleBackPressed,
           ),
-          onPressed: () {
-            ref
-                .read(onboardingProvider.notifier)
-                .previousStep();
-          },
+          title: Text(
+            'Tech Stack Knowledge',
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.bold,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+            ),
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const StepHeader(
-              currentStep: 4,
-              title: 'Tech Stack Knowledge',
-            ),
-
-            const SizedBox(height: 24),
-
-            Text(
-              'Tell us about your experience with various technologies.',
-              style: GoogleFonts.lato(
-                fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const StepHeader(
+                currentStep: 4,
+                title: 'Experience with various technologies?',
               ),
-            ),
 
-            const SizedBox(height: 32),
+              const SizedBox(height: 24),
 
-            /// 🌐 FRONTEND
-            _section(
-              isDark: isDark,
-              icon: Icons.desktop_windows,
-              title: 'Frontend Technology',
-              value: _frontend,
-              items: const [
-                'Flutter',
-                'React',
-                'Angular',
-                'Vue',
-                'HTML / CSS / JS',
-                'Other',
-              ],
-              onChanged: (v) => setState(() => _frontend = v),
-            ),
+              /// 🌐 FRONTEND
+              _section(
+                isDark: isDark,
+                icon: Icons.desktop_windows,
+                title: 'Frontend Technology',
+                value: _frontend,
+                items: const [
+                  'Flutter',
+                  'React',
+                  'Angular',
+                  'Vue',
+                  'HTML / CSS / JS',
+                  'Other',
+                ],
+                onChanged: (v) => setState(() => _frontend = v),
+              ),
 
-            /// 🧩 BACKEND
-            _section(
-              isDark: isDark,
-              icon: Icons.storage,
-              title: 'Backend Technology',
-              value: _backend,
-              items: const [
-                'Node.js',
-                'Django',
-                'Spring Boot',
-                'Firebase',
-                'C#',
-                'Other',
-              ],
-              onChanged: (v) => setState(() => _backend = v),
-            ),
+              /// 🧩 BACKEND
+              _section(
+                isDark: isDark,
+                icon: Icons.storage,
+                title: 'Backend Technology',
+                value: _backend,
+                items: const [
+                  'Node.js',
+                  'Django',
+                  'Spring Boot',
+                  'Firebase',
+                  'C#',
+                  'Other',
+                ],
+                onChanged: (v) => setState(() => _backend = v),
+              ),
 
-            /// 🔌 API KNOWLEDGE
-            _section(
-              isDark: isDark,
-              icon: Icons.api,
-              title: 'API Knowledge',
-              value: _apiKnowledge,
-              items: const [
-                'Beginner',
-                'Intermediate',
-                'Advanced',
-              ],
-              onChanged: (v) => setState(() => _apiKnowledge = v),
-            ),
+              /// 🔌 API KNOWLEDGE
+              _section(
+                isDark: isDark,
+                icon: Icons.api,
+                title: 'API Knowledge',
+                value: _apiKnowledge,
+                items: const ['Beginner', 'Intermediate', 'Advanced'],
+                onChanged: (v) => setState(() => _apiKnowledge = v),
+              ),
 
-            const SizedBox(height: 32),
+              const SizedBox(height: 32),
 
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
-                onPressed: _canProceed ? _submit : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.brandGreen,
-                  foregroundColor: Colors.white,
-                ),
-                child: Text(
-                  'Next',
-                  style: GoogleFonts.lato(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: _canProceed ? _submit : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.brandGreen,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text(
+                    'Next',
+                    style: GoogleFonts.lato(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

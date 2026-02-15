@@ -199,12 +199,10 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
       background: s.csBackground?.backendValue ?? 'CS_IT',
       coreSubjects: s.coreSubjects,
       skills: s.skills
-          .map(
-            (skill) => SkillModel(
-              skill: skill.skill?.backendValue ?? 'OTHER',
-              level: skill.level?.backendValue ?? 'BEGINNER',
-            ),
-          )
+          .map((skill) => SkillModel(
+                skill: skill.skill?.backendValue ?? 'OTHER',
+                level: skill.level?.backendValue ?? 'BEGINNER',
+              ))
           .toList(),
       primaryGoal: s.primaryGoal?.backendValue ?? 'LEARNING_FUNDAMENTALS',
       timeline: s.timeline?.backendValue ?? 'THREE_MONTHS',
@@ -226,9 +224,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
     );
 
     // Submit profile
-    final success = await ref
-        .read(profileProvider.notifier)
-        .submitProfile(profile);
+    final success = await ref.read(profileProvider.notifier).submitProfile(profile);
 
     if (success && mounted) {
       // Navigate to dashboard on success
@@ -287,7 +283,9 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   decoration: BoxDecoration(
                     color: Colors.red.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.red.withOpacity(0.3)),
+                    border: Border.all(
+                      color: Colors.red.withOpacity(0.3),
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -420,8 +418,8 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                       final progress = skill.level == ProficiencyLevel.beginner
                           ? 0.33
                           : skill.level == ProficiencyLevel.intermediate
-                          ? 0.66
-                          : 1.0;
+                              ? 0.66
+                              : 1.0;
 
                       return Container(
                         width: 180,

@@ -6,7 +6,6 @@ import 'package:archflow/features/auth/presentation/screens/login/login_screen.d
 import 'package:archflow/features/auth/presentation/screens/register/check_email_screen.dart';
 import 'package:archflow/features/auth/presentation/widgets/terms_checkbox.dart';
 import 'package:archflow/features/legal/terms_and_conditions_screen.dart';
-import 'package:archflow/features/profile/presentation/screens/onboarding_flow.dart';
 import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';

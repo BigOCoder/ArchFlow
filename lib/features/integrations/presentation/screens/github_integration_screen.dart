@@ -1,5 +1,3 @@
-// lib/features/integrations/presentation/screens/github_integration_screen.dart
-
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:archflow/features/integrations/presentation/widgets/integration_card.dart';

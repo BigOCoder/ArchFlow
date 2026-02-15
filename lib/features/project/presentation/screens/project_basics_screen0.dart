@@ -1,4 +1,5 @@
 // lib/screens/project/project_basics_screen.dart
+import 'package:archflow/core/constants/app_enum_extensions.dart';
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';

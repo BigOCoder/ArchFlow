@@ -1,10 +1,5 @@
-// lib/features/integrations/data/models/integration_status.dart
 
-enum IntegrationProvider {
-  github,
-  linear,
-  jira,
-}
+import 'package:archflow/core/constants/app_enums.dart';
 
 class IntegrationStatus {
   final IntegrationProvider provider;

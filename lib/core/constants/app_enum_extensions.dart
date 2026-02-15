@@ -179,7 +179,24 @@ extension PrimaryGoalExtension on PrimaryGoal {
 }
 
 extension ArchitectureLevelExtension on ArchitectureLevel {
+  // ✅ This is for DISPLAY in UI (user-friendly names)
   String get displayName {
+    switch (this) {
+      case ArchitectureLevel.none:
+        return 'Never Worked With'; // ✅ User-friendly
+      case ArchitectureLevel.mvc:
+        return 'MVC';
+      case ArchitectureLevel.layered:
+        return 'Layered Architecture'; // ✅ User-friendly
+      case ArchitectureLevel.clean:
+        return 'Clean Architecture'; // ✅ User-friendly
+      case ArchitectureLevel.microservices:
+        return 'Microservices';
+    }
+  }
+
+  // ✅ ADD THIS: For API backend values
+  String get backendValue {
     switch (this) {
       case ArchitectureLevel.none:
         return 'NEVER_WORKED';

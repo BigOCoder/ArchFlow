@@ -4,9 +4,9 @@ import 'package:archflow/features/chat/presentation/providers/chat_provider.dart
 import 'package:archflow/features/chat/presentation/widgets/chat_input_field.dart';
 import 'package:archflow/features/chat/presentation/widgets/chat_message_bubble.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
+import 'package:archflow/features/project/presentation/screens/project_review_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 class AIChatScreen extends ConsumerStatefulWidget {
   const AIChatScreen({super.key});
@@ -119,7 +119,9 @@ Can you help me refine the requirements and suggest an architecture?
   }
 
   void _proceedToReview() {
-    ref.read(projectOnboardingProvider.notifier).nextStep();
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => ProjectReviewScreen()));
   }
 
   @override

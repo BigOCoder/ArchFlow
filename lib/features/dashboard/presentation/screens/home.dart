@@ -1,7 +1,8 @@
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:archflow/features/auth/presentation/screens/register/register_screen.dart';
-import 'package:archflow/features/chat/presentation/screens/ai_chat_screen.dart';
+import 'package:archflow/features/profile/presentation/screens/onboarding_flow.dart';
+import 'package:archflow/features/project/presentation/screens/project_onboarding_flow_screen.dart';
 import 'package:archflow/features/team/presentation/screens/team_setup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -98,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => const TeamSetupScreen(),
+                            builder: (_) => const ProjectOnboardingFlow(),
                           ),
                         );
                       },

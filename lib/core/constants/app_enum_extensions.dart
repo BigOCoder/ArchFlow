@@ -182,15 +182,15 @@ extension ArchitectureLevelExtension on ArchitectureLevel {
   String get displayName {
     switch (this) {
       case ArchitectureLevel.none:
-        return 'None';
+        return 'NEVER_WORKED';
       case ArchitectureLevel.mvc:
         return 'MVC';
       case ArchitectureLevel.layered:
-        return 'Layered Architecture';
+        return 'LAYERED_ARCH';
       case ArchitectureLevel.clean:
-        return 'Clean Architecture';
+        return 'CLEAN_ARCH';
       case ArchitectureLevel.microservices:
-        return 'Microservices';
+        return 'MICROSERVICES';
     }
   }
 }

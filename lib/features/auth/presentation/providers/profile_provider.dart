@@ -1,8 +1,8 @@
-// lib/features/auth/presentation/providers/profile_provider.dart
-
 import 'package:archflow/features/auth/data/models/profile_request_model.dart';
 import 'package:archflow/features/auth/data/repositories/profile_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+const _undefined = Object();
 
 class ProfileState {
   final bool isLoading;
@@ -19,13 +19,13 @@ class ProfileState {
 
   ProfileState copyWith({
     bool? isLoading,
-    String? error,
+    Object? error = _undefined,
     bool? isSubmitted,
     Map<String, dynamic>? response,
   }) {
     return ProfileState(
       isLoading: isLoading ?? this.isLoading,
-      error: error,
+      error: error == _undefined ? this.error : error as String?,
       isSubmitted: isSubmitted ?? this.isSubmitted,
       response: response ?? this.response,
     );
@@ -43,14 +43,14 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
     try {
       final response = await _repository.submitProfile(profile);
-      
+
       state = state.copyWith(
         isLoading: false,
         isSubmitted: true,
         response: response,
         error: null,
       );
-      
+
       return true;
     } catch (e) {
       state = state.copyWith(

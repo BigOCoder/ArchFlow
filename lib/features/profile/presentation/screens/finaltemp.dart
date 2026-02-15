@@ -412,7 +412,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: s.skills.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    separatorBuilder: (_, _) => const SizedBox(width: 12),
                     itemBuilder: (_, i) {
                       final skill = s.skills[i];
                       final progress = skill.level == ProficiencyLevel.beginner

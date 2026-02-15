@@ -22,6 +22,31 @@ class _TechStackKnowledgeScreenState
   String? _backend;
   String? _apiKnowledge;
 
+  // ✅ ADD THESE THREE MAPS:
+  final Map<String, String> _frontendMap = {
+    'Flutter': 'FLUTTER',
+    'React': 'REACT',
+    'Angular': 'ANGULAR',
+    'Vue': 'VUE',
+    'HTML / CSS / JS': 'HTML_CSS_JS',
+    'Other': 'OTHER',
+  };
+
+  final Map<String, String> _backendMap = {
+    'Node.js': 'NODE_JS',
+    'Django': 'DJANGO',
+    'Spring Boot': 'SPRING_BOOT',
+    'Firebase': 'FIREBASE',
+    'C#': 'CSHARP',
+    'Other': 'OTHER',
+  };
+
+  final Map<String, String> _apiKnowledgeMap = {
+    'Beginner': 'BEGINNER',
+    'Intermediate': 'INTERMEDIATE',
+    'Advanced': 'ADVANCED',
+  };
+
   /// ---------------- STATE RESTORE ----------------
   @override
   void didChangeDependencies() {
@@ -30,11 +55,35 @@ class _TechStackKnowledgeScreenState
     final onboarding = ref.read(onboardingProvider);
     final techStack = onboarding.techStack;
 
-    // ✅ Restore saved values if they exist
+    // ✅ CHANGED: Reverse lookup from backend value to display name
     if (techStack.isNotEmpty && _frontend == null) {
-      _frontend = techStack.isNotEmpty ? techStack[0] : null;
-      _backend = techStack.length > 1 ? techStack[1] : null;
-      _apiKnowledge = techStack.length > 2 ? techStack[2] : null;
+      // Convert FLUTTER -> Flutter
+      _frontend = _frontendMap.entries
+          .firstWhere(
+            (e) => e.value == techStack[0],
+            orElse: () => MapEntry(techStack[0], techStack[0]),
+          )
+          .key;
+
+      // Convert SPRING_BOOT -> Spring Boot
+      if (techStack.length > 1) {
+        _backend = _backendMap.entries
+            .firstWhere(
+              (e) => e.value == techStack[1],
+              orElse: () => MapEntry(techStack[1], techStack[1]),
+            )
+            .key;
+      }
+
+      // Convert INTERMEDIATE -> Intermediate
+      if (techStack.length > 2) {
+        _apiKnowledge = _apiKnowledgeMap.entries
+            .firstWhere(
+              (e) => e.value == techStack[2],
+              orElse: () => MapEntry(techStack[2], techStack[2]),
+            )
+            .key;
+      }
     }
   }
 
@@ -56,23 +105,23 @@ class _TechStackKnowledgeScreenState
       return;
     }
 
-    // Save tech stack as a list
-    final techStack = [_frontend!, _backend!, _apiKnowledge!];
+    final techStack = [
+      _frontendMap[_frontend!]!, // Flutter -> FLUTTER
+      _backendMap[_backend!]!, // Spring Boot -> SPRING_BOOT
+      _apiKnowledgeMap[_apiKnowledge!]!, // Intermediate -> INTERMEDIATE
+    ];
 
     final notifier = ref.read(onboardingProvider.notifier);
     notifier.setTechStack(techStack);
 
-    // ✅ NEW: Check if we're editing from Final Review
     final isEditing = ref.read(onboardingProvider).isEditingFromReview;
 
     if (isEditing) {
-      // Return to Final Review
       notifier.clearEditMode();
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const FinalReviewScreen()),
       );
     } else {
-      // Normal flow: go to next step
       notifier.nextStep();
     }
   }
@@ -149,20 +198,12 @@ class _TechStackKnowledgeScreenState
 
               const SizedBox(height: 24),
 
-              /// 🌐 FRONTEND
               _section(
                 isDark: isDark,
                 icon: Icons.desktop_windows,
                 title: 'Frontend Technology',
                 value: _frontend,
-                items: const [
-                  'Flutter',
-                  'React',
-                  'Angular',
-                  'Vue',
-                  'HTML / CSS / JS',
-                  'Other',
-                ],
+                items: _frontendMap.keys.toList(),
                 onChanged: (v) => setState(() => _frontend = v),
               ),
 
@@ -172,14 +213,7 @@ class _TechStackKnowledgeScreenState
                 icon: Icons.storage,
                 title: 'Backend Technology',
                 value: _backend,
-                items: const [
-                  'Node.js',
-                  'Django',
-                  'Spring Boot',
-                  'Firebase',
-                  'C#',
-                  'Other',
-                ],
+                items: _backendMap.keys.toList(), 
                 onChanged: (v) => setState(() => _backend = v),
               ),
 
@@ -189,7 +223,8 @@ class _TechStackKnowledgeScreenState
                 icon: Icons.api,
                 title: 'API Knowledge',
                 value: _apiKnowledge,
-                items: const ['Beginner', 'Intermediate', 'Advanced'],
+                items: _apiKnowledgeMap.keys
+                    .toList(), 
                 onChanged: (v) => setState(() => _apiKnowledge = v),
               ),
 

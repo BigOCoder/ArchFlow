@@ -211,7 +211,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
       frontendTechnology: s.techStack.isNotEmpty ? s.techStack[0] : null,
       backendTechnology: s.techStack.length > 1 ? s.techStack[1] : null,
       apiKnowledge: s.techStack.length > 2 ? s.techStack[2] : null,
-      architectureExperience: s.architectureLevel?.name.toUpperCase(),
+      architectureExperience: s.architectureLevel?.backendValue,
       familiarConcepts: s.familiarConcepts,
       databaseKnowledge: DatabaseKnowledgeModel(
         databaseType: s.databaseType?.backendValue ?? 'RELATIONAL',
@@ -414,7 +414,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: s.skills.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    separatorBuilder: (_, _) => const SizedBox(width: 12),
                     itemBuilder: (_, i) {
                       final skill = s.skills[i];
                       final progress = skill.level == ProficiencyLevel.beginner

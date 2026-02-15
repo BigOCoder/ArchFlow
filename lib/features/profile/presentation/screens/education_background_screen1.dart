@@ -33,6 +33,15 @@ class _EducationBackgroundScreenState
     'Computer Networks': false,
   };
 
+  // ✅ ADD THIS NEW MAP HERE:
+  final Map<String, String> _coreSubjectsMap = {
+    'Data Structures': 'DATA_STRUCTURES',
+    'OOP': 'OOP',
+    'DBMS': 'DBMS',
+    'Operating Systems': 'OPERATING_SYSTEM',
+    'Computer Networks': 'COMPUTER_NETWORKS',
+  };
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -44,8 +53,16 @@ class _EducationBackgroundScreenState
 
     if (!_coreSubjectsRestored && onboarding.coreSubjects.isNotEmpty) {
       for (final subject in onboarding.coreSubjects) {
-        if (_coreSubjects.containsKey(subject)) {
-          _coreSubjects[subject] = true;
+        // Convert backend value to display name (DATA_STRUCTURES -> Data Structures)
+        final displayName = _coreSubjectsMap.entries
+            .firstWhere(
+              (e) => e.value == subject,
+              orElse: () => MapEntry(subject, subject),
+            )
+            .key;
+
+        if (_coreSubjects.containsKey(displayName)) {
+          _coreSubjects[displayName] = true;
         }
       }
       _coreSubjectsRestored = true;
@@ -75,7 +92,7 @@ class _EducationBackgroundScreenState
 
     final selectedSubjects = _coreSubjects.entries
         .where((e) => e.value)
-        .map((e) => e.key)
+        .map((e) => _coreSubjectsMap[e.key]!) 
         .toList();
 
     final notifier = ref.read(onboardingProvider.notifier);

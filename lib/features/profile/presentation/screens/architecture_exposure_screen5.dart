@@ -29,6 +29,13 @@ class _ArchitectureExposureScreenState
     'SOLID principles': false,
     'Design patterns': false,
   };
+  final Map<String, String> _conceptsMap = {
+    'MVC': 'MVC',
+    'Repository pattern': 'REPOSITORY_PATTERN',
+    'DTOs': 'DTOS',
+    'SOLID principles': 'SOLID_PRINCIPLES',
+    'Design patterns': 'DESIGN_PATTERNS',
+  };
 
   bool _conceptsRestored = false;
 
@@ -43,8 +50,13 @@ class _ArchitectureExposureScreenState
 
     if (!_conceptsRestored && onboarding.familiarConcepts.isNotEmpty) {
       for (final c in onboarding.familiarConcepts) {
-        if (_familiarConcepts.containsKey(c)) {
-          _familiarConcepts[c] = true;
+        // Convert REPOSITORY_PATTERN -> Repository pattern
+        final displayName = _conceptsMap.entries
+            .firstWhere((e) => e.value == c, orElse: () => MapEntry(c, c))
+            .key;
+
+        if (_familiarConcepts.containsKey(displayName)) {
+          _familiarConcepts[displayName] = true;
         }
       }
       _conceptsRestored = true;
@@ -71,15 +83,17 @@ class _ArchitectureExposureScreenState
 
     final selectedConcepts = _familiarConcepts.entries
         .where((e) => e.value)
-        .map((e) => e.key)
+        .map(
+          (e) => _conceptsMap[e.key]!,
+        ) // Repository pattern -> REPOSITORY_PATTERN
         .toList();
 
     final notifier = ref.read(onboardingProvider.notifier);
 
     notifier.setArchitectureLevel(_architectureLevel!);
     notifier.setFamiliarConcepts(selectedConcepts);
-    final isEditing = ref.read(onboardingProvider).isEditingFromReview;
 
+    final isEditing = ref.read(onboardingProvider).isEditingFromReview;
     if (isEditing) {
       // Return to Final Review
       notifier.clearEditMode();

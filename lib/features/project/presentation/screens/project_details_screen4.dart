@@ -1,3 +1,4 @@
+import 'package:archflow/core/constants/app_enum_extensions.dart';
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
@@ -24,7 +25,7 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
   final Set<String> _selectedDevices = {};
 
   // Timeline & Budget
-  ProjectTimeline? _selectedTimeline;
+  ExpectedTimeline? _selectedTimeline;
   BudgetRange? _selectedBudget;
 
   // Scale & Data
@@ -430,12 +431,12 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
                 const SizedBox(height: 32),
 
                 // Expected Timeline
-                AppDropdown<ProjectTimeline>(
+                AppDropdown<ExpectedTimeline>(
                   label: 'Expected Timeline',
                   icon: Icons.schedule,
                   value: _selectedTimeline,
                   hasError: false,
-                  entries: ProjectTimeline.values
+                  entries: ExpectedTimeline.values
                       .map(
                         (timeline) => DropdownMenuEntry(
                           value: timeline,

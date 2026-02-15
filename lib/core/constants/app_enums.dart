@@ -1,6 +1,10 @@
 // lib/core/constants/app_enums.dart
 // Contains all enum definitions without extensions
 
+// ============================================================================
+// PROFILE & ONBOARDING ENUMS
+// ============================================================================
+
 /// User role selected during registration
 enum UserRole { 
   juniorDeveloper, 
@@ -75,13 +79,6 @@ enum DebuggingConfidence {
   high 
 }
 
-/// Integration providers
-enum IntegrationProvider { 
-  github, 
-  linear, 
-  jira 
-}
-
 /// Primary learning / career goal
 enum PrimaryGoal {
   fundamentals,
@@ -99,107 +96,6 @@ enum SkillCategory {
   backendDevelopment,
   dsa,
   other,
-}
-
-/// Project category for project creation
-enum ProjectCategory {
-  business,
-  education,
-  social,
-  finance,
-  healthcare,
-  productivity,
-  other,
-}
-
-/// User type for requirements gathering
-enum UserType {
-  generalUsers('General Users'),
-  businesses('Businesses'),
-  admins('Admins'),
-  developers('Developers');
-
-  final String displayName;
-  const UserType(this.displayName);
-}
-
-/// User scale for project size
-enum UserScale {
-  small('Small (0-1k users)'),
-  medium('Medium (1k-100k users)'),
-  large('Large (100k+ users)');
-
-  final String displayName;
-  const UserScale(this.displayName);
-}
-
-/// Feature priority
-enum FeaturePriority {
-  mustHave('Must-have'),
-  shouldHave('Should-have'),
-  niceToHave('Nice-to-have');
-
-  final String displayName;
-  const FeaturePriority(this.displayName);
-}
-
-/// Project timeline
-enum ProjectTimeline {
-  oneToThreeMonths('1-2 weeks'),
-  threeToSixMonths('1 months'),
-  sixToTwelveMonths('3 months'),
-  moreThanTwelveMonths('6+ months');
-
-  final String displayName;
-  const ProjectTimeline(this.displayName);
-}
-
-/// Budget range
-enum BudgetRange {
-  learning('No budget (learning project)'),
-  low('Low'),
-  medium('Medium'),
-  high('High');
-
-  final String displayName;
-  const BudgetRange(this.displayName);
-}
-
-/// Expected traffic
-enum ExpectedTraffic {
-  low('Low'),
-  medium('Medium'),
-  high('High');
-
-  final String displayName;
-  const ExpectedTraffic(this.displayName);
-}
-
-/// AI Chat conversation phase
-enum ChatPhase {
-  idle,
-  ideaDiscussion,
-  requirementGathering,
-  architectureDesign,
-  taskPlanning,
-  execution,
-}
-
-/// Chat message type
-enum MessageType {
-  user,
-  ai,
-  system,
-}
-
-/// Chat message intent/purpose
-enum MessageIntent {
-  conversational,
-  requirementGathering,
-  architectureSuggestion,
-  taskBreakdown,
-  codeReview,
-  traceability,
 }
 
 /// Frontend technologies
@@ -273,4 +169,152 @@ enum ProblemSolvingArea {
   oop,
   dsaBasics,
   advancedDsa,
+}
+
+// ============================================================================
+// PROJECT CREATION ENUMS
+// ============================================================================
+
+/// Project category for project creation
+enum ProjectCategory {
+  business,
+  education,
+  social,
+  finance,
+  healthcare,
+  productivity,
+  other,
+}
+
+/// User type for requirements gathering
+enum UserType {
+  generalUsers('General Users'),
+  businesses('Businesses'),
+  admins('Admins'),
+  developers('Developers');
+
+  final String displayName;
+  const UserType(this.displayName);
+}
+
+/// User scale for project size
+enum UserScale {
+  small('Small (0-1k users)'),
+  medium('Medium (1k-100k users)'),
+  large('Large (100k+ users)');
+
+  final String displayName;
+  const UserScale(this.displayName);
+}
+
+/// Feature priority
+enum FeaturePriority {
+  mustHave('Must-have'),
+  shouldHave('Should-have'),
+  niceToHave('Nice-to-have');
+
+  final String displayName;
+  const FeaturePriority(this.displayName);
+}
+
+/// Platform type for project
+enum PlatformType {
+  webApplication,
+  mobileApplication,
+  backendApiOnly,
+  desktopApplication,
+}
+
+/// Supported device types
+enum SupportedDevice {
+  desktop,
+  tablet,
+  mobile,
+}
+
+/// Expected project timeline
+enum ExpectedTimeline {
+  oneToThreeMonths,
+  threeToSixMonths,
+  sixToTwelveMonths,
+  moreThanTwelveMonths,
+}
+
+/// Budget range
+enum BudgetRange {
+  learning('No budget (learning project)'),
+  low('Low'),
+  medium('Medium'),
+  high('High');
+
+  final String displayName;
+  const BudgetRange(this.displayName);
+}
+
+/// Expected traffic
+enum ExpectedTraffic {
+  low('Low'),
+  medium('Medium'),
+  high('High');
+
+  final String displayName;
+  const ExpectedTraffic(this.displayName);
+}
+
+/// Data sensitivity level
+enum DataSensitivity {
+  personalUserData,
+  financialData,
+  healthData,
+  noSensitiveData,
+}
+
+/// Compliance requirements
+enum ComplianceNeeds {
+  gdpr,
+  hipaa,
+  pciDss,
+  none,
+}
+
+// ============================================================================
+// INTEGRATION & EXTERNAL SERVICES
+// ============================================================================
+
+/// Integration providers
+enum IntegrationProvider { 
+  github, 
+  linear, 
+  jira 
+}
+
+// ============================================================================
+// AI CHAT ENUMS
+// ============================================================================
+
+/// AI Chat conversation phase
+enum ChatPhase {
+  idle,
+  ideaDiscussion,
+  requirementGathering,
+  architectureDesign,
+  taskPlanning,
+  execution,
+}
+
+/// Chat message type
+enum MessageType {
+  user,
+  ai,
+  system,
+}
+
+/// Chat message intent/purpose
+enum MessageIntent {
+  conversational,
+  requirementGathering,
+  architectureSuggestion,
+  taskBreakdown,
+  codeReview,
+  traceability,
 }

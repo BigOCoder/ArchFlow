@@ -1,6 +1,7 @@
 // lib/screens/dashboard/dashboard_screen.dart
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/project/presentation/screens/project_onboarding_flow_screen.dart';
+import 'package:archflow/shared/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,6 +16,7 @@ class DashboardScreen extends StatelessWidget {
       backgroundColor: isDark
           ? AppColors.darkBackground
           : AppColors.lightBackground,
+      drawer: const AppDrawer(userName: 'Samay', userEmail: 'Samay@xyz.com'),
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -26,11 +28,17 @@ class DashboardScreen extends StatelessWidget {
                 : AppColors.lightTextPrimary,
           ),
         ),
-        leading: Padding(
-          padding: const EdgeInsets.all(8),
-          child: CircleAvatar(
-            backgroundColor: AppColors.brandGreen.withOpacity(0.15),
-            child: const Icon(Icons.person, color: AppColors.brandGreen),
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: const EdgeInsets.all(8),
+            child: InkWell(
+              onTap: () => Scaffold.of(context).openDrawer(),
+              borderRadius: BorderRadius.circular(50),
+              child: CircleAvatar(
+                backgroundColor: AppColors.brandGreen.withOpacity(0.15),
+                child: const Icon(Icons.person, color: AppColors.brandGreen),
+              ),
+            ),
           ),
         ),
         actions: const [

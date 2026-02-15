@@ -3,6 +3,7 @@ import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
+import 'package:archflow/features/project/presentation/screens/project_review_screen.dart';
 import 'package:archflow/shared/widgets/app_dropdown.dart';
 import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
@@ -71,11 +72,11 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
     final isEditing = ref.read(projectOnboardingProvider).isEditMode;
 
     if (isEditing) {
-      // Return to Review Screen
+      // ✅ FIXED: Return to Review Screen using Navigator
       ref.read(projectOnboardingProvider.notifier).clearEditMode();
-      ref
-          .read(projectOnboardingProvider.notifier)
-          .goToStep(5); // Assuming review is step 5
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const ProjectReviewScreen()),
+      );
     } else {
       // Normal flow: go to next step
       ref.read(projectOnboardingProvider.notifier).nextStep();

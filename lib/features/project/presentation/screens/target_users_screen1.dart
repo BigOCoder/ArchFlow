@@ -4,6 +4,7 @@ import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_state.dart';
+import 'package:archflow/features/project/presentation/screens/project_review_screen.dart';
 import 'package:archflow/shared/widgets/app_dropdown.dart';
 import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
@@ -173,11 +174,14 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
         );
 
     final isEditing = ref.read(projectOnboardingProvider).isEditMode;
-
     if (isEditing) {
+      // ✅ FIXED: Return to Review Screen using Navigator
       ref.read(projectOnboardingProvider.notifier).clearEditMode();
-      ref.read(projectOnboardingProvider.notifier).goToStep(6);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const ProjectReviewScreen()),
+      );
     } else {
+      // Normal flow
       ref.read(projectOnboardingProvider.notifier).nextStep();
     }
   }
@@ -221,7 +225,7 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
               children: [
                 const StepHeader(
                   currentStep: 2,
-                  totalSteps: 6,
+                  totalSteps: 5,
                   title: 'Target Users',
                 ),
                 const SizedBox(height: 24),

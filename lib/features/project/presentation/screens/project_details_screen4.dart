@@ -4,6 +4,7 @@ import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/chat/presentation/screens/ai_chat_screen.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
+import 'package:archflow/features/project/presentation/screens/project_review_screen.dart';
 import 'package:archflow/shared/widgets/app_dropdown.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';
@@ -148,22 +149,23 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
           expectedTraffic:
               _selectedTraffic?.displayName, // Get displayName from enum
           dataSensitivity: _selectedDataSensitivity
-              .toList(), // Convert Set to List
-          complianceNeeds: _selectedCompliance.toList(), // Convert Set to List
+              .toList(), 
+          complianceNeeds: _selectedCompliance.toList(), 
         );
 
-    // ✅ Check if editing from review
     final isEditing = ref.read(projectOnboardingProvider).isEditMode;
 
     if (isEditing) {
-      // Return to Review Screen
+      // ✅ Return to Review Screen
       ref.read(projectOnboardingProvider.notifier).clearEditMode();
-      ref.read(projectOnboardingProvider.notifier).goToStep(5);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const ProjectReviewScreen()),
+      );
     } else {
-      // Normal flow: Navigate to AI Chat Screen
+      // ✅ Normal flow: Navigate to Review Screen
       Navigator.of(
         context,
-      ).push(MaterialPageRoute(builder: (_) => const AIChatScreen()));
+      ).push(MaterialPageRoute(builder: (_) => const ProjectReviewScreen()));
     }
   }
 
@@ -221,7 +223,7 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
               children: [
                 const StepHeader(
                   currentStep: 5,
-                  totalSteps: 6,
+                  totalSteps: 5,
                   title: 'Project Details',
                 ),
                 const SizedBox(height: 24),

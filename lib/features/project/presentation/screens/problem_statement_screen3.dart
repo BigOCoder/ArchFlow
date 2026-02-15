@@ -2,6 +2,7 @@
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
+import 'package:archflow/features/project/presentation/screens/project_review_screen.dart';
 import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';
@@ -57,9 +58,13 @@ class _ProblemStatementScreenState
     final isEditing = ref.read(projectOnboardingProvider).isEditMode;
 
     if (isEditing) {
+      // ✅ FIXED: Return to Review Screen using Navigator
       ref.read(projectOnboardingProvider.notifier).clearEditMode();
-      ref.read(projectOnboardingProvider.notifier).goToStep(6);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const ProjectReviewScreen()),
+      );
     } else {
+      // Normal flow
       ref.read(projectOnboardingProvider.notifier).nextStep();
     }
   }
@@ -105,7 +110,7 @@ class _ProblemStatementScreenState
                 children: [
                   const StepHeader(
                     currentStep: 4,
-                    totalSteps: 6,
+                    totalSteps: 5,
                     title: 'Problem Statement',
                   ),
                   const SizedBox(height: 24),

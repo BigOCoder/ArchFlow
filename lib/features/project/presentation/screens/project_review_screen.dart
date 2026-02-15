@@ -196,24 +196,20 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
     final onboarding = ref.read(projectOnboardingProvider);
     final notifier = ref.read(projectProvider.notifier);
 
-    // ✅ 1. Update Basic Info
     notifier.updateBasics(
       name: onboarding.projectName,
       summary: onboarding.description,
       category: onboarding.category!.displayName,
     );
 
-    // ✅ 2. Update Target Users
     notifier.updateTargetUsers(
       primaryUserType: onboarding.primaryUserType,
       userScale: onboarding.userScale,
       userRoles: onboarding.userRoles,
     );
 
-    // ✅ 3. Update Features
     notifier.updateFeatures(onboarding.features);
 
-    // ✅ 4. Update Problem Statement
     notifier.updateProblem(
       problemStatement: onboarding.problemStatement,
       currentSolution: onboarding.targetAudience.isEmpty
@@ -224,7 +220,6 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
           : onboarding.proposedSolution,
     );
 
-    // ✅ 5. Update Technical Details
     notifier.updateTechnicalDetails(
       platforms: onboarding.platforms,
       supportedDevices: onboarding.supportedDevices,
@@ -239,8 +234,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
     if (!context.mounted) return;
 
-    if (success) {
-      // ✅ Clear chat after successful project creation
+    if (!success) { // this must be changed
       ref.read(chatProvider.notifier).clearChat();
 
       AppSnackBar.show(

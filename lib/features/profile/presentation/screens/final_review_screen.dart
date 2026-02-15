@@ -469,7 +469,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
               _infoCard(
                 isDark: isDark,
                 icon: Icons.flag_outlined,
-                title: 'Primary Goal & Timeline',
+                title: 'Primar`y Goal & Timeline',
                 onEdit: () {
                   ref
                       .read(onboardingProvider.notifier)

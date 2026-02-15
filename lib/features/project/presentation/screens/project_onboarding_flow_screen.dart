@@ -18,11 +18,11 @@ class ProjectOnboardingFlow extends ConsumerWidget {
       body: IndexedStack(
         index: step,
         children: const [
-          ProjectBasicsScreen(),       // Step 0
-          TargetUsersScreen(),          // Step 1
-          InitialFeaturesScreen(),      // Step 2
-          ProblemStatementScreen(),     // Step 3
-          ProjectDetailsScreen(),       // Step 4
+          ProjectBasicsScreen(), // Step 0
+          TargetUsersScreen(), // Step 1
+          InitialFeaturesScreen(), // Step 2
+          ProblemStatementScreen(), // Step 3
+          ProjectDetailsScreen(), // Step 4
         ],
       ),
     );

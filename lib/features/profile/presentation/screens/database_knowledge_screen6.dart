@@ -2,7 +2,7 @@ import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/auth/presentation/providers/onboarding_notifier.dart';
-import 'package:archflow/features/profile/presentation/screens/final_review_screen8.dart';
+import 'package:archflow/features/profile/presentation/screens/final_review_screen.dart';
 import 'package:archflow/shared/widgets/app_dropdown.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';

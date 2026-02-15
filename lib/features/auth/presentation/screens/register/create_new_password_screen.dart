@@ -235,7 +235,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                 ],
               ),
             ),
-
+            
             const Spacer(),
 
             SizedBox(
@@ -260,7 +260,6 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                       ),
               ),
             ),
-
             const SizedBox(height: 24),
           ],
         ),

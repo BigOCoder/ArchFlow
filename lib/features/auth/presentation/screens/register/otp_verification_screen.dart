@@ -98,8 +98,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       f.unfocus();
     }
 
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const OnboardingFlow()),
+      (_) => false,
     );
   }
 

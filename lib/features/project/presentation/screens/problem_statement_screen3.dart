@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class ProblemStatementScreen extends ConsumerStatefulWidget {
   const ProblemStatementScreen({super.key});
 
@@ -36,7 +35,7 @@ class _ProblemStatementScreenState
     }
   }
 
-  void _next() {
+  void _handleNext() {
     if (!_formKey.currentState!.validate()) {
       AppSnackBar.show(
         context,
@@ -55,7 +54,14 @@ class _ProblemStatementScreenState
           proposedSolution: _whyInsufficient.isEmpty ? '' : _whyInsufficient,
         );
 
-    ref.read(projectOnboardingProvider.notifier).nextStep();
+    final isEditing = ref.read(projectOnboardingProvider).isEditMode;
+
+    if (isEditing) {
+      ref.read(projectOnboardingProvider.notifier).clearEditMode();
+      ref.read(projectOnboardingProvider.notifier).goToStep(6);
+    } else {
+      ref.read(projectOnboardingProvider.notifier).nextStep();
+    }
   }
 
   @override
@@ -181,7 +187,7 @@ class _ProblemStatementScreenState
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
-                      onPressed: _next,
+                      onPressed: _handleNext,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.brandGreen,
                         foregroundColor: Colors.white,

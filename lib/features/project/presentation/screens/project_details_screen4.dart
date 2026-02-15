@@ -1,6 +1,7 @@
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
+import 'package:archflow/features/chat/presentation/screens/ai_chat_screen.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
 import 'package:archflow/shared/widgets/app_dropdown.dart';
@@ -134,20 +135,36 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
 
     // Compliance is OPTIONAL - no validation needed
 
-    // Save to provider
+    // ✅ Save to provider with CORRECT variable names
     ref
         .read(projectOnboardingProvider.notifier)
         .updateProjectDetails(
-          platforms: _selectedPlatforms.toList(),
-          supportedDevices: _selectedDevices.toList(),
-          expectedTimeline: _selectedTimeline?.displayName,
-          budgetRange: _selectedBudget?.displayName,
-          expectedTraffic: _selectedTraffic?.displayName,
-          dataSensitivity: _selectedDataSensitivity.toList(),
-          complianceNeeds: _selectedCompliance.toList(),
+          platforms: _selectedPlatforms.toList(), // Convert Set to List
+          supportedDevices: _selectedDevices.toList(), // Convert Set to List
+          expectedTimeline:
+              _selectedTimeline?.displayName, // Get displayName from enum
+          budgetRange:
+              _selectedBudget?.displayName, // Get displayName from enum
+          expectedTraffic:
+              _selectedTraffic?.displayName, // Get displayName from enum
+          dataSensitivity: _selectedDataSensitivity
+              .toList(), // Convert Set to List
+          complianceNeeds: _selectedCompliance.toList(), // Convert Set to List
         );
 
-    ref.read(projectOnboardingProvider.notifier).nextStep();
+    // ✅ Check if editing from review
+    final isEditing = ref.read(projectOnboardingProvider).isEditMode;
+
+    if (isEditing) {
+      // Return to Review Screen
+      ref.read(projectOnboardingProvider.notifier).clearEditMode();
+      ref.read(projectOnboardingProvider.notifier).goToStep(5);
+    } else {
+      // Normal flow: Navigate to AI Chat Screen
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const AIChatScreen()));
+    }
   }
 
   @override

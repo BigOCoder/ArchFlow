@@ -172,7 +172,14 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
           userRoles: _userRoles,
         );
 
-    ref.read(projectOnboardingProvider.notifier).nextStep();
+    final isEditing = ref.read(projectOnboardingProvider).isEditMode;
+
+    if (isEditing) {
+      ref.read(projectOnboardingProvider.notifier).clearEditMode();
+      ref.read(projectOnboardingProvider.notifier).goToStep(6);
+    } else {
+      ref.read(projectOnboardingProvider.notifier).nextStep();
+    }
   }
 
   @override

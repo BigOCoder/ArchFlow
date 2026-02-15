@@ -30,9 +30,9 @@ class _TechStackKnowledgeScreenState
     final onboarding = ref.read(onboardingProvider);
     final techStack = onboarding.techStack;
 
-    // Restore saved values if they exist
+    // ✅ Restore saved values if they exist
     if (techStack.isNotEmpty && _frontend == null) {
-      _frontend = techStack.length > 0 ? techStack[0] : null;
+      _frontend = techStack.isNotEmpty ? techStack[0] : null;
       _backend = techStack.length > 1 ? techStack[1] : null;
       _apiKnowledge = techStack.length > 2 ? techStack[2] : null;
     }
@@ -58,7 +58,7 @@ class _TechStackKnowledgeScreenState
 
     // Save tech stack as a list
     final techStack = [_frontend!, _backend!, _apiKnowledge!];
-    
+
     final notifier = ref.read(onboardingProvider.notifier);
     notifier.setTechStack(techStack);
 

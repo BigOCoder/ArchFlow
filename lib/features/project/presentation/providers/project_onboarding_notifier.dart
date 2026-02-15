@@ -1,8 +1,7 @@
-// lib/provider/project_onboarding_notifier.dart
+// lib/features/project/presentation/providers/project_onboarding_notifier.dart
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
   @override
@@ -17,7 +16,6 @@ class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
     } else {
       // Normal flow - increment but don't exceed step 6
       if (state.step < 6) {
-        // ✅ FIXED: Added upper bound check
         state = state.copyWith(step: state.step + 1);
       }
     }
@@ -29,14 +27,19 @@ class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
     }
   }
 
-  void goToStep(int step) {
-    // ✅ ADDED: Validate step range
+  // ✅ FIXED: Add editMode parameter
+  void goToStep(int step, {bool editMode = false}) {
     if (step >= 0 && step <= 6) {
       state = state.copyWith(
         step: step,
-        isEditMode: true, // Enable edit mode
+        isEditMode: editMode, // ✅ Use parameter instead of hardcoding
       );
     }
+  }
+
+  // ✅ NEW: Add clearEditMode method
+  void clearEditMode() {
+    state = state.copyWith(isEditMode: false);
   }
 
   /// Update Project Basics
@@ -111,5 +114,5 @@ class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
 // Provider
 final projectOnboardingProvider =
     NotifierProvider<ProjectOnboardingNotifier, ProjectOnboardingState>(
-      ProjectOnboardingNotifier.new,
-    );
+  ProjectOnboardingNotifier.new,
+);

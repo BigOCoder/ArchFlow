@@ -68,7 +68,18 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
           description: _projectSummary,
         );
 
-    ref.read(projectOnboardingProvider.notifier).nextStep();
+    final isEditing = ref.read(projectOnboardingProvider).isEditMode;
+
+    if (isEditing) {
+      // Return to Review Screen
+      ref.read(projectOnboardingProvider.notifier).clearEditMode();
+      ref
+          .read(projectOnboardingProvider.notifier)
+          .goToStep(5); // Assuming review is step 5
+    } else {
+      // Normal flow: go to next step
+      ref.read(projectOnboardingProvider.notifier).nextStep();
+    }
   }
 
   @override

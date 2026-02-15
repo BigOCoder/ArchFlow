@@ -1,9 +1,9 @@
-
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/auth/presentation/providers/auth_provider.dart';
 import 'package:archflow/features/auth/presentation/screens/login/login_screen.dart';
+import 'package:archflow/features/auth/presentation/screens/register/check_email_screen.dart';
 import 'package:archflow/features/auth/presentation/widgets/terms_checkbox.dart';
 import 'package:archflow/features/legal/terms_and_conditions_screen.dart';
 import 'package:archflow/features/profile/presentation/screens/onboarding_flow.dart';
@@ -12,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-
 
 // ✅ CHANGED: ConsumerStatefulWidget
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -130,9 +128,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         message: 'Account created successfully!',
       );
 
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const OnboardingFlow()),
-        (_) => false,
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => CheckEmailScreen(email: _email),
+        ),
       );
     } else {
       final error = ref.read(authProvider).error;

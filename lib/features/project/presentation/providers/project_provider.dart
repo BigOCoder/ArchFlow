@@ -1,21 +1,17 @@
 // lib/provider/project_provider.dart
 import 'package:archflow/core/constants/app_enums.dart';
+import 'package:archflow/features/project/data/dtos/project_dto.dart';
 import 'package:archflow/features/project/data/models/project_model.dart';
 import 'package:archflow/features/project/data/repositories/project_repository_impl.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 class ProjectState {
   final ProjectModel? currentProject;
   final bool isLoading;
   final String? error;
 
-  const ProjectState({
-    this.currentProject,
-    this.isLoading = false,
-    this.error,
-  });
+  const ProjectState({this.currentProject, this.isLoading = false, this.error});
 
   ProjectState copyWith({
     ProjectModel? currentProject,
@@ -37,25 +33,25 @@ class ProjectNotifier extends Notifier<ProjectState> {
   ProjectRepository get _repository => ref.read(projectRepositoryProvider);
 
   // ✅ EXPANDED: Store ALL onboarding data temporarily
-  
+
   // Basic Info
   String? _tempName;
   String? _tempSummary;
   String? _tempCategory;
-  
+
   // Target Users
   UserType? _tempPrimaryUserType;
   UserScale? _tempUserScale;
   List<UserRoleEntry>? _tempUserRoles;
-  
+
   // Features
   List<FeatureEntry>? _tempFeatures;
-  
+
   // Problem Statement
   String? _tempProblem;
   String? _tempCurrentSolution;
   String? _tempWhyInsufficient;
-  
+
   // Technical Details
   List<String>? _tempPlatforms;
   List<String>? _tempSupportedDevices;
@@ -123,12 +119,15 @@ class ProjectNotifier extends Notifier<ProjectState> {
   }
 
   // ✅ Method 6: Create Project with ALL data
+  // ✅ Method 6: Create Project with ALL data - CORRECTED
   Future<bool> createProject() async {
     // Validate required fields
     if (_tempName == null ||
         _tempSummary == null ||
         _tempCategory == null ||
-        _tempProblem == null) {
+        _tempProblem == null ||
+        _tempPrimaryUserType == null ||
+        _tempUserScale == null) {
       state = state.copyWith(error: 'Missing required fields');
       return false;
     }
@@ -136,43 +135,119 @@ class ProjectNotifier extends Notifier<ProjectState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      // ✅ Create project with ALL collected data
-      final project = ProjectModel(
-        // Basic Info
-        name: _tempName!,
-        summary: _tempSummary!,
-        category: _tempCategory!,
-        
-        // Problem Statement
-        problemStatement: _tempProblem!,
-        currentSolution: _tempCurrentSolution,
-        whyInsufficient: _tempWhyInsufficient,
-        
-        // Target Users (optional - adapt based on your ProjectModel)
-        primaryUserType: _tempPrimaryUserType?.displayName,
-        userScale: _tempUserScale?.displayName,
-        userRoles: _tempUserRoles?.map((r) => r.name).toList(),
-        
-        // Features (optional)
-        features: _tempFeatures?.map((f) => {
-          'name': f.name,
-          'description': f.description,
-          'priority': f.priority?.displayName ?? 'Not Set',
-        }).toList(),
-        
-        // Technical Details (optional)
-        platforms: _tempPlatforms,
-        supportedDevices: _tempSupportedDevices,
-        expectedTimeline: _tempExpectedTimeline,
-        budgetRange: _tempBudgetRange,
-        expectedTraffic: _tempExpectedTraffic,
-        dataSensitivity: _tempDataSensitivity,
-        complianceNeeds: _tempComplianceNeeds,
-        
-        createdAt: DateTime.now(),
+      // ✅ Convert UserRoleEntry → ProjectRoleDto
+      List<ProjectRoleDto>? roleDtos;
+      if (_tempUserRoles != null && _tempUserRoles!.isNotEmpty) {
+        roleDtos = _tempUserRoles!
+            .where((r) => r.name.isNotEmpty) // Only include non-empty roles
+            .map(
+              (r) => ProjectRoleDto(
+                roleName: r.name,
+                roleDescription: r.description.isEmpty ? null : r.description,
+              ),
+            )
+            .toList();
+      }
+
+      // ✅ Convert FeatureEntry → ProjectFeatureDto
+      List<ProjectFeatureDto>? featureDtos;
+      if (_tempFeatures != null && _tempFeatures!.isNotEmpty) {
+        featureDtos = _tempFeatures!
+            .where((f) => f.name.isNotEmpty && f.priority != null)
+            .map(
+              (f) => ProjectFeatureDto(
+                featureName: f.name,
+                featureDescription: f.description.isEmpty
+                    ? null
+                    : f.description,
+                featurePriority: f.priority!,
+              ),
+            )
+            .toList();
+      }
+
+      // ✅ Parse enums from strings - NON-NULLABLE
+      final ProjectCategory category = ProjectCategory.values.firstWhere(
+        (e) => e.name == _tempCategory,
+        orElse: () => ProjectCategory.other,
       );
 
-      final created = await _repository.createProject(project);
+      final PlatformType platform =
+          _tempPlatforms != null && _tempPlatforms!.isNotEmpty
+          ? PlatformType.values.firstWhere(
+              (e) => e.name == _tempPlatforms!.first,
+              orElse: () => PlatformType.webApplication,
+            )
+          : PlatformType.webApplication;
+
+      final SupportedDevice device =
+          _tempSupportedDevices != null && _tempSupportedDevices!.isNotEmpty
+          ? SupportedDevice.values.firstWhere(
+              (e) => e.name == _tempSupportedDevices!.first,
+              orElse: () => SupportedDevice.desktop,
+            )
+          : SupportedDevice.desktop;
+
+      final ExpectedTimeline timeline = _tempExpectedTimeline != null
+          ? ExpectedTimeline.values.firstWhere(
+              (e) => e.name == _tempExpectedTimeline,
+              orElse: () => ExpectedTimeline.threeToSixMonths,
+            )
+          : ExpectedTimeline.threeToSixMonths;
+
+      final BudgetRange budget = _tempBudgetRange != null
+          ? BudgetRange.values.firstWhere(
+              (e) => e.name == _tempBudgetRange,
+              orElse: () => BudgetRange.learning,
+            )
+          : BudgetRange.learning;
+
+      final ExpectedTraffic traffic = _tempExpectedTraffic != null
+          ? ExpectedTraffic.values.firstWhere(
+              (e) => e.name == _tempExpectedTraffic,
+              orElse: () => ExpectedTraffic.low,
+            )
+          : ExpectedTraffic.low;
+
+      final DataSensitivity dataSensitivity =
+          _tempDataSensitivity != null && _tempDataSensitivity!.isNotEmpty
+          ? DataSensitivity.values.firstWhere(
+              (e) => e.name == _tempDataSensitivity!.first,
+              orElse: () => DataSensitivity.noSensitiveData,
+            )
+          : DataSensitivity.noSensitiveData;
+
+      ComplianceNeeds? compliance;
+      if (_tempComplianceNeeds != null && _tempComplianceNeeds!.isNotEmpty) {
+        compliance = ComplianceNeeds.values.firstWhere(
+          (e) => e.name == _tempComplianceNeeds!.first,
+          orElse: () => ComplianceNeeds.none,
+        );
+      }
+
+      // ✅ Create DTO (NOT MODEL!)
+      final dto = ProjectCreateDto(
+        projectName: _tempName!,
+        projectCategory: category,
+        projectSummary: _tempSummary!,
+        userType: _tempPrimaryUserType!,
+        userScale: _tempUserScale!,
+        roles: roleDtos,
+        features: featureDtos,
+        problemStatement: _tempProblem!,
+        currentSolution: _tempCurrentSolution,
+        existingSolutionInsufficient: _tempWhyInsufficient,
+        platform: platform,
+        supportedDevice: device,
+        expectedTimeline: timeline,
+        budget: budget,
+        expectedTraffic: traffic,
+        dataSensitivity: dataSensitivity,
+        complianceNeeds: compliance,
+      );
+
+      // ✅ Pass DTO to repository (NOT MODEL!)
+      final created = await _repository.createProject(dto);
       state = state.copyWith(currentProject: created, isLoading: false);
 
       // Clear temp data
@@ -190,20 +265,20 @@ class ProjectNotifier extends Notifier<ProjectState> {
     _tempName = null;
     _tempSummary = null;
     _tempCategory = null;
-    
+
     // Target Users
     _tempPrimaryUserType = null;
     _tempUserScale = null;
     _tempUserRoles = null;
-    
+
     // Features
     _tempFeatures = null;
-    
+
     // Problem Statement
     _tempProblem = null;
     _tempCurrentSolution = null;
     _tempWhyInsufficient = null;
-    
+
     // Technical Details
     _tempPlatforms = null;
     _tempSupportedDevices = null;

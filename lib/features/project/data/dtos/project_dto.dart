@@ -6,21 +6,18 @@ class ProjectRoleDto {
   final String roleName;
   final String? roleDescription;
 
-  ProjectRoleDto({
-    required this.roleName,
-    this.roleDescription,
-  });
+  ProjectRoleDto({required this.roleName, this.roleDescription});
 
   Map<String, dynamic> toJson() => {
-        'roleName': roleName,
-        if (roleDescription != null && roleDescription!.isNotEmpty)
-          'roleDescription': roleDescription,
-      };
+    'roleName': roleName,
+    if (roleDescription != null && roleDescription!.isNotEmpty)
+      'roleDescription': roleDescription,
+  };
 
   factory ProjectRoleDto.fromJson(Map<String, dynamic> json) => ProjectRoleDto(
-        roleName: json['roleName'] as String,
-        roleDescription: json['roleDescription'] as String?,
-      );
+    roleName: json['roleName'] as String,
+    roleDescription: json['roleDescription'] as String?,
+  );
 }
 
 /// Feature DTO for project creation
@@ -36,11 +33,11 @@ class ProjectFeatureDto {
   });
 
   Map<String, dynamic> toJson() => {
-        'featureName': featureName,
-        if (featureDescription != null && featureDescription!.isNotEmpty)
-          'featureDescription': featureDescription,
-        'featurePriority': featurePriority.backendValue,
-      };
+    'featureName': featureName,
+    if (featureDescription != null && featureDescription!.isNotEmpty)
+      'featureDescription': featureDescription,
+    'featurePriority': featurePriority.backendValue,
+  };
 
   factory ProjectFeatureDto.fromJson(Map<String, dynamic> json) =>
       ProjectFeatureDto(
@@ -93,26 +90,26 @@ class ProjectCreateDto {
   });
 
   Map<String, dynamic> toJson() => {
-        'projectName': projectName,
-        'projectCategory': projectCategory.backendValue,
-        'projectSummary': projectSummary,
-        'userType': userType.displayName.toUpperCase().replaceAll(' ', '_'),
-        'userScale': userScale.displayName.split(' ')[0].toUpperCase(),
-        'roles': roles?.map((r) => r.toJson()).toList(),
-        'features': features?.map((f) => f.toJson()).toList(),
-        'problemStatement': problemStatement,
-        if (currentSolution != null && currentSolution!.isNotEmpty)
-          'currentSolution': currentSolution,
-        if (existingSolutionInsufficient != null &&
-            existingSolutionInsufficient!.isNotEmpty)
-          'existingSolutionInsufficient': existingSolutionInsufficient,
-        'platform': platform.backendValue,
-        'supportedDevice': supportedDevice.backendValue,
-        'expectedTimeline': expectedTimeline.backendValue,
-        'budget': budget.backendValue,
-        'expectedTraffic': expectedTraffic.backendValue,
-        'dataSensitivity': dataSensitivity.backendValue,
-        if (complianceNeeds != null)
-          'complianceNeeds': complianceNeeds!.backendValue,
-      };
+    'projectName': projectName,
+    'projectCategory': projectCategory.backendValue,
+    'projectSummary': projectSummary,
+    'userType': userType.backendValue, 
+    'userScale': userScale.backendValue,
+    'roles': roles?.map((r) => r.toJson()).toList(),
+    'features': features?.map((f) => f.toJson()).toList(),
+    'problemStatement': problemStatement,
+    if (currentSolution != null && currentSolution!.isNotEmpty)
+      'currentSolution': currentSolution,
+    if (existingSolutionInsufficient != null &&
+        existingSolutionInsufficient!.isNotEmpty)
+      'existingSolutionInsufficient': existingSolutionInsufficient,
+    'platform': platform.backendValue,
+    'supportedDevice': supportedDevice.backendValue,
+    'expectedTimeline': expectedTimeline.backendValue,
+    'budget': budget.backendValue,
+    'expectedTraffic': expectedTraffic.backendValue,
+    'dataSensitivity': dataSensitivity.backendValue,
+    if (complianceNeeds != null)
+      'complianceNeeds': complianceNeeds!.backendValue,
+  };
 }

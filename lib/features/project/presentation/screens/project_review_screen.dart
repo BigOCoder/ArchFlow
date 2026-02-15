@@ -234,7 +234,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
     if (!context.mounted) return;
 
-    if (!success) { // this must be changed
+    if (!success) {
+      // this must be changed
       ref.read(chatProvider.notifier).clearChat();
 
       AppSnackBar.show(

@@ -1,5 +1,6 @@
 // lib/data/repositories/project_repository.dart
 import 'package:archflow/core/network/api_client.dart';
+import 'package:archflow/features/project/data/dtos/project_dto.dart';
 import 'package:archflow/features/project/data/models/project_model.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,10 +10,10 @@ class ProjectRepository {
 
   ProjectRepository(this._apiClient);
 
-  Future<ProjectModel> createProject(ProjectModel project) async {
+  Future<ProjectModel> createProject(ProjectCreateDto projectDto) async {
     final response = await _apiClient.dio.post(
-      '/projects',  // ✅ Will become: http://10.239.158.72:8080/projects
-      data: project.toJson(),
+      '/projects',
+      data: projectDto.toJson(),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -36,6 +37,6 @@ class ProjectRepository {
 final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
 
 final projectRepositoryProvider = Provider<ProjectRepository>((ref) {
-  final apiClient = ref.read(apiClientProvider);  // ✅ Get from provider
+  final apiClient = ref.read(apiClientProvider); // ✅ Get from provider
   return ProjectRepository(apiClient);
 });

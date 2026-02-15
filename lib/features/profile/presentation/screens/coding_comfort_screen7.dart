@@ -30,6 +30,13 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
     'Advanced DSA': false,
   };
 
+  final Map<String, String> _problemAreasMap = {
+    'Loops & conditions': 'LOOPS_AND_CONDITIONS', // UI → Backend
+    'Functions': 'FUNCTIONS',
+    'OOP': 'OOP',
+    'DSA basics': 'DSA_BASICS',
+    'Advanced DSA': 'ADVANCED_DSA',
+  };
   bool _areasRestored = false;
 
   /// ---------------- STATE RESTORE ----------------
@@ -44,8 +51,16 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
 
     if (!_areasRestored && onboarding.problemSolvingAreas.isNotEmpty) {
       for (final area in onboarding.problemSolvingAreas) {
-        if (_problemAreas.containsKey(area)) {
-          _problemAreas[area] = true;
+        // Convert LOOPS_AND_CONDITIONS -> Loops & conditions
+        final displayName = _problemAreasMap.entries
+            .firstWhere(
+              (e) => e.value == area,
+              orElse: () => MapEntry(area, area),
+            )
+            .key;
+
+        if (_problemAreas.containsKey(displayName)) {
+          _problemAreas[displayName] = true;
         }
       }
       _areasRestored = true;
@@ -75,7 +90,7 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
 
     final selectedAreas = _problemAreas.entries
         .where((e) => e.value)
-        .map((e) => e.key)
+        .map((e) => _problemAreasMap[e.key]!)
         .toList();
 
     final notifier = ref.read(onboardingProvider.notifier);
@@ -83,7 +98,6 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
     notifier.setDebuggingConfidence(_debugging!);
     notifier.setProblemSolvingAreas(selectedAreas);
 
-    // ✅ CHECK if editing from Final Review
     final isEditing = ref.read(onboardingProvider).isEditingFromReview;
 
     if (isEditing) {

@@ -26,6 +26,18 @@ class _DatabaseKnowledgeScreenState
 
   final Map<String, bool> _databases = {};
 
+  final Map<String, String> _databasesMap = {
+    'MySQL': 'MYSQL',
+    'PostgreSQL': 'POSTGRESQL',
+    'Oracle': 'ORACLE',
+    'SQL Server': 'SQL_SERVER',
+    'MongoDB': 'MONGODB',
+    'Firebase': 'FIREBASE',
+    'Redis': 'REDIS',
+    'DynamoDB': 'DYNAMODB',
+    'Other': 'OTHER',
+  };
+
   static const List<String> _relational = [
     'MySQL',
     'PostgreSQL',
@@ -56,8 +68,13 @@ class _DatabaseKnowledgeScreenState
       _loadDatabases(_databaseType!);
 
       for (final db in onboarding.databasesUsed) {
-        if (_databases.containsKey(db)) {
-          _databases[db] = true;
+        // Convert MONGODB -> MongoDB
+        final displayName = _databasesMap.entries
+            .firstWhere((e) => e.value == db, orElse: () => MapEntry(db, db))
+            .key;
+
+        if (_databases.containsKey(displayName)) {
+          _databases[displayName] = true;
         }
       }
     }
@@ -108,7 +125,7 @@ class _DatabaseKnowledgeScreenState
 
     final selected = _databases.entries
         .where((e) => e.value)
-        .map((e) => e.key)
+        .map((e) => _databasesMap[e.key]!)
         .toList();
 
     final notifier = ref.read(onboardingProvider.notifier);

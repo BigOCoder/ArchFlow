@@ -78,7 +78,7 @@ class _ArchitectureExposureScreenState
 
     notifier.setArchitectureLevel(_architectureLevel!);
     notifier.setFamiliarConcepts(selectedConcepts);
-        final isEditing = ref.read(onboardingProvider).isEditingFromReview;
+    final isEditing = ref.read(onboardingProvider).isEditingFromReview;
 
     if (isEditing) {
       // Return to Final Review
@@ -186,14 +186,13 @@ class _ArchitectureExposureScreenState
                       onChanged: (v) {
                         setState(() {
                           _architectureLevel = v;
-                          // Clear all concepts if user selects "No Experience Yet"
                           if (v == ArchitectureLevel.none) {
                             _familiarConcepts.updateAll((_, _) => false);
                           }
                         });
                       },
                       title: Text(
-                        level.displayName, // ✅ Beautiful display
+                        level.displayName,
                         style: GoogleFonts.lato(
                           color: isDark
                               ? AppColors.darkTextPrimary

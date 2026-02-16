@@ -3,6 +3,7 @@ import 'package:archflow/features/project/presentation/screens/initial_features_
 import 'package:archflow/features/project/presentation/screens/problem_statement_screen3.dart';
 import 'package:archflow/features/project/presentation/screens/project_basics_screen0.dart';
 import 'package:archflow/features/project/presentation/screens/project_details_screen4.dart';
+import 'package:archflow/features/project/presentation/screens/project_review_screen.dart'; // ✅ ADD
 import 'package:archflow/features/project/presentation/screens/target_users_screen1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,11 +19,12 @@ class ProjectOnboardingFlow extends ConsumerWidget {
       body: IndexedStack(
         index: step,
         children: const [
-          ProjectBasicsScreen(), // Step 0
-          TargetUsersScreen(), // Step 1
-          InitialFeaturesScreen(), // Step 2
-          ProblemStatementScreen(), // Step 3
-          ProjectDetailsScreen(), // Step 4
+          ProjectBasicsScreen(),      // Step 0
+          TargetUsersScreen(),         // Step 1
+          InitialFeaturesScreen(),     // Step 2
+          ProblemStatementScreen(),    // Step 3
+          ProjectDetailsScreen(),      // Step 4
+          ProjectReviewScreen(),       // Step 5 
         ],
       ),
     );

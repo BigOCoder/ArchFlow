@@ -4,6 +4,7 @@ import 'package:archflow/features/dashboard/presentation/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
 
       darkTheme: AppTheme.darkTheme,
+      navigatorKey: navigatorKey,
 
       home: const HomeScreen(),
     );

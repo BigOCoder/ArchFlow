@@ -1,11 +1,11 @@
 import 'package:archflow/core/constants/app_enum_extensions.dart';
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
+import 'package:archflow/features/architecture/screens/architecture_selection_screen.dart';
 import 'package:archflow/features/chat/presentation/providers/chat_provider.dart';
 import 'package:archflow/features/chat/presentation/widgets/chat_input_field.dart';
 import 'package:archflow/features/chat/presentation/widgets/chat_message_bubble.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
-import 'package:archflow/features/project/presentation/screens/project_review_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -120,9 +120,10 @@ Can you help me refine the requirements and suggest an architecture?
   }
 
   void _proceedToReview() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => ProjectReviewScreen()));
+    ref.read(chatProvider.notifier).clearChat();
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => ArchitectureSelectionScreen()),
+    );
   }
 
   @override
@@ -134,175 +135,187 @@ Can you help me refine the requirements and suggest an architecture?
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
-      appBar: AppBar(
-        elevation: 0,
+    return WillPopScope(
+      onWillPop: () async {
+        ref.read(chatProvider.notifier).clearChat();
+        return true;
+      },
+      child: Scaffold(
         backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: isDark ? AppColors.darkIcon : AppColors.lightIcon,
-          ),
-          onPressed: () {
-            ref.read(projectOnboardingProvider.notifier).previousStep();
-          },
-        ),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.brandGreen.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                Icons.psychology_outlined,
-                color: AppColors.brandGreen,
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'AI Assistant',
-              style: TextStyle(
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          // Transparent Done button
-          TextButton.icon(
-            onPressed: messages.length >= 2 ? _proceedToReview : null,
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: isDark
+              ? AppColors.darkSurface
+              : AppColors.lightSurface,
+          leading: IconButton(
             icon: Icon(
-              Icons.done,
-              color: messages.length >= 2
-                  ? AppColors.brandGreen
-                  : (isDark ? AppColors.darkIcon : AppColors.lightIcon)
-                        .withOpacity(0.3),
+              Icons.arrow_back_ios_new,
+              color: isDark ? AppColors.darkIcon : AppColors.lightIcon,
             ),
-            label: Text(
-              'Done',
-              style: TextStyle(
+            onPressed: () {
+              ref.read(chatProvider.notifier).clearChat();
+              ref.read(projectOnboardingProvider.notifier).previousStep();
+            },
+          ),
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.brandGreen.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.psychology_outlined,
+                  color: AppColors.brandGreen,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'AI Assistant',
+                style: TextStyle(
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            // Transparent Done button
+            TextButton.icon(
+              onPressed: messages.length >= 2 ? _proceedToReview : null,
+              icon: Icon(
+                Icons.done,
                 color: messages.length >= 2
                     ? AppColors.brandGreen
-                    : (isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary)
-                          .withOpacity(0.5),
-                fontWeight: FontWeight.w600,
+                    : (isDark ? AppColors.darkIcon : AppColors.lightIcon)
+                          .withOpacity(0.3),
               ),
-            ),
-            style: TextButton.styleFrom(
-              backgroundColor: messages.length >= 2
-                  ? AppColors.brandGreen.withOpacity(0.1)
-                  : Colors.transparent,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+              label: Text(
+                'Done',
+                style: TextStyle(
+                  color: messages.length >= 2
+                      ? AppColors.brandGreen
+                      : (isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary)
+                            .withOpacity(0.5),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Column(
-          children: [
-            // Phase indicator
-            _buildPhaseIndicator(currentPhase, isDark),
-
-            // Messages list
-            Expanded(
-              child: messages.isEmpty
-                  ? _buildEmptyState(isDark, isLoading)
-                  : Stack(
-                      children: [
-                        ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) {
-                            final message = messages[index];
-                            return TweenAnimationBuilder<double>(
-                              duration: Duration(
-                                milliseconds: 300 + (index * 50),
-                              ),
-                              tween: Tween(begin: 0.0, end: 1.0),
-                              builder: (context, value, child) {
-                                return Opacity(
-                                  opacity: value,
-                                  child: Transform.translate(
-                                    offset: Offset(0, 20 * (1 - value)),
-                                    child: child,
-                                  ),
-                                );
-                              },
-                              child: ChatMessageBubble(message: message),
-                            );
-                          },
-                        ),
-
-                        // Scroll to bottom button
-                        if (messages.length > 3)
-                          Positioned(
-                            bottom: 16,
-                            right: 16,
-                            child: FloatingActionButton.small(
-                              onPressed: _scrollToBottom,
-                              backgroundColor: AppColors.brandGreen,
-                              child: const Icon(
-                                Icons.arrow_downward,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-            ),
-
-            // Error display
-            if (error != null) _buildErrorBanner(error, isDark),
-
-            // Loading indicator
-            if (isLoading) _buildLoadingIndicator(isDark),
-
-            // Suggestion chips
-            if (messages.isNotEmpty && !isLoading)
-              _buildSuggestionChips(currentPhase, isDark),
-
-            // Input field
-            Container(
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
-              ),
-              child: SafeArea(
-                child: ChatInputField(
-                  controller: _textController,
-                  onSend: _sendMessage,
-                  enabled: !isLoading,
+              style: TextButton.styleFrom(
+                backgroundColor: messages.length >= 2
+                    ? AppColors.brandGreen.withOpacity(0.1)
+                    : Colors.transparent,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
             ),
+            const SizedBox(width: 8),
           ],
+        ),
+        body: FadeTransition(
+          opacity: _fadeAnimation,
+          child: Column(
+            children: [
+              // Phase indicator
+              _buildPhaseIndicator(currentPhase, isDark),
+
+              // Messages list
+              Expanded(
+                child: messages.isEmpty
+                    ? _buildEmptyState(isDark, isLoading)
+                    : Stack(
+                        children: [
+                          ListView.builder(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+                            itemCount: messages.length,
+                            itemBuilder: (context, index) {
+                              final message = messages[index];
+                              return TweenAnimationBuilder<double>(
+                                duration: Duration(
+                                  milliseconds: 300 + (index * 50),
+                                ),
+                                tween: Tween(begin: 0.0, end: 1.0),
+                                builder: (context, value, child) {
+                                  return Opacity(
+                                    opacity: value,
+                                    child: Transform.translate(
+                                      offset: Offset(0, 20 * (1 - value)),
+                                      child: child,
+                                    ),
+                                  );
+                                },
+                                child: ChatMessageBubble(message: message),
+                              );
+                            },
+                          ),
+
+                          // Scroll to bottom button
+                          if (messages.length > 3)
+                            Positioned(
+                              bottom: 16,
+                              right: 16,
+                              child: FloatingActionButton.small(
+                                onPressed: _scrollToBottom,
+                                backgroundColor: AppColors.brandGreen,
+                                child: const Icon(
+                                  Icons.arrow_downward,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+              ),
+
+              // Error display
+              if (error != null) _buildErrorBanner(error, isDark),
+
+              // Loading indicator
+              if (isLoading) _buildLoadingIndicator(isDark),
+
+              // Suggestion chips
+              if (messages.isNotEmpty && !isLoading)
+                _buildSuggestionChips(currentPhase, isDark),
+
+              // Input field
+              Container(
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: SafeArea(
+                  child: ChatInputField(
+                    controller: _textController,
+                    onSend: _sendMessage,
+                    enabled: !isLoading,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

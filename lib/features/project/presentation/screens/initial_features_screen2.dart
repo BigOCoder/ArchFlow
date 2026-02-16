@@ -133,21 +133,19 @@ class _InitialFeaturesScreenState extends ConsumerState<InitialFeaturesScreen> {
     );
   }
 
-  void _handleNext() {
-    ref.read(projectOnboardingProvider.notifier).updateFeatures(_features);
-    final isEditing = ref.read(projectOnboardingProvider).isEditMode;
+void _handleNext() {
+  ref.read(projectOnboardingProvider.notifier).updateFeatures(_features);
 
-    if (isEditing) {
-      // ✅ FIXED: Return to Review Screen using Navigator
-      ref.read(projectOnboardingProvider.notifier).clearEditMode();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const ProjectReviewScreen()),
-      );
-    } else {
-      // Normal flow
-      ref.read(projectOnboardingProvider.notifier).nextStep();
-    }
+  final isEditing = ref.read(projectOnboardingProvider).isEditMode;
+
+  if (isEditing) {
+    ref.read(projectOnboardingProvider.notifier).clearEditMode();
+    ref.read(projectOnboardingProvider.notifier).goToStep(5);
+  } else {
+    ref.read(projectOnboardingProvider.notifier).nextStep();
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

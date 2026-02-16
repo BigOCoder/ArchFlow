@@ -1,12 +1,12 @@
-// lib/provider/chatProvider/chat_provider.dart
+// lib/features/chat/presentation/providers/chat_provider.dart
 
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/network/api_client.dart';
 import 'package:archflow/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:archflow/features/chat/data/models/chat_message_model.dart';
 import 'package:archflow/features/chat/presentation/providers/chat_state.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:uuid/uuid.dart';
 
 class ChatNotifier extends Notifier<ChatState> {
@@ -16,12 +16,19 @@ class ChatNotifier extends Notifier<ChatState> {
   @override
   ChatState build() {
     _apiClient = ref.watch(apiClientProvider);
-
     return const ChatState();
   }
 
   /// Send user message and get AI response
   Future<void> sendMessage(String content) async {
+    // Validate project ID
+    if (state.projectId == null) {
+      state = state.copyWith(
+        error: 'Please select a project first',
+      );
+      return;
+    }
+
     // Add user message immediately
     final userMessage = ChatMessage(
       id: _uuid.v4(),
@@ -38,41 +45,74 @@ class ChatNotifier extends Notifier<ChatState> {
     );
 
     try {
-      // Call AI API with context
+      // Parse project ID
+      final projectId = int.tryParse(state.projectId!);
+      if (projectId == null) {
+        throw Exception('Invalid project ID');
+      }
+
+      // Call backend API
       final response = await _apiClient.dio.post(
         '/ai/chat',
         data: {
+          'projectId': projectId,
           'message': content,
-          'context': state.context,
-          'phase': state.currentPhase.name,
-          'projectId': state.projectId,
-          'messageHistory': state.messages
-              .map(
-                (m) => {
-                  'role': m.type == MessageType.user ? 'user' : 'assistant',
-                  'content': m.content,
-                },
-              )
-              .toList(),
         },
+        options: Options(
+          responseType: ResponseType.plain,
+          validateStatus: (status) => status != null && status < 500,
+        ),
       );
 
-      // Parse AI response
-      final aiMessage = ChatMessage.fromJson(response.data);
+      // Handle different response codes
+      if (response.statusCode == 200) {
+        final aiResponseText = response.data as String;
+
+        // Create AI message with plain text content
+        final aiMessage = ChatMessage(
+          id: _uuid.v4(),
+          content: aiResponseText,
+          type: MessageType.ai,
+          intent: _inferIntentFromResponse(aiResponseText),
+          timestamp: DateTime.now(),
+        );
+
+        state = state.copyWith(
+          messages: [...state.messages, aiMessage],
+          isLoading: false,
+          currentPhase: _updatePhase(aiMessage),
+        );
+      } else if (response.statusCode == 401) {
+        throw Exception('Authentication failed. Please login again.');
+      } else if (response.statusCode == 403) {
+        throw Exception('Access denied to this project.');
+      } else {
+        throw Exception('Server error: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      String errorMessage;
+
+      if (e.type == DioExceptionType.connectionTimeout) {
+        errorMessage = 'Connection timeout. Please check your internet.';
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        errorMessage = 'Response timeout. Please try again.';
+      } else if (e.response?.statusCode == 401) {
+        errorMessage = 'Authentication failed. Please login again.';
+      } else if (e.response?.statusCode == 403) {
+        errorMessage = 'Access denied to this project.';
+      } else if (e.response?.statusCode == 404) {
+        errorMessage = 'API endpoint not found.';
+      } else {
+        errorMessage = 'Network error: ${e.message}';
+      }
 
       state = state.copyWith(
-        messages: [...state.messages, aiMessage],
         isLoading: false,
-        currentPhase: _updatePhase(aiMessage),
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: 'Failed to get AI response: ${e.toString()}',
+        error: errorMessage,
       );
 
       // Add error message to chat
-      final errorMessage = ChatMessage(
+      final errorChatMessage = ChatMessage(
         id: _uuid.v4(),
         content: 'Sorry, I encountered an error. Please try again.',
         type: MessageType.system,
@@ -80,10 +120,31 @@ class ChatNotifier extends Notifier<ChatState> {
         timestamp: DateTime.now(),
       );
 
-      state = state.copyWith(messages: [...state.messages, errorMessage]);
+      state = state.copyWith(
+        messages: [...state.messages, errorChatMessage],
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Unexpected error: ${e.toString()}',
+      );
+
+      // Add error message to chat
+      final errorChatMessage = ChatMessage(
+        id: _uuid.v4(),
+        content: 'Sorry, something went wrong. Please try again.',
+        type: MessageType.system,
+        intent: MessageIntent.conversational,
+        timestamp: DateTime.now(),
+      );
+
+      state = state.copyWith(
+        messages: [...state.messages, errorChatMessage],
+      );
     }
   }
 
+  /// Trigger a specific action (if your backend supports it)
   Future<void> triggerAction(
     String action, {
     Map<String, dynamic>? payload,
@@ -124,6 +185,13 @@ class ChatNotifier extends Notifier<ChatState> {
     );
   }
 
+  /// Set project ID before starting chat
+  void setProjectId(int projectId) {
+    state = state.copyWith(
+      projectId: projectId.toString(),
+    );
+  }
+
   /// Set user context (skill level, preferences, etc.)
   void setUserContext(Map<String, dynamic> userProfile) {
     state = state.copyWith(
@@ -139,8 +207,8 @@ class ChatNotifier extends Notifier<ChatState> {
   /// Clear conversation and start fresh
   void clearChat() {
     state = ChatState(
-      context: state.context, // Preserve context
-      projectId: state.projectId, // Preserve project link
+      context: state.context,
+      projectId: state.projectId,
     );
   }
 
@@ -156,13 +224,11 @@ class ChatNotifier extends Notifier<ChatState> {
     final messages = state.messages;
     if (messages.length < 2) return;
 
-    // Find last user message
     final lastUserMessage = messages.lastWhere(
       (m) => m.type == MessageType.user,
       orElse: () => messages.last,
     );
 
-    // Remove messages after last user message
     final messagesUntilLastUser = messages.sublist(
       0,
       messages.indexOf(lastUserMessage) + 1,
@@ -170,7 +236,6 @@ class ChatNotifier extends Notifier<ChatState> {
 
     state = state.copyWith(messages: messagesUntilLastUser);
 
-    // Resend the message
     await sendMessage(lastUserMessage.content);
   }
 
@@ -198,35 +263,30 @@ class ChatNotifier extends Notifier<ChatState> {
   MessageIntent _determineIntent(String content) {
     final lowerContent = content.toLowerCase();
 
-    // Architecture-related
     if (lowerContent.contains('architecture') ||
         lowerContent.contains('design') ||
         lowerContent.contains('structure')) {
       return MessageIntent.architectureSuggestion;
     }
 
-    // Task-related
     if (lowerContent.contains('task') ||
         lowerContent.contains('breakdown') ||
         lowerContent.contains('feature')) {
       return MessageIntent.taskBreakdown;
     }
 
-    // Requirement-related
     if (lowerContent.contains('requirement') ||
         lowerContent.contains('need') ||
         lowerContent.contains('should')) {
       return MessageIntent.requirementGathering;
     }
 
-    // Code review
     if (lowerContent.contains('review') ||
         lowerContent.contains('code') ||
         lowerContent.contains('improve')) {
       return MessageIntent.codeReview;
     }
 
-    // Traceability
     if (lowerContent.contains('why') ||
         lowerContent.contains('reason') ||
         lowerContent.contains('trace')) {
@@ -236,9 +296,25 @@ class ChatNotifier extends Notifier<ChatState> {
     return MessageIntent.conversational;
   }
 
+  /// Infer intent from AI response content
+  MessageIntent _inferIntentFromResponse(String response) {
+    final lower = response.toLowerCase();
+
+    if (lower.contains('architecture') || lower.contains('design pattern')) {
+      return MessageIntent.architectureSuggestion;
+    } else if (lower.contains('task') || lower.contains('step')) {
+      return MessageIntent.taskBreakdown;
+    } else if (lower.contains('requirement')) {
+      return MessageIntent.requirementGathering;
+    } else if (lower.contains('code') || lower.contains('implementation')) {
+      return MessageIntent.codeReview;
+    }
+
+    return MessageIntent.conversational;
+  }
+
   /// Update conversation phase based on AI response
   ChatPhase _updatePhase(ChatMessage aiMessage) {
-    // AI can signal phase transitions via metadata
     if (aiMessage.metadata != null &&
         aiMessage.metadata!.containsKey('nextPhase')) {
       final nextPhase = aiMessage.metadata!['nextPhase'] as String;
@@ -248,7 +324,6 @@ class ChatNotifier extends Notifier<ChatState> {
       );
     }
 
-    // Or infer from intent
     switch (aiMessage.intent) {
       case MessageIntent.requirementGathering:
         return ChatPhase.requirementGathering;
@@ -259,7 +334,6 @@ class ChatNotifier extends Notifier<ChatState> {
       case MessageIntent.codeReview:
         return ChatPhase.execution;
       default:
-        // Stay in current phase or default to ideaDiscussion
         return state.currentPhase == ChatPhase.idle
             ? ChatPhase.ideaDiscussion
             : state.currentPhase;

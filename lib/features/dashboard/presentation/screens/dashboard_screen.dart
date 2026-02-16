@@ -16,7 +16,7 @@ class DashboardScreen extends StatelessWidget {
       backgroundColor: isDark
           ? AppColors.darkBackground
           : AppColors.lightBackground,
-      drawer: const AppDrawer(userName: 'Samay', userEmail: 'Samay@xyz.com'),
+      drawer: const AppDrawer(),
       appBar: AppBar(
         centerTitle: true,
         title: Text(

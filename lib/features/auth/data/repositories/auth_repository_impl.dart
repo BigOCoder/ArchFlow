@@ -7,8 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:archflow/core/network/api_client.dart';
 
 
-// ✅ ADD THIS FLAG AT THE TOP
-const bool useMockTest = false; // Set to false when backend is ready
+const bool useMockTest = true; // Set to false when backend is ready
 
 class AuthRepository {
   final ApiClient _apiClient;

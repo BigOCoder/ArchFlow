@@ -53,233 +53,253 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     }).toList();
   }
 
+  // ✅ Handle back navigation (both AppBar and Android back button)
+  void _handleBack() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bool hasMembers = _teamMembers.isNotEmpty;
 
-    return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header Section
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Breadcrumb
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.dashboard_outlined,
-                        size: 16,
-                        color: AppColors.brandGreen,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'WORKSPACE DASHBOARD',
-                        style: GoogleFonts.lato(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.8,
-                          color: AppColors.brandGreen,
-                        ),
-                      ),
-                    ],
-                  ),
+    return WillPopScope(
+      // ✅ Handle Android back button
+      onWillPop: () async {
+        _handleBack();
+        return false; // Prevent default behavior
+      },
+      child: Scaffold(
+        backgroundColor: isDark
+            ? AppColors.darkBackground
+            : AppColors.lightBackground,
+        // ✅ ADD APPBAR
+        appBar: AppBar(
+          backgroundColor: isDark
+              ? AppColors.darkBackground
+              : AppColors.lightBackground,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+            ),
+            onPressed: _handleBack,
+          ),
+          title: Text(
+            'Workspace Dashboard',
+            style: GoogleFonts.lato(
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header Section
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ✅ BREADCRUMB REMOVED (Now in AppBar)
 
-                  const SizedBox(height: 16),
-
-                  // Title & Stats
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'TEAM MEMBERS',
-                              style: GoogleFonts.lato(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w900,
-                                color: isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.lightTextPrimary,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Manage roles, permissions, and collaborative access for your projects.',
-                              style: GoogleFonts.lato(
-                                fontSize: 14,
-                                height: 1.5,
-                                fontStyle: FontStyle.italic,
-                                color: isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (hasMembers)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.brandGreen.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.brandGreen.withOpacity(0.3),
-                              width: 1,
-                            ),
-                          ),
+                    // Title & Stats
+                    Row(
+                      children: [
+                        Expanded(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.people,
-                                    color: AppColors.brandGreen,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'TOTAL MEMBERS',
-                                    style: GoogleFonts.lato(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
-                                      color: isDark
-                                          ? AppColors.darkTextSecondary
-                                          : AppColors.lightTextSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
                               Text(
-                                _teamMembers.length.toString().padLeft(2, '0'),
+                                'TEAM MEMBERS',
                                 style: GoogleFonts.lato(
-                                  fontSize: 36,
+                                  fontSize: 32,
                                   fontWeight: FontWeight.w900,
-                                  color: AppColors.brandGreen,
-                                  height: 1,
+                                  color: isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.lightTextPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Manage roles, permissions, and collaborative access for your projects.',
+                                style: GoogleFonts.lato(
+                                  fontSize: 14,
+                                  height: 1.5,
+                                  fontStyle: FontStyle.italic,
+                                  color: isDark
+                                      ? AppColors.darkTextSecondary
+                                      : AppColors.lightTextSecondary,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Search Bar & Add Button
-            if (hasMembers)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  children: [
-                    // Search Field
-                    Expanded(
-                      child: Container(
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkSurface
-                              : AppColors.lightSurface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isDark
-                                ? AppColors.darkDivider
-                                : AppColors.lightDivider,
-                            width: 1,
-                          ),
-                        ),
-                        child: TextField(
-                          controller: _searchController,
-                          onChanged: (value) {
-                            setState(() => _searchQuery = value);
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'Enter GitHub username or email',
-                            hintStyle: GoogleFonts.lato(
-                              color: isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary,
+                        if (hasMembers)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
                             ),
-                            prefixIcon: Icon(
-                              Icons.code,
-                              color: isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary,
+                            decoration: BoxDecoration(
+                              color: AppColors.brandGreen.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppColors.brandGreen.withOpacity(0.3),
+                                width: 1,
+                              ),
                             ),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.people,
+                                      color: AppColors.brandGreen,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'TOTAL MEMBERS',
+                                      style: GoogleFonts.lato(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                        color: isDark
+                                            ? AppColors.darkTextSecondary
+                                            : AppColors.lightTextSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  _teamMembers.length.toString().padLeft(
+                                    2,
+                                    '0',
+                                  ),
+                                  style: GoogleFonts.lato(
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.w900,
+                                    color: AppColors.brandGreen,
+                                    height: 1,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          style: GoogleFonts.lato(
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    // Add Member Button
-                    SizedBox(
-                      height: 52,
-                      child: ElevatedButton.icon(
-                        onPressed: () => _showAddMemberDialog(context),
-                        icon: const Icon(Icons.person_add, size: 20),
-                        label: Text(
-                          'Add Member',
-                          style: GoogleFonts.lato(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.brandGreen,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
               ),
 
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            // Content Area
-            Expanded(
-              child: hasMembers
-                  ? _buildMembersList(isDark)
-                  : _buildEmptyState(context, isDark),
-            ),
-          ],
+              // Search Bar & Add Button
+              if (hasMembers)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
+                    children: [
+                      // Search Field
+                      Expanded(
+                        child: Container(
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? AppColors.darkSurface
+                                : AppColors.lightSurface,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isDark
+                                  ? AppColors.darkDivider
+                                  : AppColors.lightDivider,
+                              width: 1,
+                            ),
+                          ),
+                          child: TextField(
+                            controller: _searchController,
+                            onChanged: (value) {
+                              setState(() => _searchQuery = value);
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Enter GitHub username or email',
+                              hintStyle: GoogleFonts.lato(
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.code,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                            ),
+                            style: GoogleFonts.lato(
+                              color: isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 12),
+
+                      // Add Member Button
+                      SizedBox(
+                        height: 52,
+                        child: ElevatedButton.icon(
+                          onPressed: () => _showAddMemberDialog(context),
+                          icon: const Icon(Icons.person_add, size: 20),
+                          label: Text(
+                            'Add Member',
+                            style: GoogleFonts.lato(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.brandGreen,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              const SizedBox(height: 24),
+
+              // Content Area
+              Expanded(
+                child: hasMembers
+                    ? _buildMembersList(isDark)
+                    : _buildEmptyState(context, isDark),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -290,7 +310,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       itemCount: _filteredMembers.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 16),
+      separatorBuilder: (_, __) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         return TeamMemberCard(
           member: _filteredMembers[index],
@@ -392,16 +412,30 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
   }
 
   void _showAddMemberDialog(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: isDark
+            ? AppColors.darkSurface
+            : AppColors.lightSurface,
         title: Text(
           'Add Team Member',
-          style: GoogleFonts.lato(fontWeight: FontWeight.bold),
+          style: GoogleFonts.lato(
+            fontWeight: FontWeight.bold,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
         ),
         content: Text(
           'This feature will integrate with GitHub OAuth to add members.',
-          style: GoogleFonts.lato(),
+          style: GoogleFonts.lato(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
         ),
         actions: [
           TextButton(
@@ -417,21 +451,42 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
   }
 
   void _handleRemoveMember(TeamMember member) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: isDark
+            ? AppColors.darkSurface
+            : AppColors.lightSurface,
         title: Text(
           'Remove ${member.name}?',
-          style: GoogleFonts.lato(fontWeight: FontWeight.bold),
+          style: GoogleFonts.lato(
+            fontWeight: FontWeight.bold,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
         ),
         content: Text(
           'This member will lose access to all team projects.',
-          style: GoogleFonts.lato(),
+          style: GoogleFonts.lato(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: GoogleFonts.lato()),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.lato(
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {

@@ -68,7 +68,6 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
   }
 
   void _handleNext() {
-    // Validate at least one platform is selected
     if (_selectedPlatforms.isEmpty) {
       AppSnackBar.show(
         context,
@@ -79,7 +78,6 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
       return;
     }
 
-    // Validate at least one device is selected
     if (_selectedDevices.isEmpty) {
       AppSnackBar.show(
         context,
@@ -90,7 +88,6 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
       return;
     }
 
-    // Validate timeline is selected
     if (_selectedTimeline == null) {
       AppSnackBar.show(
         context,
@@ -101,7 +98,6 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
       return;
     }
 
-    // Validate budget range is selected
     if (_selectedBudget == null) {
       AppSnackBar.show(
         context,
@@ -112,7 +108,6 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
       return;
     }
 
-    // Validate expected traffic is selected
     if (_selectedTraffic == null) {
       AppSnackBar.show(
         context,
@@ -123,7 +118,6 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
       return;
     }
 
-    // Validate at least one data sensitivity option is selected
     if (_selectedDataSensitivity.isEmpty) {
       AppSnackBar.show(
         context,
@@ -134,38 +128,25 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
       return;
     }
 
-    // Compliance is OPTIONAL - no validation needed
-
-    // ✅ Save to provider with CORRECT variable names
     ref
         .read(projectOnboardingProvider.notifier)
         .updateProjectDetails(
-          platforms: _selectedPlatforms.toList(), // Convert Set to List
-          supportedDevices: _selectedDevices.toList(), // Convert Set to List
-          expectedTimeline:
-              _selectedTimeline?.displayName, // Get displayName from enum
-          budgetRange:
-              _selectedBudget?.displayName, // Get displayName from enum
-          expectedTraffic:
-              _selectedTraffic?.displayName, // Get displayName from enum
-          dataSensitivity: _selectedDataSensitivity
-              .toList(), 
-          complianceNeeds: _selectedCompliance.toList(), 
+          platforms: _selectedPlatforms.toList(),
+          supportedDevices: _selectedDevices.toList(),
+          expectedTimeline: _selectedTimeline?.displayName,
+          budgetRange: _selectedBudget?.displayName,
+          expectedTraffic: _selectedTraffic?.displayName,
+          dataSensitivity: _selectedDataSensitivity.toList(),
+          complianceNeeds: _selectedCompliance.toList(),
         );
 
     final isEditing = ref.read(projectOnboardingProvider).isEditMode;
 
     if (isEditing) {
-      // ✅ Return to Review Screen
       ref.read(projectOnboardingProvider.notifier).clearEditMode();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const ProjectReviewScreen()),
-      );
+      ref.read(projectOnboardingProvider.notifier).goToStep(5);
     } else {
-      // ✅ Normal flow: Navigate to Review Screen
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => const ProjectReviewScreen()));
+      ref.read(projectOnboardingProvider.notifier).nextStep();
     }
   }
 

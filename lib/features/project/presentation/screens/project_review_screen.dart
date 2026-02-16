@@ -2,11 +2,11 @@ import 'package:archflow/core/constants/app_enum_extensions.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/chat/presentation/providers/chat_provider.dart';
+import 'package:archflow/features/chat/presentation/screens/ai_chat_screen.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:archflow/features/integrations/presentation/screens/github_integration_screen.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
 import 'package:archflow/features/project/presentation/providers/project_provider.dart';
-import 'package:archflow/features/project/presentation/screens/project_onboarding_flow_screen.dart'; // ✅ ADD THIS IMPORT
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +22,59 @@ class ProjectReviewScreen extends ConsumerStatefulWidget {
 
 class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
   bool _confirmed = false;
+
+  // ✅ IMPORTANT: Show cancel confirmation dialog
+  Future<bool> _showCancelDialog(BuildContext context, bool isDark) async {
+    final shouldCancel = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: isDark
+            ? AppColors.darkSurface
+            : AppColors.lightSurface,
+        title: Text(
+          'Cancel Project Creation?',
+          style: GoogleFonts.lato(
+            fontWeight: FontWeight.bold,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to cancel? All your progress will be lost.',
+          style: GoogleFonts.lato(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(
+              'Continue Editing',
+              style: GoogleFonts.lato(
+                color: AppColors.brandGreen,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(
+              'Cancel Project',
+              style: GoogleFonts.lato(
+                color: AppColors.error,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return shouldCancel ?? false;
+  }
 
   Widget _pill(String text, {IconData? icon}) {
     return Container(
@@ -234,8 +287,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
     if (!context.mounted) return;
 
-    if (!success) {
-      // this must be changed
+    if (success) {
+      // ✅ IMPORTANT: Clear chat on success
       ref.read(chatProvider.notifier).clearChat();
 
       AppSnackBar.show(
@@ -249,7 +302,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
       ref.read(projectOnboardingProvider.notifier).reset();
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const GitHubIntegrationScreen()),
+        MaterialPageRoute(builder: (_) => const AIChatScreen()),
         (_) => false,
       );
     } else {
@@ -271,85 +324,57 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        // Show confirmation dialog when user tries to go back
-        final shouldDiscard = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            backgroundColor: isDark
-                ? AppColors.darkSurface
-                : AppColors.lightSurface,
-            title: Text(
-              'Discard Project?',
-              style: GoogleFonts.lato(
-                fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-              ),
-            ),
-            content: Text(
-              'Are you sure you want to go back? Your project creation progress will be lost.',
-              style: GoogleFonts.lato(
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(
-                  'Cancel',
-                  style: GoogleFonts.lato(
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(
-                  'Discard',
-                  style: GoogleFonts.lato(
-                    color: AppColors.error,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
+        // ✅ IMPORTANT: Show cancel confirmation dialog when going back
+        final shouldCancel = await _showCancelDialog(context, isDark);
 
-        // Check if widget is still mounted before using context
-        if (shouldDiscard == true && mounted) {
-          // ✅ Clear AI chat messages using existing provider
+        if (shouldCancel && mounted) {
+          // Clear chat and reset state
           ref.read(chatProvider.notifier).clearChat();
-
-          // Reset onboarding state
           ref.read(projectOnboardingProvider.notifier).reset();
 
-          if (mounted) {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => const DashboardScreen()),
-              (_) => false,
-            );
-          }
+          // Navigate to dashboard
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            (_) => false,
+          );
         }
 
-        return false;
+        return false; // Prevent default pop
       },
       child: Scaffold(
         backgroundColor: isDark
             ? AppColors.darkBackground
             : AppColors.lightBackground,
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           backgroundColor: isDark
               ? AppColors.darkBackground
               : AppColors.lightBackground,
           elevation: 0,
+          // ✅ IMPORTANT: Add back button with cancel dialog
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+            ),
+            onPressed: () async {
+              // Show cancel confirmation dialog
+              final shouldCancel = await _showCancelDialog(context, isDark);
+
+              if (shouldCancel && mounted) {
+                // Clear chat and reset state
+                ref.read(chatProvider.notifier).clearChat();
+                ref.read(projectOnboardingProvider.notifier).reset();
+
+                // Navigate to dashboard
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                  (_) => false,
+                );
+              }
+            },
+          ),
           title: Text(
             'Review & Create',
             style: GoogleFonts.lato(
@@ -466,12 +491,9 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                 icon: Icons.edit_document,
                 title: 'Project Basics',
                 onEdit: () {
+                  // ✅ IMPORTANT: Set edit mode before navigating
+                  ref.read(projectOnboardingProvider.notifier).setEditMode();
                   ref.read(projectOnboardingProvider.notifier).goToStep(0);
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => const ProjectOnboardingFlow(),
-                    ),
-                  );
                 },
                 children: [
                   _infoRow(
@@ -498,12 +520,9 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                 icon: Icons.people_outline,
                 title: 'Target Users',
                 onEdit: () {
+                  // ✅ IMPORTANT: Set edit mode before navigating
+                  ref.read(projectOnboardingProvider.notifier).setEditMode();
                   ref.read(projectOnboardingProvider.notifier).goToStep(1);
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => const ProjectOnboardingFlow(),
-                    ),
-                  );
                 },
                 children: [
                   _infoRow(
@@ -532,12 +551,9 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                   icon: Icons.star_outline,
                   title: 'Initial Features',
                   onEdit: () {
+                    // ✅ IMPORTANT: Set edit mode before navigating
+                    ref.read(projectOnboardingProvider.notifier).setEditMode();
                     ref.read(projectOnboardingProvider.notifier).goToStep(2);
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (_) => const ProjectOnboardingFlow(),
-                      ),
-                    );
                   },
                   children: s.features.take(5).map((feature) {
                     return _infoRow(
@@ -554,12 +570,9 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                 icon: Icons.lightbulb_outline,
                 title: 'Problem Statement',
                 onEdit: () {
+                  // ✅ IMPORTANT: Set edit mode before navigating
+                  ref.read(projectOnboardingProvider.notifier).setEditMode();
                   ref.read(projectOnboardingProvider.notifier).goToStep(3);
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => const ProjectOnboardingFlow(),
-                    ),
-                  );
                 },
                 children: [
                   _infoRow(
@@ -590,12 +603,9 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                 icon: Icons.settings_outlined,
                 title: 'Technical Details',
                 onEdit: () {
+                  // ✅ IMPORTANT: Set edit mode before navigating
+                  ref.read(projectOnboardingProvider.notifier).setEditMode();
                   ref.read(projectOnboardingProvider.notifier).goToStep(4);
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => const ProjectOnboardingFlow(),
-                    ),
-                  );
                 },
                 children: [
                   if (s.platforms.isNotEmpty)

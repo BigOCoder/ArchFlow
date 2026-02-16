@@ -10,14 +10,8 @@ class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
   }
 
   void nextStep() {
-    if (state.isEditMode) {
-      // Exit edit mode and go to review screen (step 6)
-      state = state.copyWith(step: 6, isEditMode: false);
-    } else {
-      // Normal flow - increment but don't exceed step 6
-      if (state.step < 6) {
-        state = state.copyWith(step: state.step + 1);
-      }
+    if (state.step < 5) {
+      state = state.copyWith(step: state.step + 1);
     }
   }
 
@@ -30,10 +24,7 @@ class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
   // ✅ FIXED: Add editMode parameter
   void goToStep(int step, {bool editMode = false}) {
     if (step >= 0 && step <= 6) {
-      state = state.copyWith(
-        step: step,
-        isEditMode: editMode, // ✅ Use parameter instead of hardcoding
-      );
+      state = state.copyWith(step: step, isEditMode: editMode);
     }
   }
 
@@ -109,10 +100,14 @@ class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
   void reset() {
     state = const ProjectOnboardingState();
   }
+
+  void setEditMode() {
+    state = state.copyWith(isEditMode: true);
+  }
 }
 
 // Provider
 final projectOnboardingProvider =
     NotifierProvider<ProjectOnboardingNotifier, ProjectOnboardingState>(
-  ProjectOnboardingNotifier.new,
-);
+      ProjectOnboardingNotifier.new,
+    );

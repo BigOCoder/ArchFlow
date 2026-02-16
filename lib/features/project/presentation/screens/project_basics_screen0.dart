@@ -73,13 +73,9 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
     final isEditing = ref.read(projectOnboardingProvider).isEditMode;
 
     if (isEditing) {
-      // ✅ FIXED: Return to Review Screen using Navigator
       ref.read(projectOnboardingProvider.notifier).clearEditMode();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const ProjectReviewScreen()),
-      );
+      ref.read(projectOnboardingProvider.notifier).goToStep(5);
     } else {
-      // Normal flow: go to next step
       ref.read(projectOnboardingProvider.notifier).nextStep();
     }
   }

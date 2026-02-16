@@ -287,8 +287,39 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
     if (!context.mounted) return;
 
     if (success) {
-      // ✅ IMPORTANT: Clear chat on success
+      // ✅ Get the created project
+      final project = ref.read(projectProvider).currentProject;
+
+      // ✅ Store id in local variable (required for type promotion)
+      final projectIdString = project?.id;
+
+      if (projectIdString == null || projectIdString.isEmpty) {
+        AppSnackBar.show(
+          context,
+          icon: Icons.error_outline,
+          iconColor: AppColors.error,
+          message: 'Project created but ID not found',
+        );
+        return;
+      }
+
+      // ✅ Now parse the non-null String to int
+      final projectId = int.tryParse(projectIdString);
+      if (projectId == null) {
+        AppSnackBar.show(
+          context,
+          icon: Icons.error_outline,
+          iconColor: AppColors.error,
+          message: 'Invalid project ID format',
+        );
+        return;
+      }
+
+      // ✅ Clear chat messages from previous sessions
       ref.read(chatProvider.notifier).clearChat();
+
+      // ✅ CRITICAL: Set project ID for chat API calls
+      ref.read(chatProvider.notifier).setProjectId(projectId);
 
       AppSnackBar.show(
         context,

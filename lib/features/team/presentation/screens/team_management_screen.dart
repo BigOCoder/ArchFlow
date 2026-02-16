@@ -310,7 +310,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       itemCount: _filteredMembers.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      separatorBuilder: (_, _) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         return TeamMemberCard(
           member: _filteredMembers[index],

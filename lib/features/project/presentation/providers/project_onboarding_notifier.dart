@@ -23,7 +23,7 @@ class ProjectOnboardingNotifier extends Notifier<ProjectOnboardingState> {
 
   // ✅ FIXED: Add editMode parameter
   void goToStep(int step, {bool editMode = false}) {
-    if (step >= 0 && step <= 6) {
+    if (step >= 0 && step <= 5) {
       state = state.copyWith(step: step, isEditMode: editMode);
     }
   }

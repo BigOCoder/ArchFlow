@@ -4,7 +4,6 @@ import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/chat/presentation/providers/chat_provider.dart';
 import 'package:archflow/features/chat/presentation/screens/ai_chat_screen.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
-import 'package:archflow/features/integrations/presentation/screens/github_integration_screen.dart';
 import 'package:archflow/features/project/presentation/providers/project_onboarding_notifier.dart';
 import 'package:archflow/features/project/presentation/providers/project_provider.dart';
 import 'package:archflow/shared/widgets/step_header.dart';

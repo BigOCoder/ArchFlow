@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:archflow/core/constants/app_enum_extensions.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
@@ -284,13 +286,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
     final success = await notifier.createProject();
 
-    if (!context.mounted) return;
-
     if (success) {
-      // ✅ Get the created project
       final project = ref.read(projectProvider).currentProject;
-
-      // ✅ Store id in local variable (required for type promotion)
       final projectIdString = project?.id;
 
       if (projectIdString == null || projectIdString.isEmpty) {
@@ -303,7 +300,6 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
         return;
       }
 
-      // ✅ Now parse the non-null String to int
       final projectId = int.tryParse(projectIdString);
       if (projectId == null) {
         AppSnackBar.show(
@@ -315,11 +311,14 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
         return;
       }
 
-      // ✅ Clear chat messages from previous sessions
-      ref.read(chatProvider.notifier).clearChat();
+      print('🔵 Project ID parsed: $projectId');
 
-      // ✅ CRITICAL: Set project ID for chat API calls
+      ref.read(chatProvider.notifier).clearChat();
       ref.read(chatProvider.notifier).setProjectId(projectId);
+
+      // ✅ VERIFY IT WAS SET
+      final chatState = ref.read(chatProvider);
+      print('🟢 Chat projectId after setProjectId: ${chatState.projectId}');
 
       AppSnackBar.show(
         context,
@@ -328,7 +327,6 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
         message: 'Project created successfully!',
       );
 
-      // Reset onboarding state
       ref.read(projectOnboardingProvider.notifier).reset();
 
       Navigator.of(context).pushAndRemoveUntil(

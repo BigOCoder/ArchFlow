@@ -1,6 +1,3 @@
-// lib/screens/chat/widgets/chat_message_bubble.dart
-
-
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/chat/data/models/chat_message_model.dart';

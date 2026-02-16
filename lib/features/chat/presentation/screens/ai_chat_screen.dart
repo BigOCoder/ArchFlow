@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:archflow/core/constants/app_enum_extensions.dart';
 import 'package:archflow/core/constants/app_enums.dart';
 import 'package:archflow/core/theme/app_color.dart';
@@ -37,58 +39,53 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
     );
     _animationController.forward();
 
-    // Initialize chat with project context
+    // ✅ Send welcome message after screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final projectState = ref.read(projectOnboardingProvider);
-
-      // Set project context from onboarding data
-      ref.read(chatProvider.notifier).setProjectContext(
-        'temp-project-${DateTime.now().millisecondsSinceEpoch}',
-        {
-          'name': projectState.projectName,
-          'category': projectState.category?.displayName ?? 'Unknown',
-          'description': projectState.description,
-          'problemStatement': projectState.problemStatement,
-          'targetAudience': projectState.targetAudience,
-          'proposedSolution': projectState.proposedSolution,
-          'userType': projectState.primaryUserType?.displayName,
-          'userScale': projectState.userScale?.displayName,
-          'features': projectState.features
-              .map(
-                (f) => {
-                  'name': f.name,
-                  'description': f.description,
-                  'priority': f.priority?.displayName,
-                },
-              )
-              .toList(),
-        },
-      );
-
-      // Add welcome message
-      _sendWelcomeMessage();
+      if (ref.read(chatProvider).messages.isEmpty) {
+        _sendWelcomeMessage();
+      }
     });
   }
 
   void _sendWelcomeMessage() {
-    final projectState = ref.read(projectOnboardingProvider);
+    // ✅ DEBUG: Check if projectId is set
+    final chatState = ref.read(chatProvider);
+    print('🟡 Chat Screen - ProjectId: ${chatState.projectId}');
 
-    final summary =
-        '''
-I'm working on a project called "${projectState.projectName}".
+    if (chatState.projectId == null || chatState.projectId!.isEmpty) {
+      print('🔴 ERROR: No projectId found! Chat won\'t work.');
+      return;
+    }
 
-Category: ${projectState.category?.displayName ?? 'Not specified'}
-Description: ${projectState.description}
+    print('✅ ProjectId found: ${chatState.projectId}');
 
-Problem Statement: ${projectState.problemStatement}
-Target Audience: ${projectState.targetAudience}
-Proposed Solution: ${projectState.proposedSolution}
-
-Can you help me refine the requirements and suggest an architecture?
-''';
-
-    ref.read(chatProvider.notifier).sendMessage(summary);
+    // ✅ Send simple welcome message
+    ref
+        .read(chatProvider.notifier)
+        .sendMessage(
+          'Hello! I just created my project. Can you help me with architecture and requirements?',
+        );
   }
+
+  //   void _sendWelcomeMessage() {
+  //     final projectState = ref.read(projectOnboardingProvider);
+
+  //     final summary =
+  //         '''
+  // I'm working on a project called "${projectState.projectName}".
+
+  // Category: ${projectState.category?.displayName ?? 'Not specified'}
+  // Description: ${projectState.description}
+
+  // Problem Statement: ${projectState.problemStatement}
+  // Target Audience: ${projectState.targetAudience}
+  // Proposed Solution: ${projectState.proposedSolution}
+
+  // Can you help me refine the requirements and suggest an architecture?
+  // ''';
+
+  //     ref.read(chatProvider.notifier).sendMessage(summary);
+  //   }
 
   @override
   void dispose() {

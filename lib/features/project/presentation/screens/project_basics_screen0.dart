@@ -72,8 +72,12 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
     final isEditing = ref.read(projectOnboardingProvider).isEditMode;
 
     if (isEditing) {
-      ref.read(projectOnboardingProvider.notifier).clearEditMode();
-      ref.read(projectOnboardingProvider.notifier).goToStep(5, editMode: true);
+      ref
+          .read(projectOnboardingProvider.notifier)
+          .goToStep(5); // ✅ Don't pass editMode
+      ref
+          .read(projectOnboardingProvider.notifier)
+          .clearEditMode(); // ✅ Clear AFTER navigation
     } else {
       ref.read(projectOnboardingProvider.notifier).nextStep();
     }

@@ -2,25 +2,25 @@
 
 class ProjectModel {
   final String? id;
-  
+
   // Basic Info
   final String name;
   final String summary;
   final String category;
-  
+
   // Problem Statement
   final String problemStatement;
   final String? currentSolution;
   final String? whyInsufficient;
-  
+
   // Target Users (Optional)
   final String? primaryUserType;
   final String? userScale;
   final List<String>? userRoles;
-  
+
   // Features (Optional)
   final List<Map<String, dynamic>>? features;
-  
+
   // Technical Details (Optional)
   final List<String>? platforms;
   final List<String>? supportedDevices;
@@ -29,7 +29,7 @@ class ProjectModel {
   final String? expectedTraffic;
   final List<String>? dataSensitivity;
   final List<String>? complianceNeeds;
-  
+
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -83,8 +83,8 @@ class ProjectModel {
   // ✅ fromJson for parsing response - SAFER VERSION
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
     return ProjectModel(
-      id: json['id']?.toString(),  // ✅ Safe null handling
-      name: json['name'] ?? '',    // ✅ Default empty string
+      id: (json['projectId'] ?? json['id'])?.toString(),
+      name: json['name'] ?? '', 
       summary: json['summary'] ?? '',
       category: json['category'] ?? '',
       problemStatement: json['problemStatement'] ?? '',
@@ -92,12 +92,12 @@ class ProjectModel {
       whyInsufficient: json['whyInsufficient'],
       primaryUserType: json['primaryUserType'],
       userScale: json['userScale'],
-      userRoles: json['userRoles'] != null 
-          ? List<String>.from(json['userRoles']) 
+      userRoles: json['userRoles'] != null
+          ? List<String>.from(json['userRoles'])
           : null,
       features: json['features'] != null
           ? List<Map<String, dynamic>>.from(
-              json['features'].map((x) => Map<String, dynamic>.from(x))
+              json['features'].map((x) => Map<String, dynamic>.from(x)),
             )
           : null,
       platforms: json['platforms'] != null
@@ -115,11 +115,11 @@ class ProjectModel {
       complianceNeeds: json['complianceNeeds'] != null
           ? List<String>.from(json['complianceNeeds'])
           : null,
-      createdAt: json['createdAt'] != null 
+      createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
-          : DateTime.now(),  // ✅ Fallback to now
-      updatedAt: json['updatedAt'] != null 
-          ? DateTime.parse(json['updatedAt']) 
+          : DateTime.now(), // ✅ Fallback to now
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
           : null,
     );
   }

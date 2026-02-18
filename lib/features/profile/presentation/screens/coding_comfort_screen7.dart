@@ -31,15 +31,15 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
   };
 
   final Map<String, String> _problemAreasMap = {
-    'Loops & conditions': 'LOOPS_AND_CONDITIONS', // UI → Backend
+    'Loops & conditions': 'LOOPS_AND_CONDITIONS',
     'Functions': 'FUNCTIONS',
     'OOP': 'OOP',
     'DSA basics': 'DSA_BASICS',
     'Advanced DSA': 'ADVANCED_DSA',
   };
+
   bool _areasRestored = false;
 
-  /// ---------------- STATE RESTORE ----------------
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -51,7 +51,6 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
 
     if (!_areasRestored && onboarding.problemSolvingAreas.isNotEmpty) {
       for (final area in onboarding.problemSolvingAreas) {
-        // Convert LOOPS_AND_CONDITIONS -> Loops & conditions
         final displayName = _problemAreasMap.entries
             .firstWhere(
               (e) => e.value == area,
@@ -76,7 +75,6 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
       _debugging != null &&
       _problemAreas.values.any((v) => v);
 
-  /// ---------------- SUBMIT ----------------
   void _submit() {
     if (!_canProceed) {
       AppSnackBar.show(
@@ -101,50 +99,53 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
     final isEditing = ref.read(onboardingProvider).isEditingFromReview;
 
     if (isEditing) {
-      // Return to Final Review
       notifier.clearEditMode();
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const FinalReviewScreen()),
       );
     } else {
-      // Normal flow: first time, go to Final Review
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => const FinalReviewScreen()));
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const FinalReviewScreen()),
+      );
     }
   }
 
-  /// ---------------- BUILD ----------------
+  // ✅ Reusable card with theme colors
+  Widget _sectionCard({required Widget child}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+        ),
+      ),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         _handleBackPressed();
         return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
+        // ✅ Removed backgroundColor - uses theme
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
+            icon: const Icon(Icons.arrow_back),
+            // ✅ Removed color - uses theme iconTheme
             onPressed: _handleBackPressed,
           ),
           title: Text(
             'Coding Comfort Level',
             style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
@@ -161,20 +162,7 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
               const SizedBox(height: 24),
 
               /// ⏱ CODING FREQUENCY
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightSurface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkDivider
-                        : AppColors.lightDivider,
-                  ),
-                ),
+              _sectionCard(
                 child: AppDropdown<CodingFrequency>(
                   label: 'Coding Frequency',
                   icon: Icons.schedule,
@@ -197,20 +185,7 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
               ),
 
               /// 🐞 DEBUGGING CONFIDENCE
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightSurface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkDivider
-                        : AppColors.lightDivider,
-                  ),
-                ),
+              _sectionCard(
                 child: AppDropdown<DebuggingConfidence>(
                   label: 'Debugging Confidence',
                   icon: Icons.bug_report,
@@ -233,20 +208,7 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
               ),
 
               /// 🧠 PROBLEM AREAS
-              Container(
-                margin: const EdgeInsets.only(bottom: 24),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightSurface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkDivider
-                        : AppColors.lightDivider,
-                  ),
-                ),
+              _sectionCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -255,9 +217,7 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
                       style: GoogleFonts.lato(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -269,9 +229,7 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
                         title: Text(
                           area,
                           style: GoogleFonts.lato(
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         activeColor: AppColors.brandGreen,
@@ -288,10 +246,7 @@ class _CodingComfortScreenState extends ConsumerState<CodingComfortScreen> {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: _canProceed ? _submit : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.brandGreen,
-                    foregroundColor: Colors.white,
-                  ),
+                  // ✅ Removed style - uses theme
                   child: Text(
                     'Next',
                     style: GoogleFonts.lato(

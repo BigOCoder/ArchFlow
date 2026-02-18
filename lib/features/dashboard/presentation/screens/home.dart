@@ -10,13 +10,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return SafeArea(
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
         body: Column(
           children: [
             Expanded(
@@ -29,9 +24,7 @@ class HomeScreen extends StatelessWidget {
                     style: GoogleFonts.lato(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -93,21 +86,60 @@ class HomeScreen extends StatelessWidget {
 
                     const SizedBox(height: 16),
 
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const DashboardScreen(),
+                    // Trial Code
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (_) => const DashboardScreen(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Continue as a guest',
+                            style: GoogleFonts.lato(
+                              fontSize: 13,
+                              color: const Color.fromARGB(255, 65, 182, 50),
+                            ),
                           ),
-                        );
-                      },
-                      child: Text(
-                        'Continue as a guest',
-                        style: GoogleFonts.lato(
-                          fontSize: 13,
-                          color: const Color.fromARGB(255, 65, 182, 50),
                         ),
-                      ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (_) => const DashboardScreen(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Continue as a guest',
+                            style: GoogleFonts.lato(
+                              fontSize: 13,
+                              color: const Color.fromARGB(255, 65, 182, 50),
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (_) => const DashboardScreen(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Continue as a guest',
+                            style: GoogleFonts.lato(
+                              fontSize: 13,
+                              color: const Color.fromARGB(255, 65, 182, 50),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

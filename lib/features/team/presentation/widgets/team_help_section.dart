@@ -9,7 +9,6 @@ class TeamHelpSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Container(
@@ -17,24 +16,19 @@ class TeamHelpSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isDark
-              ? [
-                  AppColors.darkSurface,
-                  AppColors.darkSurface.withOpacity(0.8),
-                ]
-              : [
-                  AppColors.lightSurface,
-                  AppColors.lightSurface.withOpacity(0.8),
-                ],
+          colors: [
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.surface.withOpacity(0.8),
+          ],
         ),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          color: Theme.of(context).dividerColor,
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -70,9 +64,8 @@ class TeamHelpSection extends StatelessWidget {
                         style: GoogleFonts.lato(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
+                          // ✅ Fixed - uses theme
+                          color: Theme.of(context).colorScheme.onSurface,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -81,9 +74,8 @@ class TeamHelpSection extends StatelessWidget {
                         'Here\'s a quick guide to help you decide',
                         style: GoogleFonts.lato(
                           fontSize: 13,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
+                          // ✅ Fixed - uses theme
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                         ),
                       ),
                     ],
@@ -91,7 +83,7 @@ class TeamHelpSection extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 32),
 
             // Options
@@ -168,8 +160,6 @@ class _HelpOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -206,36 +196,37 @@ class _HelpOption extends StatelessWidget {
         const SizedBox(height: 16),
 
         // Items
-        ...items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 4),
-                    width: 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.5),
-                      shape: BoxShape.circle,
+        ...items.map(
+          (item) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    item,
+                    style: GoogleFonts.lato(
+                      fontSize: 13.5,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      height: 1.5,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      item,
-                      style: GoogleFonts.lato(
-                        fontSize: 13.5,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

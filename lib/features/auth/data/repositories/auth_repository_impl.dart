@@ -1,4 +1,3 @@
-// lib/data/repositories/auth_repository.dart
 import 'package:archflow/features/auth/data/models/auth_response.dart';
 import 'package:archflow/features/auth/data/models/user_model.dart';
 import 'package:dio/dio.dart';
@@ -6,8 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:archflow/core/network/api_client.dart';
 
-
-const bool useMockTest = false; // Set to false when backend is ready
+const bool useMockTest = true; 
 
 class AuthRepository {
   final ApiClient _apiClient;

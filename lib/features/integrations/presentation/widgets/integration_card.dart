@@ -28,20 +28,16 @@ class IntegrationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : Colors.white,
+        color: Theme.of(context).colorScheme.surface,
+
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
-          width: 1,
-        ),
+        border: Border.all(color: Theme.of(context).dividerColor, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -57,9 +53,7 @@ class IntegrationCard extends StatelessWidget {
               color: iconBackgroundColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isDark
-                    ? AppColors.darkDivider.withOpacity(0.5)
-                    : AppColors.lightDivider,
+                color: Theme.of(context).dividerColor,
                 width: 1,
               ),
             ),
@@ -67,9 +61,7 @@ class IntegrationCard extends StatelessWidget {
               icon,
               size: 32,
               color: isLocked
-                  ? (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary)
+                  ? Theme.of(context).iconTheme.color
                   : AppColors.brandGreen,
             ),
           ),
@@ -82,9 +74,7 @@ class IntegrationCard extends StatelessWidget {
             style: GoogleFonts.lato(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             textAlign: TextAlign.center,
           ),
@@ -97,9 +87,7 @@ class IntegrationCard extends StatelessWidget {
             style: GoogleFonts.lato(
               fontSize: 14,
               height: 1.5,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.lightTextSecondary,
+              color: Theme.of(context).textTheme.bodyMedium?.color,
             ),
             textAlign: TextAlign.center,
           ),
@@ -122,14 +110,6 @@ class IntegrationCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.brandGreen,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
               ),
             ),
 
@@ -142,13 +122,11 @@ class IntegrationCard extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: onSkip,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  foregroundColor: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.color,
                   side: BorderSide(
-                    color: isDark
-                        ? AppColors.darkDivider
-                        : AppColors.lightDivider,
+                    color: Theme.of(context).dividerColor,
                     width: 1.5,
                   ),
                   shape: RoundedRectangleBorder(
@@ -180,26 +158,20 @@ class IntegrationCard extends StatelessWidget {
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightSurface,
-                  foregroundColor: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
-                  disabledBackgroundColor: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightSurface,
-                  disabledForegroundColor: isDark
-                      ? AppColors.darkTextSecondary.withOpacity(0.5)
-                      : AppColors.lightTextSecondary.withOpacity(0.5),
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  foregroundColor: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.color,
+                  disabledBackgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surface,
+                  disabledForegroundColor: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.color?.withOpacity(0.5),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(
-                      color: isDark
-                          ? AppColors.darkDivider
-                          : AppColors.lightDivider,
-                    ),
+                    side: BorderSide(color: Theme.of(context).dividerColor),
                   ),
                 ),
               ),

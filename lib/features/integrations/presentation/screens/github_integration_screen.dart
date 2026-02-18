@@ -9,12 +9,7 @@ class GitHubIntegrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -27,9 +22,7 @@ class GitHubIntegrationScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkSurface
-                          : AppColors.lightSurface,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -45,9 +38,7 @@ class GitHubIntegrationScreen extends StatelessWidget {
                       style: GoogleFonts.lato(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                     ),
                   ),
@@ -62,9 +53,7 @@ class GitHubIntegrationScreen extends StatelessWidget {
                 style: GoogleFonts.lato(
                   fontSize: 15,
                   height: 1.5,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
               ),
 
@@ -77,9 +66,9 @@ class GitHubIntegrationScreen extends StatelessWidget {
                     children: [
                       IntegrationCard(
                         icon: Icons.code,
-                        iconBackgroundColor: isDark
-                            ? const Color(0xFF1F2328)
-                            : const Color(0xFFF6F8FA),
+                        iconBackgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.surface,
                         title: 'Authorize GitHub Access',
                         description:
                             'Connect your account to sync your public repositories and enable automated project tracking.',
@@ -94,9 +83,9 @@ class GitHubIntegrationScreen extends StatelessWidget {
                       // Future integration placeholders (locked)
                       IntegrationCard(
                         icon: Icons.dashboard,
-                        iconBackgroundColor: isDark
-                            ? const Color(0xFF1A1A2E)
-                            : const Color(0xFFF3F4F6),
+                        iconBackgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.surface,
                         title: 'Linear Integration',
                         description:
                             'Sync tasks and issues with Linear project management.',
@@ -111,9 +100,9 @@ class GitHubIntegrationScreen extends StatelessWidget {
 
                       IntegrationCard(
                         icon: Icons.storage,
-                        iconBackgroundColor: isDark
-                            ? const Color(0xFF1C1E26)
-                            : const Color(0xFFF9FAFB),
+                        iconBackgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.surface,
                         title: 'Jira Integration',
                         description:
                             'Connect with Jira for enterprise project tracking.',
@@ -134,14 +123,10 @@ class GitHubIntegrationScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurface.withOpacity(0.5)
-                      : AppColors.lightSurface.withOpacity(0.7),
+                  color: Theme.of(context).colorScheme.surface.withOpacity(0.7),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isDark
-                        ? AppColors.darkDivider
-                        : AppColors.lightDivider,
+                    color: Theme.of(context).dividerColor,
                     width: 1,
                   ),
                 ),
@@ -150,9 +135,7 @@ class GitHubIntegrationScreen extends StatelessWidget {
                     Icon(
                       Icons.info_outline,
                       size: 20,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
+                      color: Theme.of(context).iconTheme.color,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -160,9 +143,9 @@ class GitHubIntegrationScreen extends StatelessWidget {
                         text: TextSpan(
                           style: GoogleFonts.lato(
                             fontSize: 13,
-                            color: isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.color,
                           ),
                           children: [
                             const TextSpan(
@@ -217,7 +200,8 @@ class GitHubIntegrationScreen extends StatelessWidget {
           'You can connect GitHub later from settings',
           style: GoogleFonts.lato(),
         ),
-        backgroundColor: const Color(0xFF6B7280),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+
         behavior: SnackBarBehavior.floating,
       ),
     );

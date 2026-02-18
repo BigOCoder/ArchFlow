@@ -17,20 +17,18 @@ class TeamMemberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          color: Theme.of(context).dividerColor,
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -69,9 +67,8 @@ class TeamMemberCard extends StatelessWidget {
                       color: AppColors.brandGreen,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: isDark
-                            ? AppColors.darkSurface
-                            : Colors.white,
+                        // ✅ Fixed - uses theme
+                        color: Theme.of(context).colorScheme.surface,
                         width: 2,
                       ),
                     ),
@@ -97,9 +94,8 @@ class TeamMemberCard extends StatelessWidget {
                   style: GoogleFonts.lato(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -154,16 +150,15 @@ class TeamMemberCard extends StatelessWidget {
               onPressed: onRemove,
               icon: Icon(
                 Icons.delete_outline,
-                color: isDark
-                    ? AppColors.darkTextSecondary.withOpacity(0.5)
-                    : AppColors.lightTextSecondary.withOpacity(0.5),
+                // ✅ Fixed - uses theme
+                color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
               ),
               tooltip: 'REMOVE MEMBER',
               style: IconButton.styleFrom(
-                backgroundColor: (isDark
-                        ? AppColors.darkBackground
-                        : AppColors.lightBackground)
-                    .withOpacity(0.5),
+                // ✅ Fixed - uses theme
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.background.withOpacity(0.5),
               ),
             ),
           ],

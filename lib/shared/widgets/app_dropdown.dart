@@ -22,14 +22,13 @@ class AppDropdown<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
-
+    // ✅ Fixed - uses theme
     final borderColor = hasError
         ? AppColors.error
-        : (isDark
-            ? AppColors.darkDivider
-            : AppColors.lightDivider);
+        : Theme.of(context).dividerColor;
+
+    // ✅ Fixed - uses theme
+    final labelColor = Theme.of(context).textTheme.bodySmall?.color;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -42,9 +41,8 @@ class AppDropdown<T> extends StatelessWidget {
               label,
               style: GoogleFonts.lato(
                 fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                // ✅ Fixed - uses theme
+                color: labelColor,
               ),
             ),
             leadingIcon: Icon(
@@ -56,15 +54,13 @@ class AppDropdown<T> extends StatelessWidget {
             inputDecorationTheme: InputDecorationTheme(
               labelStyle: GoogleFonts.lato(
                 fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                // ✅ Fixed - uses theme
+                color: labelColor,
               ),
               hintStyle: GoogleFonts.lato(
                 fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                // ✅ Fixed - uses theme
+                color: labelColor,
               ),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 20,
@@ -89,8 +85,7 @@ class AppDropdown<T> extends StatelessWidget {
               /// 🔴 Error borders
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
-                borderSide:
-                    const BorderSide(color: AppColors.error),
+                borderSide: const BorderSide(color: AppColors.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),

@@ -6,7 +6,6 @@ import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class CreateNewPasswordScreen extends StatefulWidget {
   const CreateNewPasswordScreen({super.key});
 
@@ -37,8 +36,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
       _hasUppercase = RegExp(r'[A-Z]').hasMatch(value);
       _hasLowercase = RegExp(r'[a-z]').hasMatch(value);
       _hasNumber = RegExp(r'[0-9]').hasMatch(value);
-      _hasSpecialChar =
-          RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value);
+      _hasSpecialChar = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value);
       _hasMinLength = value.length >= 8;
     });
   }
@@ -98,21 +96,10 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
-          ),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -130,9 +117,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
               style: GoogleFonts.lato(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
 
@@ -142,9 +127,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
               'Create your new password. Make sure it is strong and secure.',
               style: GoogleFonts.lato(
                 fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
 
@@ -163,9 +146,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                       icon: Icons.lock,
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscureNew
-                              ? Icons.visibility_off
-                              : Icons.visibility,
+                          _obscureNew ? Icons.visibility_off : Icons.visibility,
                         ),
                         onPressed: () {
                           setState(() {
@@ -205,9 +186,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                     ),
                     onChanged: (v) => _confirmPassword = v,
                     validator: (v) =>
-                        v != _newPassword
-                            ? 'Passwords do not match'
-                            : null,
+                        v != _newPassword ? 'Passwords do not match' : null,
                   ),
 
                   const SizedBox(height: 12),
@@ -224,10 +203,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                     label: 'One lowercase letter',
                     isValid: _hasLowercase,
                   ),
-                  PasswordRuleItem(
-                    label: 'One number',
-                    isValid: _hasNumber,
-                  ),
+                  PasswordRuleItem(label: 'One number', isValid: _hasNumber),
                   PasswordRuleItem(
                     label: 'One special character',
                     isValid: _hasSpecialChar,
@@ -235,7 +211,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                 ],
               ),
             ),
-            
+
             const Spacer(),
 
             SizedBox(
@@ -248,9 +224,7 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                   foregroundColor: Colors.white,
                 ),
                 child: _isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      )
+                    ? const CircularProgressIndicator(color: Colors.white)
                     : Text(
                         'Save New Password',
                         style: GoogleFonts.lato(

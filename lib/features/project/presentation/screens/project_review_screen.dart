@@ -24,29 +24,25 @@ class ProjectReviewScreen extends ConsumerStatefulWidget {
 class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
   bool _confirmed = false;
 
-  // ✅ IMPORTANT: Show cancel confirmation dialog
-  Future<bool> _showCancelDialog(BuildContext context, bool isDark) async {
+  Future<bool> _showCancelDialog(BuildContext context) async {
     final shouldCancel = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
+        // ✅ Removed backgroundColor - uses theme
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Cancel Project Creation?',
           style: GoogleFonts.lato(
             fontWeight: FontWeight.bold,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         content: Text(
           'Are you sure you want to cancel? All your progress will be lost.',
           style: GoogleFonts.lato(
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
         actions: [
@@ -106,7 +102,6 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
   }
 
   Widget _infoCard({
-    required bool isDark,
     required IconData icon,
     required String title,
     required List<Widget> children,
@@ -115,10 +110,12 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        // ✅ Fixed - uses theme
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          // ✅ Fixed - uses theme
+          color: Theme.of(context).dividerColor,
         ),
         boxShadow: [
           BoxShadow(
@@ -137,9 +134,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: isDark
-                      ? AppColors.darkDivider
-                      : AppColors.lightDivider,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).dividerColor,
                 ),
               ),
             ),
@@ -159,9 +155,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                   style: GoogleFonts.lato(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const Spacer(),
@@ -207,7 +202,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
     );
   }
 
-  Widget _infoRow(String label, String value, {required bool isDark}) {
+  Widget _infoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -217,7 +212,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
             width: 6,
             height: 6,
             margin: const EdgeInsets.only(top: 6, right: 10),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.brandGreen,
               shape: BoxShape.circle,
             ),
@@ -227,9 +222,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
               text: TextSpan(
                 style: GoogleFonts.lato(
                   fontSize: 14,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
                 children: [
                   TextSpan(
@@ -287,6 +281,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
     final success = await notifier.createProject();
 
     if (success) {
+      // TODO: need to remove ! to call backend
       final project = ref.read(projectProvider).currentProject;
       final projectIdString = project?.id;
 
@@ -316,7 +311,6 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
       ref.read(chatProvider.notifier).clearChat();
       ref.read(chatProvider.notifier).setProjectId(projectId);
 
-      // ✅ VERIFY IT WAS SET
       final chatState = ref.read(chatProvider);
       print('🟢 Chat projectId after setProjectId: ${chatState.projectId}');
 
@@ -346,56 +340,39 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isLoading = ref.watch(projectProvider.select((s) => s.isLoading));
     final s = ref.watch(projectOnboardingProvider);
 
     return WillPopScope(
       onWillPop: () async {
-        // ✅ IMPORTANT: Show cancel confirmation dialog when going back
-        final shouldCancel = await _showCancelDialog(context, isDark);
+        final shouldCancel = await _showCancelDialog(context);
 
         if (shouldCancel && mounted) {
-          // Clear chat and reset state
           ref.read(chatProvider.notifier).clearChat();
           ref.read(projectOnboardingProvider.notifier).reset();
 
-          // Navigate to dashboard
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (_) => const DashboardScreen()),
             (_) => false,
           );
         }
 
-        return false; // Prevent default pop
+        return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
+        // ✅ Removed backgroundColor - uses theme
         appBar: AppBar(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
-          elevation: 0,
-          // ✅ IMPORTANT: Add back button with cancel dialog
+          // ✅ Removed backgroundColor & elevation - uses theme
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
+            icon: const Icon(Icons.arrow_back),
+            // ✅ Removed color - uses theme iconTheme
             onPressed: () async {
-              // Show cancel confirmation dialog
-              final shouldCancel = await _showCancelDialog(context, isDark);
+              final shouldCancel = await _showCancelDialog(context);
 
               if (shouldCancel && mounted) {
-                // Clear chat and reset state
                 ref.read(chatProvider.notifier).clearChat();
                 ref.read(projectOnboardingProvider.notifier).reset();
 
-                // Navigate to dashboard
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (_) => const DashboardScreen()),
                   (_) => false,
@@ -407,9 +384,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
             'Review & Create',
             style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
@@ -425,7 +401,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
               ),
               const SizedBox(height: 24),
 
-              /// 🎯 HERO CARD - Project Overview
+              /// 🎯 HERO CARD
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -513,13 +489,11 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
               const SizedBox(height: 32),
 
-              /// 📝 PROJECT BASICS (Step 0)
+              /// 📝 PROJECT BASICS
               _infoCard(
-                isDark: isDark,
                 icon: Icons.edit_document,
                 title: 'Project Basics',
                 onEdit: () {
-                  // ✅ IMPORTANT: Set edit mode before navigating
                   ref.read(projectOnboardingProvider.notifier).setEditMode();
                   ref.read(projectOnboardingProvider.notifier).goToStep(0);
                 },
@@ -527,28 +501,20 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                   _infoRow(
                     'Project Name',
                     s.projectName.isEmpty ? 'Not Set' : s.projectName,
-                    isDark: isDark,
                   ),
-                  _infoRow(
-                    'Category',
-                    s.category?.displayName ?? 'Not Set',
-                    isDark: isDark,
-                  ),
+                  _infoRow('Category', s.category?.displayName ?? 'Not Set'),
                   _infoRow(
                     'Description',
                     s.description.isEmpty ? 'Not Provided' : s.description,
-                    isDark: isDark,
                   ),
                 ],
               ),
 
-              /// 👥 TARGET USERS (Step 1)
+              /// 👥 TARGET USERS
               _infoCard(
-                isDark: isDark,
                 icon: Icons.people_outline,
                 title: 'Target Users',
                 onEdit: () {
-                  // ✅ IMPORTANT: Set edit mode before navigating
                   ref.read(projectOnboardingProvider.notifier).setEditMode();
                   ref.read(projectOnboardingProvider.notifier).goToStep(1);
                 },
@@ -556,30 +522,22 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                   _infoRow(
                     'Primary User Type',
                     s.primaryUserType?.displayName ?? 'Not Set',
-                    isDark: isDark,
                   ),
-                  _infoRow(
-                    'User Scale',
-                    s.userScale?.displayName ?? 'Not Set',
-                    isDark: isDark,
-                  ),
+                  _infoRow('User Scale', s.userScale?.displayName ?? 'Not Set'),
                   if (s.userRoles.isNotEmpty)
                     _infoRow(
                       'User Roles',
                       '${s.userRoles.length} roles defined',
-                      isDark: isDark,
                     ),
                 ],
               ),
 
-              /// ✨ FEATURES (Step 2)
+              /// ✨ FEATURES
               if (s.features.isNotEmpty)
                 _infoCard(
-                  isDark: isDark,
                   icon: Icons.star_outline,
                   title: 'Initial Features',
                   onEdit: () {
-                    // ✅ IMPORTANT: Set edit mode before navigating
                     ref.read(projectOnboardingProvider.notifier).setEditMode();
                     ref.read(projectOnboardingProvider.notifier).goToStep(2);
                   },
@@ -587,18 +545,15 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                     return _infoRow(
                       feature.name,
                       feature.priority?.displayName ?? 'No Priority',
-                      isDark: isDark,
                     );
                   }).toList(),
                 ),
 
-              /// 🎯 PROBLEM STATEMENT (Step 3)
+              /// 🎯 PROBLEM STATEMENT
               _infoCard(
-                isDark: isDark,
                 icon: Icons.lightbulb_outline,
                 title: 'Problem Statement',
                 onEdit: () {
-                  // ✅ IMPORTANT: Set edit mode before navigating
                   ref.read(projectOnboardingProvider.notifier).setEditMode();
                   ref.read(projectOnboardingProvider.notifier).goToStep(3);
                 },
@@ -608,68 +563,36 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                     s.problemStatement.isEmpty
                         ? 'Not Provided'
                         : s.problemStatement,
-                    isDark: isDark,
                   ),
                   if (s.targetAudience.isNotEmpty)
-                    _infoRow(
-                      'Target Audience',
-                      s.targetAudience,
-                      isDark: isDark,
-                    ),
+                    _infoRow('Target Audience', s.targetAudience),
                   if (s.proposedSolution.isNotEmpty)
-                    _infoRow(
-                      'Proposed Solution',
-                      s.proposedSolution,
-                      isDark: isDark,
-                    ),
+                    _infoRow('Proposed Solution', s.proposedSolution),
                 ],
               ),
 
-              /// 💻 PROJECT DETAILS (Step 4)
+              /// 💻 TECHNICAL DETAILS
               _infoCard(
-                isDark: isDark,
                 icon: Icons.settings_outlined,
                 title: 'Technical Details',
                 onEdit: () {
-                  // ✅ IMPORTANT: Set edit mode before navigating
                   ref.read(projectOnboardingProvider.notifier).setEditMode();
                   ref.read(projectOnboardingProvider.notifier).goToStep(4);
                 },
                 children: [
                   if (s.platforms.isNotEmpty)
-                    _infoRow(
-                      'Platforms',
-                      s.platforms.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Platforms', s.platforms.join(', ')),
                   if (s.supportedDevices.isNotEmpty)
-                    _infoRow(
-                      'Devices',
-                      s.supportedDevices.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Devices', s.supportedDevices.join(', ')),
                   if (s.expectedTimeline != null)
-                    _infoRow('Timeline', s.expectedTimeline!, isDark: isDark),
-                  if (s.budgetRange != null)
-                    _infoRow('Budget', s.budgetRange!, isDark: isDark),
+                    _infoRow('Timeline', s.expectedTimeline!),
+                  if (s.budgetRange != null) _infoRow('Budget', s.budgetRange!),
                   if (s.expectedTraffic != null)
-                    _infoRow(
-                      'Expected Traffic',
-                      s.expectedTraffic!,
-                      isDark: isDark,
-                    ),
+                    _infoRow('Expected Traffic', s.expectedTraffic!),
                   if (s.dataSensitivity.isNotEmpty)
-                    _infoRow(
-                      'Data Sensitivity',
-                      s.dataSensitivity.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Data Sensitivity', s.dataSensitivity.join(', ')),
                   if (s.complianceNeeds.isNotEmpty)
-                    _infoRow(
-                      'Compliance',
-                      s.complianceNeeds.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Compliance', s.complianceNeeds.join(', ')),
                 ],
               ),
 
@@ -694,9 +617,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                     style: GoogleFonts.lato(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   activeColor: AppColors.brandGreen,

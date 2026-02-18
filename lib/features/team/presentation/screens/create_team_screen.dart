@@ -1,8 +1,7 @@
-  // lib/features/team/presentation/screens/create_team_screen.dart
+// lib/features/team/presentation/screens/create_team_screen.dart
 
 // ignore_for_file: unused_field
 
-import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,11 +20,9 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    // ✅ Fixed - build was broken (missing return Scaffold)
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      // ✅ Removed backgroundColor - uses theme
       appBar: AppBar(
         title: Text(
           'Create Team',
@@ -45,9 +42,8 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
                 style: GoogleFonts.lato(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 24),
@@ -85,17 +81,10 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Create team logic
                       Navigator.pop(context);
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.brandGreen,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
+                  // ✅ Removed style - uses theme
                   child: Text(
                     'Create Team',
                     style: GoogleFonts.lato(

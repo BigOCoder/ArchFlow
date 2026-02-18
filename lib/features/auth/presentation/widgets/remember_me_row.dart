@@ -16,9 +16,6 @@ class RememberMeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -33,9 +30,7 @@ class RememberMeRow extends StatelessWidget {
               'Remember me',
               style: GoogleFonts.lato(
                 fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
           ],

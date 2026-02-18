@@ -6,7 +6,6 @@ import 'package:archflow/features/auth/presentation/providers/onboarding_notifie
 import 'package:archflow/features/profile/presentation/screens/final_review_screen.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -39,7 +38,6 @@ class _ArchitectureExposureScreenState
 
   bool _conceptsRestored = false;
 
-  /// ---------------- STATE RESTORE ----------------
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -50,7 +48,6 @@ class _ArchitectureExposureScreenState
 
     if (!_conceptsRestored && onboarding.familiarConcepts.isNotEmpty) {
       for (final c in onboarding.familiarConcepts) {
-        // Convert REPOSITORY_PATTERN -> Repository pattern
         final displayName = _conceptsMap.entries
             .firstWhere((e) => e.value == c, orElse: () => MapEntry(c, c))
             .key;
@@ -69,7 +66,6 @@ class _ArchitectureExposureScreenState
 
   bool get _canProceed => _architectureLevel != null;
 
-  /// ---------------- SUBMIT ----------------
   void _submit() {
     if (!_canProceed) {
       AppSnackBar.show(
@@ -83,9 +79,7 @@ class _ArchitectureExposureScreenState
 
     final selectedConcepts = _familiarConcepts.entries
         .where((e) => e.value)
-        .map(
-          (e) => _conceptsMap[e.key]!,
-        ) // Repository pattern -> REPOSITORY_PATTERN
+        .map((e) => _conceptsMap[e.key]!)
         .toList();
 
     final notifier = ref.read(onboardingProvider.notifier);
@@ -95,32 +89,23 @@ class _ArchitectureExposureScreenState
 
     final isEditing = ref.read(onboardingProvider).isEditingFromReview;
     if (isEditing) {
-      // Return to Final Review
       notifier.clearEditMode();
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const FinalReviewScreen()),
       );
     } else {
-      // Normal flow
-      notifier.nextStep(); // Or Navigator.push for screen 7
+      notifier.nextStep();
     }
   }
 
-  /// ---------------- UI HELPERS ----------------
-  Widget _card({
-    required bool isDark,
-    required String title,
-    required Widget child,
-  }) {
+  Widget _card({required String title, required Widget child}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
-        ),
+        border: Border.all(color: Theme.of(context).dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,9 +115,7 @@ class _ArchitectureExposureScreenState
             style: GoogleFonts.lato(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -142,37 +125,26 @@ class _ArchitectureExposureScreenState
     );
   }
 
-  /// ---------------- BUILD ----------------
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         _handleBackPressed();
         return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
+        // ✅ Removed backgroundColor - uses theme
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
+            icon: const Icon(Icons.arrow_back),
+            // ✅ Removed color - uses theme iconTheme
             onPressed: _handleBackPressed,
           ),
           title: Text(
             'Architecture Exposure',
             style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
@@ -188,9 +160,7 @@ class _ArchitectureExposureScreenState
 
               const SizedBox(height: 24),
 
-              /// 🏗 ARCHITECTURE LEVEL
               _card(
-                isDark: isDark,
                 title: 'Architecture Experience Level',
                 child: Column(
                   children: ArchitectureLevel.values.map((level) {
@@ -208,9 +178,7 @@ class _ArchitectureExposureScreenState
                       title: Text(
                         level.displayName,
                         style: GoogleFonts.lato(
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       activeColor: AppColors.brandGreen,
@@ -219,11 +187,9 @@ class _ArchitectureExposureScreenState
                 ),
               ),
 
-              /// 🧠 FAMILIAR CONCEPTS
               if (_architectureLevel != null &&
                   _architectureLevel != ArchitectureLevel.none)
                 _card(
-                  isDark: isDark,
                   title: 'Familiar Concepts (Optional)',
                   child: Column(
                     children: _familiarConcepts.keys.map((key) {
@@ -234,9 +200,7 @@ class _ArchitectureExposureScreenState
                         title: Text(
                           key,
                           style: GoogleFonts.lato(
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         activeColor: AppColors.brandGreen,
@@ -245,7 +209,6 @@ class _ArchitectureExposureScreenState
                   ),
                 ),
 
-              /// Show helper text when no experience
               Container(
                 margin: const EdgeInsets.only(bottom: 24),
                 padding: const EdgeInsets.all(16),
@@ -269,9 +232,7 @@ class _ArchitectureExposureScreenState
                         'No worries! We\'ll guide you through architecture concepts.',
                         style: GoogleFonts.lato(
                           fontSize: 14,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
+                          color: Theme.of(context).colorScheme.onBackground,
                         ),
                       ),
                     ),
@@ -286,10 +247,7 @@ class _ArchitectureExposureScreenState
                 height: 52,
                 child: ElevatedButton(
                   onPressed: _canProceed ? _submit : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.brandGreen,
-                    foregroundColor: Colors.white,
-                  ),
+                  // ✅ Removed style - uses theme
                   child: Text(
                     'Next',
                     style: GoogleFonts.lato(

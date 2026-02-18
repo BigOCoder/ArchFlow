@@ -1,6 +1,3 @@
-// lib/features/team/presentation/widgets/team_option_card.dart
-
-import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/team/presentation/widgets/animated_benefit_item.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,9 +39,10 @@ class _TeamOptionCardState extends State<TeamOptionCard>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.02,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -55,8 +53,6 @@ class _TeamOptionCardState extends State<TeamOptionCard>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return MouseRegion(
       onEnter: (_) {
         setState(() => _isHovered = true);
@@ -71,12 +67,13 @@ class _TeamOptionCardState extends State<TeamOptionCard>
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
               color: _isHovered
                   ? widget.color.withOpacity(0.5)
-                  : (isDark ? AppColors.darkDivider : AppColors.lightDivider),
+                  : Theme.of(context).dividerColor,
               width: 2,
             ),
             boxShadow: [
@@ -87,7 +84,7 @@ class _TeamOptionCardState extends State<TeamOptionCard>
                   offset: const Offset(0, 8),
                 ),
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+                color: Colors.black.withOpacity(0.06),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -152,11 +149,7 @@ class _TeamOptionCardState extends State<TeamOptionCard>
                             ),
                           ],
                         ),
-                        child: Icon(
-                          widget.icon,
-                          color: Colors.white,
-                          size: 36,
-                        ),
+                        child: Icon(widget.icon, color: Colors.white, size: 36),
                       ),
                     ),
                   ],
@@ -175,9 +168,8 @@ class _TeamOptionCardState extends State<TeamOptionCard>
                       style: GoogleFonts.lato(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
+                        // ✅ Fixed - uses theme
+                        color: Theme.of(context).colorScheme.onSurface,
                         letterSpacing: 0.5,
                         height: 1.2,
                       ),
@@ -189,9 +181,8 @@ class _TeamOptionCardState extends State<TeamOptionCard>
                       widget.description,
                       style: GoogleFonts.lato(
                         fontSize: 14,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.lightTextSecondary,
+                        // ✅ Fixed - uses theme
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         height: 1.6,
                       ),
                     ),

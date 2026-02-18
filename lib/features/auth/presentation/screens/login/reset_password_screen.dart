@@ -5,7 +5,6 @@ import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
 
@@ -42,9 +41,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       if (!mounted) return;
 
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => OtpVerificationScreen(email: _email),
-        ),
+        MaterialPageRoute(builder: (_) => OtpVerificationScreen(email: _email)),
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -53,21 +50,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
-          ),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -85,9 +71,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               style: GoogleFonts.lato(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
 
@@ -97,9 +81,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               'Please enter your email and we will send an OTP code in the next step to reset your password.',
               style: GoogleFonts.lato(
                 fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
 
@@ -123,11 +105,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 onChanged: (v) => _email = v,
                 validator: (v) =>
-                    v == null ||
-                            !RegExp(r'^\S+@\S+\.\S+$')
-                                .hasMatch(v)
-                        ? 'Enter a valid email'
-                        : null,
+                    v == null || !RegExp(r'^\S+@\S+\.\S+$').hasMatch(v)
+                    ? 'Enter a valid email'
+                    : null,
               ),
             ),
 
@@ -143,9 +123,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   foregroundColor: Colors.white,
                 ),
                 child: _isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      )
+                    ? const CircularProgressIndicator(color: Colors.white)
                     : Text(
                         'Continue',
                         style: GoogleFonts.lato(

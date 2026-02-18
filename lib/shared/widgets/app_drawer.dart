@@ -11,121 +11,90 @@ class AppDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final authState = ref.watch(authProvider);
     final user = authState.user;
 
     return Drawer(
-      backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
       child: Column(
         children: [
-          // Drawer Header
           _buildDrawerHeader(
-            isDark,
             userName: user?.name ?? 'Guest User',
             userEmail: user?.email ?? 'guest@archflow.com',
             userImageUrl: user?.profileImage,
           ),
-
-          // Drawer Items
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
                 _buildDrawerItem(
                   context: context,
-                  isDark: isDark,
                   icon: Icons.dashboard_outlined,
                   title: 'Dashboard',
                   isSelected: true,
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                 ),
                 _buildDrawerItem(
                   context: context,
-                  isDark: isDark,
                   icon: Icons.folder_outlined,
                   title: 'My Projects',
-                  trailing: _buildBadge('12', isDark),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  trailing: _buildBadge('12'),
+                  onTap: () => Navigator.pop(context),
                 ),
                 _buildDrawerItem(
                   context: context,
-                  isDark: isDark,
                   icon: Icons.group_outlined,
                   title: 'Team Management',
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                 ),
                 _buildDrawerItem(
                   context: context,
-                  isDark: isDark,
                   icon: Icons.architecture_outlined,
                   title: 'Architecture Library',
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                 ),
                 const Divider(height: 32, indent: 20, endIndent: 20),
                 _buildDrawerItem(
                   context: context,
-                  isDark: isDark,
                   icon: Icons.integration_instructions_outlined,
                   title: 'Integrations',
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                 ),
                 _buildDrawerItem(
                   context: context,
-                  isDark: isDark,
                   icon: Icons.notifications_outlined,
                   title: 'Notifications',
-                  trailing: _buildBadge('3', isDark, color: AppColors.error),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  trailing: _buildBadge('3', color: AppColors.error),
+                  onTap: () => Navigator.pop(context),
                 ),
                 _buildDrawerItem(
                   context: context,
-                  isDark: isDark,
                   icon: Icons.settings_outlined,
                   title: 'Settings',
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                 ),
                 const Divider(height: 32, indent: 20, endIndent: 20),
                 _buildDrawerItem(
                   context: context,
-                  isDark: isDark,
                   icon: Icons.help_outline,
                   title: 'Help & Support',
                   onTap: () {
                     Navigator.pop(context);
-                    _showHelpDialog(context, isDark);
+                    _showHelpDialog(context);
                   },
                 ),
                 _buildDrawerItem(
                   context: context,
-                  isDark: isDark,
                   icon: Icons.info_outline,
                   title: 'About',
                   onTap: () {
                     Navigator.pop(context);
-                    _showAboutDialog(context, isDark);
+                    _showAboutDialog(context);
                   },
                 ),
               ],
             ),
           ),
-
-          // Logout Section
-          _buildLogoutSection(context, ref, isDark),
+          _buildLogoutSection(context, ref),
         ],
       ),
     );
@@ -133,8 +102,7 @@ class AppDrawer extends ConsumerWidget {
 
   // ================== HEADER ==================
 
-  Widget _buildDrawerHeader(
-    bool isDark, {
+  Widget _buildDrawerHeader({
     required String userName,
     required String userEmail,
     String? userImageUrl,
@@ -218,18 +186,11 @@ class AppDrawer extends ConsumerWidget {
               borderRadius: BorderRadius.circular(20),
               onTap: () {},
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.person_outline,
-                      size: 16,
-                      color: Colors.white,
-                    ),
+                    const Icon(Icons.person_outline, size: 16, color: Colors.white),
                     const SizedBox(width: 6),
                     Text(
                       'View Profile',
@@ -253,7 +214,6 @@ class AppDrawer extends ConsumerWidget {
 
   Widget _buildDrawerItem({
     required BuildContext context,
-    required bool isDark,
     required IconData icon,
     required String title,
     required VoidCallback onTap,
@@ -275,10 +235,7 @@ class AppDrawer extends ConsumerWidget {
           icon,
           color: isSelected
               ? AppColors.brandGreen
-              : (iconColor ??
-                    (isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary)),
+              : (iconColor ?? Theme.of(context).colorScheme.onSurface),
           size: 24,
         ),
         title: Text(
@@ -288,10 +245,7 @@ class AppDrawer extends ConsumerWidget {
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             color: isSelected
                 ? AppColors.brandGreen
-                : (textColor ??
-                      (isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary)),
+                : (textColor ?? Theme.of(context).colorScheme.onSurface),
           ),
         ),
         trailing: trailing,
@@ -302,7 +256,7 @@ class AppDrawer extends ConsumerWidget {
     );
   }
 
-  Widget _buildBadge(String count, bool isDark, {Color? color}) {
+  Widget _buildBadge(String count, {Color? color}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
@@ -320,26 +274,21 @@ class AppDrawer extends ConsumerWidget {
     );
   }
 
-  Widget _buildLogoutSection(BuildContext context, WidgetRef ref, bool isDark) {
+  Widget _buildLogoutSection(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
-          ),
-        ),
+        border: Border(top: BorderSide(color: Theme.of(context).dividerColor)),
       ),
       child: _buildDrawerItem(
         context: context,
-        isDark: isDark,
         icon: Icons.logout_outlined,
         title: 'Logout',
         iconColor: AppColors.error,
         textColor: AppColors.error,
         onTap: () {
           Navigator.pop(context);
-          _showLogoutDialog(context, ref, isDark);
+          _showLogoutDialog(context, ref);
         },
       ),
     );
@@ -359,14 +308,11 @@ class AppDrawer extends ConsumerWidget {
 
   // ================== LOGOUT DIALOG ==================
 
-  void _showLogoutDialog(BuildContext context, WidgetRef ref, bool isDark) {
+  void _showLogoutDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
@@ -385,9 +331,7 @@ class AppDrawer extends ConsumerWidget {
                 style: GoogleFonts.lato(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
@@ -398,9 +342,7 @@ class AppDrawer extends ConsumerWidget {
           style: GoogleFonts.lato(
             fontSize: 15,
             height: 1.4,
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
         actions: [
@@ -412,9 +354,7 @@ class AppDrawer extends ConsumerWidget {
             child: Text(
               'Cancel',
               style: GoogleFonts.lato(
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 fontWeight: FontWeight.w600,
                 fontSize: 15,
               ),
@@ -422,10 +362,8 @@ class AppDrawer extends ConsumerWidget {
           ),
           ElevatedButton(
             onPressed: () async {
-              // Close dialog immediately
               Navigator.pop(dialogContext);
 
-              // Perform logout
               try {
                 await ref.read(authProvider.notifier).logout();
               } catch (e) {
@@ -462,13 +400,10 @@ class AppDrawer extends ConsumerWidget {
 
   // ================== HELP DIALOG ==================
 
-  void _showHelpDialog(BuildContext context, bool isDark) {
+  void _showHelpDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
@@ -478,19 +413,14 @@ class AppDrawer extends ConsumerWidget {
                 color: AppColors.brandGreen.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
-                Icons.help_outline,
-                color: AppColors.brandGreen,
-              ),
+              child: const Icon(Icons.help_outline, color: AppColors.brandGreen),
             ),
             const SizedBox(width: 12),
             Text(
               'Help & Support',
               style: GoogleFonts.lato(
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -499,22 +429,23 @@ class AppDrawer extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ✅ Fixed - passes context as parameter
             _helpItem(
-              isDark: isDark,
+              context,
               icon: Icons.email_outlined,
               title: 'Email Support',
               subtitle: 'support@archflow.com',
             ),
             const SizedBox(height: 12),
             _helpItem(
-              isDark: isDark,
+              context,
               icon: Icons.chat_outlined,
               title: 'Live Chat',
               subtitle: 'Available 24/7',
             ),
             const SizedBox(height: 12),
             _helpItem(
-              isDark: isDark,
+              context,
               icon: Icons.book_outlined,
               title: 'Documentation',
               subtitle: 'docs.archflow.com',
@@ -537,21 +468,16 @@ class AppDrawer extends ConsumerWidget {
     );
   }
 
-  Widget _helpItem({
-    required bool isDark,
+  // ✅ Fixed - added BuildContext context as first parameter
+  Widget _helpItem(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String subtitle,
   }) {
     return Row(
       children: [
-        Icon(
-          icon,
-          color: isDark
-              ? AppColors.darkTextSecondary
-              : AppColors.lightTextSecondary,
-          size: 20,
-        ),
+        Icon(icon, color: Theme.of(context).iconTheme.color, size: 20),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -561,18 +487,14 @@ class AppDrawer extends ConsumerWidget {
                 title,
                 style: GoogleFonts.lato(
                   fontWeight: FontWeight.w600,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               Text(
                 subtitle,
                 style: GoogleFonts.lato(
                   fontSize: 12,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  color: Theme.of(context).textTheme.bodySmall?.color,
                 ),
               ),
             ],
@@ -584,13 +506,10 @@ class AppDrawer extends ConsumerWidget {
 
   // ================== ABOUT DIALOG ==================
 
-  void _showAboutDialog(BuildContext context, bool isDark) {
+  void _showAboutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
@@ -600,19 +519,14 @@ class AppDrawer extends ConsumerWidget {
                 color: AppColors.brandGreen.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
-                Icons.info_outline,
-                color: AppColors.brandGreen,
-              ),
+              child: const Icon(Icons.info_outline, color: AppColors.brandGreen),
             ),
             const SizedBox(width: 12),
             Text(
               'About ArchFlow',
               style: GoogleFonts.lato(
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -643,9 +557,7 @@ class AppDrawer extends ConsumerWidget {
                 style: GoogleFonts.lato(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
@@ -655,9 +567,7 @@ class AppDrawer extends ConsumerWidget {
                 'Version 1.0.0',
                 style: GoogleFonts.lato(
                   fontSize: 14,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
               ),
             ),
@@ -667,9 +577,7 @@ class AppDrawer extends ConsumerWidget {
               style: GoogleFonts.lato(
                 fontSize: 14,
                 height: 1.5,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
             const SizedBox(height: 16),
@@ -680,9 +588,7 @@ class AppDrawer extends ConsumerWidget {
                 '© 2026 ArchFlow. All rights reserved.',
                 style: GoogleFonts.lato(
                   fontSize: 12,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
               ),
             ),

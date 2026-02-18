@@ -130,20 +130,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
-          ),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -161,9 +151,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               style: GoogleFonts.lato(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
 
@@ -173,9 +161,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               'We’ve sent a verification code to\n${widget.email}',
               style: GoogleFonts.lato(
                 fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
 
@@ -196,18 +182,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     style: GoogleFonts.lato(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     decoration: InputDecoration(
                       counterText: '',
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: isDark
-                              ? AppColors.darkDivider
-                              : AppColors.lightDivider,
+                          color: Theme.of(context).dividerColor,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(

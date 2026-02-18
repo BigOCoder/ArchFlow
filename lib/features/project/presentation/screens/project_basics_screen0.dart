@@ -31,7 +31,6 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Load saved data if available
     final project = ref.read(projectOnboardingProvider);
     if (_projectName.isEmpty && project.projectName.isNotEmpty) {
       _projectName = project.projectName;
@@ -72,12 +71,8 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
     final isEditing = ref.read(projectOnboardingProvider).isEditMode;
 
     if (isEditing) {
-      ref
-          .read(projectOnboardingProvider.notifier)
-          .goToStep(5); // ✅ Don't pass editMode
-      ref
-          .read(projectOnboardingProvider.notifier)
-          .clearEditMode(); // ✅ Clear AFTER navigation
+      ref.read(projectOnboardingProvider.notifier).goToStep(5);
+      ref.read(projectOnboardingProvider.notifier).clearEditMode();
     } else {
       ref.read(projectOnboardingProvider.notifier).nextStep();
     }
@@ -85,35 +80,23 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
-        // Go back to previous step or exit if it's the first step
         if (ref.read(projectOnboardingProvider).step >= 0) {
           ref.read(projectOnboardingProvider.notifier).previousStep();
-          return false; // Prevent default pop
+          return false;
         }
-        return true; // Allow exit if on first step
+        return true;
       },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
+          // ✅ Removed backgroundColor - uses theme
           appBar: AppBar(
-            backgroundColor: isDark
-                ? AppColors.darkBackground
-                : AppColors.lightBackground,
-            elevation: 0,
+            // ✅ Removed backgroundColor & elevation - uses theme
             leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-              ),
+              icon: const Icon(Icons.arrow_back),
+              // ✅ Removed color - uses theme iconTheme
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -135,9 +118,8 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
                     'Start with the essentials for your project.',
                     style: GoogleFonts.lato(
                       fontSize: 14,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -152,9 +134,8 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
                       icon: Icons.business_center,
                     ),
                     style: GoogleFonts.lato(
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
                     onChanged: (v) => _projectName = v,
                     validator: (v) => v == null || v.trim().isEmpty
@@ -187,7 +168,7 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
 
                   const SizedBox(height: 24),
 
-                  // ✅ UPDATED: Short Project Summary (using appInputDecoration)
+                  // Short Project Summary
                   TextFormField(
                     initialValue: _projectSummary,
                     decoration: appInputDecoration(
@@ -197,9 +178,8 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
                       isMultiline: true,
                     ),
                     style: GoogleFonts.lato(
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
                     maxLines: 4,
                     onChanged: (v) => _projectSummary = v,
@@ -216,13 +196,6 @@ class _ProjectBasicsScreenState extends ConsumerState<ProjectBasicsScreen> {
                     height: 52,
                     child: ElevatedButton(
                       onPressed: _next,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.brandGreen,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
                       child: Text(
                         'Next',
                         style: GoogleFonts.lato(

@@ -18,20 +18,16 @@ class ProjectDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
-  // Platform Selection
   final Set<String> _selectedPlatforms = {};
   final Set<String> _selectedDevices = {};
 
-  // Timeline & Budget
   ExpectedTimeline? _selectedTimeline;
   BudgetRange? _selectedBudget;
 
-  // Scale & Data
   ExpectedTraffic? _selectedTraffic;
   final Set<String> _selectedDataSensitivity = {};
   final Set<String> _selectedCompliance = {};
 
-  // Available options
   final List<String> platforms = [
     'Web application',
     'Mobile application',
@@ -56,7 +52,6 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
 
     final project = ref.read(projectOnboardingProvider);
 
-    // Load saved data if available
     if (_selectedPlatforms.isEmpty && project.platforms.isNotEmpty) {
       _selectedPlatforms.addAll(project.platforms);
       _selectedDevices.addAll(project.supportedDevices);
@@ -126,9 +121,7 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
       return;
     }
 
-    ref
-        .read(projectOnboardingProvider.notifier)
-        .updateProjectDetails(
+    ref.read(projectOnboardingProvider.notifier).updateProjectDetails(
           platforms: _selectedPlatforms.toList(),
           supportedDevices: _selectedDevices.toList(),
           expectedTimeline: _selectedTimeline?.displayName,
@@ -148,10 +141,100 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
     }
   }
 
+  // ✅ Extracted reusable section divider
+  Widget _sectionDivider(String label) {
+    return Row(
+      children: [
+        Expanded(
+          child: Divider(
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).dividerColor,
+            thickness: 1,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            label,
+            style: GoogleFonts.lato(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Divider(
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).dividerColor,
+            thickness: 1,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ✅ Extracted reusable checkbox list
+  Widget _checkboxGroup(List<String> options, Set<String> selected) {
+    return Column(
+      children: options.map((option) {
+        return CheckboxListTile(
+          value: selected.contains(option),
+          onChanged: (checked) {
+            setState(() {
+              if (checked == true) {
+                selected.add(option);
+              } else {
+                selected.remove(option);
+              }
+            });
+          },
+          title: Text(
+            option,
+            style: GoogleFonts.lato(
+              fontSize: 14,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          activeColor: AppColors.brandGreen,
+          contentPadding: EdgeInsets.zero,
+          controlAffinity: ListTileControlAffinity.leading,
+        );
+      }).toList(),
+    );
+  }
+
+  // ✅ Extracted reusable section label
+  Widget _sectionLabel(String text) {
+    return Text(
+      text,
+      style: GoogleFonts.lato(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        // ✅ Fixed - uses theme
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
+    );
+  }
+
+  // ✅ Extracted reusable section subtitle
+  Widget _sectionSubtitle(String text) {
+    return Center(
+      child: Text(
+        text,
+        style: GoogleFonts.lato(
+          fontSize: 12,
+          // ✅ Fixed - uses theme
+          color: Theme.of(context).textTheme.bodyMedium?.color,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         ref.read(projectOnboardingProvider.notifier).previousStep();
@@ -160,16 +243,12 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
+          // ✅ Removed backgroundColor - uses theme
           appBar: AppBar(
-            backgroundColor: isDark
-                ? AppColors.darkBackground
-                : AppColors.lightBackground,
-            elevation: 0,
+            // ✅ Removed backgroundColor & elevation - uses theme
             leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
+              // ✅ Removed color - uses theme iconTheme
               onPressed: () {
                 ref.read(projectOnboardingProvider.notifier).previousStep();
               },
@@ -187,221 +266,46 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                Center(
-                  child: Text(
-                    'Provide technical and planning details for your project.',
-                    style: GoogleFonts.lato(
-                      fontSize: 14,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    ),
-                  ),
+                // ✅ Uses extracted _sectionSubtitle
+                _sectionSubtitle(
+                  'Provide technical and planning details for your project.',
                 ),
                 const SizedBox(height: 32),
 
-                // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                // SECTION 1: Platform Selection
-
-                // Optional Section Divider
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: isDark
-                            ? AppColors.darkDivider
-                            : AppColors.lightDivider,
-                        thickness: 1,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Platform Selection',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: isDark
-                            ? AppColors.darkDivider
-                            : AppColors.lightDivider,
-                        thickness: 1,
-                      ),
-                    ),
-                  ],
-                ),
-
+                // ━━━ SECTION 1: Platform Selection ━━━
+                _sectionDivider('Platform Selection'),
                 const SizedBox(height: 8),
-
-                // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                Center(
-                  child: Text(
-                    'Choose the platforms for your application',
-                    style: GoogleFonts.lato(
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    ),
-                  ),
-                ),
+                _sectionSubtitle('Choose the platforms for your application'),
                 const SizedBox(height: 32),
 
-                // Platforms Checkboxes
-                Text(
-                  'Platforms',
-                  style: GoogleFonts.lato(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
-                  ),
-                ),
-
+                _sectionLabel('Platforms'),
                 const SizedBox(height: 8),
-                ...platforms.map((platform) {
-                  return CheckboxListTile(
-                    value: _selectedPlatforms.contains(platform),
-                    onChanged: (checked) {
-                      setState(() {
-                        if (checked == true) {
-                          _selectedPlatforms.add(platform);
-                        } else {
-                          _selectedPlatforms.remove(platform);
-                        }
-                      });
-                    },
-                    title: Text(
-                      platform,
-                      style: GoogleFonts.lato(
-                        fontSize: 14,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
-                    ),
-                    activeColor: AppColors.brandGreen,
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  );
-                }),
+                // ✅ Uses extracted _checkboxGroup
+                _checkboxGroup(platforms, _selectedPlatforms),
 
                 const SizedBox(height: 16),
 
-                // Supported Devices
-                Text(
-                  'Supported Devices',
-                  style: GoogleFonts.lato(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
-                  ),
-                ),
+                _sectionLabel('Supported Devices'),
                 const SizedBox(height: 8),
-                ...devices.map((device) {
-                  return CheckboxListTile(
-                    value: _selectedDevices.contains(device),
-                    onChanged: (checked) {
-                      setState(() {
-                        if (checked == true) {
-                          _selectedDevices.add(device);
-                        } else {
-                          _selectedDevices.remove(device);
-                        }
-                      });
-                    },
-                    title: Text(
-                      device,
-                      style: GoogleFonts.lato(
-                        fontSize: 14,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
-                    ),
-                    activeColor: AppColors.brandGreen,
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  );
-                }),
+                _checkboxGroup(devices, _selectedDevices),
 
-                // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                // SECTION 2: Timeline & Budget
+                // ━━━ SECTION 2: Timeline & Budget ━━━
+                const SizedBox(height: 32),
+                _sectionDivider('Timeline & Budget'),
+                const SizedBox(height: 8),
+                _sectionSubtitle('Define your project timeframe and budget'),
                 const SizedBox(height: 32),
 
-                // Optional Section Divider
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: isDark
-                            ? AppColors.darkDivider
-                            : AppColors.lightDivider,
-                        thickness: 1,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Timeline & Budget',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: isDark
-                            ? AppColors.darkDivider
-                            : AppColors.lightDivider,
-                        thickness: 1,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 8),
-                // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                Center(
-                  child: Text(
-                    'Define your project timeframe and budget',
-                    style: GoogleFonts.lato(
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-
-                // Expected Timeline
                 AppDropdown<ExpectedTimeline>(
                   label: 'Expected Timeline',
                   icon: Icons.schedule,
                   value: _selectedTimeline,
                   hasError: false,
                   entries: ExpectedTimeline.values
-                      .map(
-                        (timeline) => DropdownMenuEntry(
-                          value: timeline,
-                          label: timeline.displayName,
-                        ),
-                      )
+                      .map((timeline) => DropdownMenuEntry(
+                            value: timeline,
+                            label: timeline.displayName,
+                          ))
                       .toList(),
                   onSelected: (value) {
                     setState(() => _selectedTimeline = value);
@@ -410,95 +314,40 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
 
                 const SizedBox(height: 16),
 
-                // Budget Range
                 AppDropdown<BudgetRange>(
                   label: 'Budget Range',
                   icon: Icons.attach_money,
                   value: _selectedBudget,
                   hasError: false,
                   entries: BudgetRange.values
-                      .map(
-                        (budget) => DropdownMenuEntry(
-                          value: budget,
-                          label: budget.displayName,
-                        ),
-                      )
+                      .map((budget) => DropdownMenuEntry(
+                            value: budget,
+                            label: budget.displayName,
+                          ))
                       .toList(),
                   onSelected: (value) {
                     setState(() => _selectedBudget = value);
                   },
                 ),
 
+                // ━━━ SECTION 3: Scale & Data Sensitivity ━━━
                 const SizedBox(height: 32),
-
-                // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                // SECTION 3: Scale & Data Sensitivity
-                const SizedBox(height: 32),
-
-                // Optional Section Divider
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: isDark
-                            ? AppColors.darkDivider
-                            : AppColors.lightDivider,
-                        thickness: 1,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Scale & Data Sensitivity',
-                        style: GoogleFonts.lato(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: isDark
-                            ? AppColors.darkDivider
-                            : AppColors.lightDivider,
-                        thickness: 1,
-                      ),
-                    ),
-                  ],
-                ),
-
+                _sectionDivider('Scale & Data Sensitivity'),
                 const SizedBox(height: 8),
-
-                // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                Center(
-                  child: Text(
-                    'Specify performance and security requirements',
-                    style: GoogleFonts.lato(
-                      fontSize: 12,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
-                    ),
-                  ),
-                ),
+                _sectionSubtitle(
+                    'Specify performance and security requirements'),
                 const SizedBox(height: 32),
 
-                // Expected Traffic
                 AppDropdown<ExpectedTraffic>(
                   label: 'Expected Traffic',
                   icon: Icons.trending_up,
                   value: _selectedTraffic,
                   hasError: false,
                   entries: ExpectedTraffic.values
-                      .map(
-                        (traffic) => DropdownMenuEntry(
-                          value: traffic,
-                          label: traffic.displayName,
-                        ),
-                      )
+                      .map((traffic) => DropdownMenuEntry(
+                            value: traffic,
+                            label: traffic.displayName,
+                          ))
                       .toList(),
                   onSelected: (value) {
                     setState(() => _selectedTraffic = value);
@@ -507,101 +356,24 @@ class _ProjectDetailsScreenState extends ConsumerState<ProjectDetailsScreen> {
 
                 const SizedBox(height: 32),
 
-                // Data Sensitivity
-                Text(
-                  'Data Sensitivity',
-                  style: GoogleFonts.lato(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
-                  ),
-                ),
+                _sectionLabel('Data Sensitivity'),
                 const SizedBox(height: 8),
-                ...dataSensitivityOptions.map((option) {
-                  return CheckboxListTile(
-                    value: _selectedDataSensitivity.contains(option),
-                    onChanged: (checked) {
-                      setState(() {
-                        if (checked == true) {
-                          _selectedDataSensitivity.add(option);
-                        } else {
-                          _selectedDataSensitivity.remove(option);
-                        }
-                      });
-                    },
-                    title: Text(
-                      option,
-                      style: GoogleFonts.lato(
-                        fontSize: 14,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
-                    ),
-                    activeColor: AppColors.brandGreen,
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  );
-                }),
+                _checkboxGroup(dataSensitivityOptions, _selectedDataSensitivity),
 
                 const SizedBox(height: 16),
 
-                // Compliance Needs
-                Text(
-                  'Compliance Needs (Optional)',
-                  style: GoogleFonts.lato(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
-                  ),
-                ),
+                _sectionLabel('Compliance Needs (Optional)'),
                 const SizedBox(height: 8),
-                ...complianceOptions.map((option) {
-                  return CheckboxListTile(
-                    value: _selectedCompliance.contains(option),
-                    onChanged: (checked) {
-                      setState(() {
-                        if (checked == true) {
-                          _selectedCompliance.add(option);
-                        } else {
-                          _selectedCompliance.remove(option);
-                        }
-                      });
-                    },
-                    title: Text(
-                      option,
-                      style: GoogleFonts.lato(
-                        fontSize: 14,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
-                    ),
-                    activeColor: AppColors.brandGreen,
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  );
-                }),
+                _checkboxGroup(complianceOptions, _selectedCompliance),
 
                 const SizedBox(height: 48),
 
-                // Next Button
                 SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
                     onPressed: _handleNext,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.brandGreen,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
+                    // ✅ Removed style - uses theme
                     child: Text(
                       'Next',
                       style: GoogleFonts.lato(

@@ -1,4 +1,3 @@
-import 'package:archflow/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,17 +6,10 @@ class AuthTitle extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const AuthTitle({
-    super.key,
-    required this.title,
-    required this.subtitle,
-  });
+  const AuthTitle({super.key, required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -26,9 +18,7 @@ class AuthTitle extends StatelessWidget {
           style: GoogleFonts.lato(
             fontSize: 38,
             fontWeight: FontWeight.bold,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
         ),
         const SizedBox(height: 8),
@@ -36,9 +26,7 @@ class AuthTitle extends StatelessWidget {
           subtitle,
           style: GoogleFonts.lato(
             fontSize: 16,
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
       ],

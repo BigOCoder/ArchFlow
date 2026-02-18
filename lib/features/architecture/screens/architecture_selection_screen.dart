@@ -1,4 +1,3 @@
-
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/team/presentation/screens/team_management_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,32 +16,18 @@ class ArchitectureSelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: isDark ? AppColors.darkIcon : AppColors.lightIcon,
-          ),
+          icon: Icon(Icons.arrow_back_ios_new),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: Text(
           'Choose What to Design',
-          style: GoogleFonts.lato(
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontSize: 20,
             fontWeight: FontWeight.w700,
           ),
@@ -92,9 +77,7 @@ class ArchitectureSelectionScreen extends StatelessWidget {
                           style: GoogleFonts.lato(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
+                            color: Theme.of(context).colorScheme.onBackground,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -102,9 +85,9 @@ class ArchitectureSelectionScreen extends StatelessWidget {
                           'Tap any card to learn more',
                           style: GoogleFonts.lato(
                             fontSize: 14,
-                            color: isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.color,
                           ),
                         ),
                       ],
@@ -122,7 +105,7 @@ class ArchitectureSelectionScreen extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
-              childAspectRatio: 0.95, // ✅ Fixed ratio to prevent overflow
+              childAspectRatio: 0.95,
               children: [
                 _ArchitectureCard(
                   icon: Icons.storage_outlined,
@@ -176,7 +159,7 @@ class ArchitectureSelectionScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20), // ✅ Extra padding at bottom
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -201,8 +184,6 @@ class _ArchitectureCard extends StatelessWidget {
 
   // ✅ Info icon opens minimal dialog
   void _showInfoDialog(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.6),
@@ -212,7 +193,7 @@ class _ArchitectureCard extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 400),
           padding: const EdgeInsets.all(28),
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
@@ -253,9 +234,7 @@ class _ArchitectureCard extends StatelessWidget {
                 style: GoogleFonts.lato(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -267,9 +246,7 @@ class _ArchitectureCard extends StatelessWidget {
                 style: GoogleFonts.lato(
                   fontSize: 15,
                   height: 1.6,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -307,8 +284,6 @@ class _ArchitectureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -320,10 +295,8 @@ class _ArchitectureCard extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                isDark ? AppColors.darkSurface : AppColors.lightSurface,
-                isDark
-                    ? AppColors.darkSurface.withOpacity(0.95)
-                    : AppColors.lightSurface.withOpacity(0.95),
+                Theme.of(context).colorScheme.surface,
+                Theme.of(context).colorScheme.surface.withOpacity(0.95),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -340,9 +313,9 @@ class _ArchitectureCard extends StatelessWidget {
                 offset: const Offset(0, 8),
               ),
               BoxShadow(
-                color: isDark
-                    ? Colors.black.withOpacity(0.2)
-                    : Colors.black.withOpacity(0.05),
+                color: Theme.of(
+                  context,
+                ).shadowColor, // ✅ Uses theme shadow color
                 blurRadius: 15,
                 offset: const Offset(0, 4),
               ),
@@ -384,9 +357,7 @@ class _ArchitectureCard extends StatelessWidget {
                   style: GoogleFonts.lato(
                     fontSize: 15, // ✅ Reduced font size
                     fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                     height: 1.3,
                   ),
                   textAlign: TextAlign.center,
@@ -428,22 +399,11 @@ class UnderDevelopmentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: isDark ? AppColors.darkIcon : AppColors.lightIcon,
-          ),
+          icon: Icon(Icons.arrow_back_ios_new),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -476,9 +436,7 @@ class UnderDevelopmentPage extends StatelessWidget {
                 style: GoogleFonts.lato(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -488,9 +446,7 @@ class UnderDevelopmentPage extends StatelessWidget {
                 style: GoogleFonts.lato(
                   fontSize: 16,
                   height: 1.6,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
                 textAlign: TextAlign.center,
               ),

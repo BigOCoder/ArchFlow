@@ -2,22 +2,18 @@ import 'package:archflow/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// ✅ UNIFIED - Handles both single-line and multiline fields
 InputDecoration appInputDecoration({
   required BuildContext context,
   required String label,
   required String hint,
-  IconData? icon, // ✅ Optional now
+  IconData? icon,
   Widget? suffixIcon,
-  bool isMultiline = false, // ✅ New parameter
+  bool isMultiline = false,
 }) {
-  final isDark = Theme.of(context).brightness == Brightness.dark;
-  final borderColor = isDark ? AppColors.darkDivider : AppColors.lightDivider;
+  final borderColor = Theme.of(context).dividerColor;
 
-  // ✅ Smart border radius based on field type
   final borderRadius = isMultiline ? 12.0 : 30.0;
 
-  // ✅ Smart padding based on field type
   final contentPadding = isMultiline
       ? const EdgeInsets.all(16)
       : const EdgeInsets.symmetric(horizontal: 20, vertical: 18);
@@ -28,23 +24,19 @@ InputDecoration appInputDecoration({
 
     labelStyle: GoogleFonts.lato(
       fontSize: 14,
-      color: isDark
-          ? AppColors.darkTextSecondary
-          : AppColors.lightTextSecondary,
+      color: Theme.of(context).textTheme.bodySmall?.color,
     ),
     hintStyle: GoogleFonts.lato(
       fontSize: 14,
-      color: isDark
-          ? AppColors.darkTextSecondary
-          : AppColors.lightTextSecondary,
+      color: Theme.of(context).textTheme.bodySmall?.color,
     ),
 
-    // ✅ Only show icon if provided
     prefixIcon: icon != null ? Icon(icon, color: AppColors.brandGreen) : null,
     suffixIcon: suffixIcon,
 
     contentPadding: contentPadding,
-    alignLabelWithHint: isMultiline, // ✅ Only for multiline
+    alignLabelWithHint: isMultiline,
+
     /// 🔲 Default border
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(borderRadius),

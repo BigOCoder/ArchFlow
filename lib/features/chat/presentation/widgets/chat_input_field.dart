@@ -5,25 +5,23 @@ class ChatInputField extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onSend;
   final bool enabled;
-  
+
   const ChatInputField({
     super.key,
     required this.controller,
     required this.onSend,
     this.enabled = true,
   });
-  
+
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        color: Theme.of(context).scaffoldBackgroundColor,
         border: Border(
           top: BorderSide(
-            color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+            color: Theme.of(context).dividerColor,
           ),
         ),
       ),
@@ -38,7 +36,7 @@ class ChatInputField extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Type your message...',
                 filled: true,
-                fillColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                fillColor: Theme.of(context).colorScheme.surface,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                   borderSide: BorderSide.none,
@@ -60,11 +58,7 @@ class ChatInputField extends StatelessWidget {
               onTap: enabled ? onSend : null,
               child: Container(
                 padding: const EdgeInsets.all(12),
-                child: const Icon(
-                  Icons.send,
-                  color: Colors.white,
-                  size: 20,
-                ),
+                child: const Icon(Icons.send, color: Colors.white, size: 20),
               ),
             ),
           ),

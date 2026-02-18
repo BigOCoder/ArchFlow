@@ -1,7 +1,6 @@
+import 'package:archflow/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../core/theme/app_color.dart';
 
 class StepHeader extends StatelessWidget {
   final int currentStep;
@@ -17,8 +16,6 @@ class StepHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     final progress = currentStep / totalSteps;
 
     return Row(
@@ -34,9 +31,7 @@ class StepHeader extends StatelessWidget {
               CircularProgressIndicator(
                 value: progress,
                 strokeWidth: 6,
-                backgroundColor: isDark
-                    ? AppColors.darkDivider
-                    : AppColors.lightDivider,
+                backgroundColor: Theme.of(context).dividerColor,
                 valueColor: const AlwaysStoppedAnimation(AppColors.brandGreen),
               ),
 
@@ -73,9 +68,7 @@ class StepHeader extends StatelessWidget {
               style: GoogleFonts.lato(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
           ],

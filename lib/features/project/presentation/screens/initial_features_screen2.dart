@@ -96,9 +96,7 @@ class _InitialFeaturesScreenState extends ConsumerState<InitialFeaturesScreen> {
           style: GoogleFonts.lato(),
         ),
         duration: const Duration(seconds: 1),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
     );
   }
@@ -132,24 +130,21 @@ class _InitialFeaturesScreenState extends ConsumerState<InitialFeaturesScreen> {
     );
   }
 
-void _handleNext() {
-  ref.read(projectOnboardingProvider.notifier).updateFeatures(_features);
+  void _handleNext() {
+    ref.read(projectOnboardingProvider.notifier).updateFeatures(_features);
 
-  final isEditing = ref.read(projectOnboardingProvider).isEditMode;
+    final isEditing = ref.read(projectOnboardingProvider).isEditMode;
 
-  if (isEditing) {
-    ref.read(projectOnboardingProvider.notifier).clearEditMode();
-    ref.read(projectOnboardingProvider.notifier).goToStep(5);
-  } else {
-    ref.read(projectOnboardingProvider.notifier).nextStep();
+    if (isEditing) {
+      ref.read(projectOnboardingProvider.notifier).clearEditMode();
+      ref.read(projectOnboardingProvider.notifier).goToStep(5);
+    } else {
+      ref.read(projectOnboardingProvider.notifier).nextStep();
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         ref.read(projectOnboardingProvider.notifier).previousStep();
@@ -158,21 +153,9 @@ void _handleNext() {
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
           appBar: AppBar(
-            backgroundColor: isDark
-                ? AppColors.darkBackground
-                : AppColors.lightBackground,
-            elevation: 0,
             leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-              ),
+              icon: Icon(Icons.arrow_back),
               onPressed: () {
                 ref.read(projectOnboardingProvider.notifier).previousStep();
               },
@@ -201,9 +184,9 @@ void _handleNext() {
                           'List the features you\'re planning to build.',
                           style: GoogleFonts.lato(
                             fontSize: 14,
-                            color: isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.color,
                           ),
                         ),
 
@@ -232,9 +215,9 @@ void _handleNext() {
                                   'This section is optional. You can skip or add feature ideas for your project.',
                                   style: GoogleFonts.lato(
                                     fontSize: 12,
-                                    color: isDark
-                                        ? AppColors.darkTextPrimary
-                                        : AppColors.lightTextPrimary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onBackground,
                                   ),
                                 ),
                               ),
@@ -264,14 +247,10 @@ void _handleNext() {
                                 margin: const EdgeInsets.only(bottom: 16),
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: isDark
-                                      ? AppColors.darkSurface
-                                      : AppColors.lightSurface,
+                                  color: Theme.of(context).colorScheme.surface,
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: isDark
-                                        ? AppColors.darkDivider
-                                        : AppColors.lightDivider,
+                                    color: Theme.of(context).dividerColor,
                                   ),
                                 ),
                                 child: Column(
@@ -305,11 +284,9 @@ void _handleNext() {
                                                 style: GoogleFonts.lato(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w600,
-                                                  color: isDark
-                                                      ? AppColors
-                                                            .darkTextPrimary
-                                                      : AppColors
-                                                            .lightTextPrimary,
+                                                  color: Theme.of(
+                                                    context,
+                                                  ).colorScheme.onSurface,
                                                 ),
                                               ),
                                               if (feature
@@ -320,11 +297,10 @@ void _handleNext() {
                                                   feature.description,
                                                   style: GoogleFonts.lato(
                                                     fontSize: 12,
-                                                    color: isDark
-                                                        ? AppColors
-                                                              .darkTextSecondary
-                                                        : AppColors
-                                                              .lightTextSecondary,
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.color,
                                                   ),
                                                   maxLines: 2,
                                                   overflow:
@@ -336,9 +312,9 @@ void _handleNext() {
                                         ),
                                         Icon(
                                           Icons.drag_handle,
-                                          color: isDark
-                                              ? AppColors.darkTextSecondary
-                                              : AppColors.lightTextSecondary,
+                                          color: Theme.of(
+                                            context,
+                                          ).iconTheme.color,
                                           size: 20,
                                         ),
                                       ],
@@ -379,9 +355,7 @@ void _handleNext() {
                         TextField(
                           controller: _featureNameController,
                           style: GoogleFonts.lato(
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
+                            color: Theme.of(context).colorScheme.onBackground,
                           ),
                           decoration: appInputDecoration(
                             context: context,
@@ -399,9 +373,7 @@ void _handleNext() {
                           controller: _featureDescController,
                           maxLines: 3,
                           style: GoogleFonts.lato(
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
+                            color: Theme.of(context).colorScheme.onBackground,
                           ),
                           decoration: appInputDecoration(
                             context: context,
@@ -426,15 +398,6 @@ void _handleNext() {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.brandGreen,
-                              side: const BorderSide(
-                                color: AppColors.brandGreen,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
                           ),
                         ),
 
@@ -448,9 +411,7 @@ void _handleNext() {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkBackground
-                        : AppColors.lightBackground,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),
@@ -464,13 +425,6 @@ void _handleNext() {
                     height: 52,
                     child: ElevatedButton(
                       onPressed: _handleNext,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.brandGreen,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
                       child: Text(
                         'Next',
                         style: GoogleFonts.lato(

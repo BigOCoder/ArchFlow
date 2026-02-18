@@ -92,7 +92,7 @@ class _EducationBackgroundScreenState
 
     final selectedSubjects = _coreSubjects.entries
         .where((e) => e.value)
-        .map((e) => _coreSubjectsMap[e.key]!) 
+        .map((e) => _coreSubjectsMap[e.key]!)
         .toList();
 
     final notifier = ref.read(onboardingProvider.notifier);
@@ -115,20 +115,14 @@ class _EducationBackgroundScreenState
     }
   }
 
-  Widget _sectionCard({
-    required bool isDark,
-    required String title,
-    required Widget child,
-  }) {
+  Widget _sectionCard({required String title, required Widget child}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
-        ),
+        border: Border.all(color: Theme.of(context).dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,9 +132,7 @@ class _EducationBackgroundScreenState
             style: GoogleFonts.lato(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -152,28 +144,21 @@ class _EducationBackgroundScreenState
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return PopScope(
       canPop: false, // ✅ Prevents system back
       onPopInvoked: (didPop) {
         // Do nothing - user cannot go back from screen 1
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
         appBar: AppBar(
-          automaticallyImplyLeading: false, // ✅ No back arrow
+          automaticallyImplyLeading: false,
           title: Padding(
             padding: const EdgeInsets.only(left: 8),
             child: Text(
               'Education & Learning Background',
               style: GoogleFonts.lato(
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: Theme.of(context).appBarTheme.titleTextStyle?.color,
               ),
             ),
           ),
@@ -193,16 +178,13 @@ class _EducationBackgroundScreenState
                 'Help us understand your academic background.',
                 style: GoogleFonts.lato(
                   fontSize: 14,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
               ),
               const SizedBox(height: 24),
 
               /// 🎓 Education Level
               _sectionCard(
-                isDark: isDark,
                 title: 'Highest education level',
                 child: Column(
                   children: EducationLevel.values.map((level) {
@@ -213,9 +195,7 @@ class _EducationBackgroundScreenState
                       title: Text(
                         level.displayName, // ✅ Beautiful display
                         style: GoogleFonts.lato(
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       activeColor: AppColors.brandGreen,
@@ -226,7 +206,6 @@ class _EducationBackgroundScreenState
 
               /// 💻 CS Background
               _sectionCard(
-                isDark: isDark,
                 title: 'CS background',
                 child: Column(
                   children: CsBackground.values.map((bg) {
@@ -237,9 +216,7 @@ class _EducationBackgroundScreenState
                       title: Text(
                         bg.displayName, // ✅ Beautiful display
                         style: GoogleFonts.lato(
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       activeColor: AppColors.brandGreen,
@@ -250,7 +227,6 @@ class _EducationBackgroundScreenState
 
               /// 📚 Core Subjects
               _sectionCard(
-                isDark: isDark,
                 title: 'Core subjects knowledge',
                 child: Column(
                   children: _coreSubjects.keys.map((key) {
@@ -272,10 +248,6 @@ class _EducationBackgroundScreenState
                 height: 52,
                 child: ElevatedButton(
                   onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.brandGreen,
-                    foregroundColor: Colors.white,
-                  ),
                   child: Text(
                     'Save',
                     style: GoogleFonts.lato(

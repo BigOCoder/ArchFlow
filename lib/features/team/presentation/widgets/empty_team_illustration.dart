@@ -4,12 +4,7 @@ import 'package:archflow/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
 class EmptyTeamIllustration extends StatelessWidget {
-  final bool isDark;
-
-  const EmptyTeamIllustration({
-    super.key,
-    required this.isDark,
-  });
+  const EmptyTeamIllustration({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +32,10 @@ class EmptyTeamIllustration extends StatelessWidget {
             ),
           ),
 
-          // People Icons
-          Positioned(
-            top: 40,
-            child: _personIcon('👥', 0.3),
-          ),
-          Positioned(
-            bottom: 50,
-            left: 40,
-            child: _personIcon('👤', 0.25),
-          ),
-          Positioned(
-            bottom: 50,
-            right: 40,
-            child: _personIcon('👤', 0.25),
-          ),
+          // People Icons - ✅ Pass context to each call
+          Positioned(top: 40, child: _personIcon(context, '👥', 0.3)),
+          Positioned(bottom: 50, left: 40, child: _personIcon(context, '👤', 0.25)),
+          Positioned(bottom: 50, right: 40, child: _personIcon(context, '👤', 0.25)),
 
           // Center Plus Icon
           Container(
@@ -68,37 +52,28 @@ class EmptyTeamIllustration extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Icon(
-              Icons.group_add,
-              color: Colors.white,
-              size: 40,
-            ),
+            child: const Icon(Icons.group_add, color: Colors.white, size: 40),
           ),
         ],
       ),
     );
   }
 
-  Widget _personIcon(String emoji, double opacity) {
+  // ✅ Fixed - added BuildContext context as first parameter
+  Widget _personIcon(BuildContext context, String emoji, double opacity) {
     return Container(
       width: 60,
       height: 60,
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkSurface.withOpacity(opacity)
-            : AppColors.lightSurface.withOpacity(opacity),
+        // ✅ Fixed - uses theme instead of isDark
+        color: Theme.of(context).colorScheme.surface.withOpacity(opacity),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: AppColors.brandGreen.withOpacity(0.2),
           width: 2,
         ),
       ),
-      child: Center(
-        child: Text(
-          emoji,
-          style: const TextStyle(fontSize: 28),
-        ),
-      ),
+      child: Center(child: Text(emoji, style: const TextStyle(fontSize: 28))),
     );
   }
 }

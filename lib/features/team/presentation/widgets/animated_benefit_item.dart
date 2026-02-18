@@ -1,6 +1,3 @@
-// lib/features/team/presentation/widgets/animated_benefit_item.dart
-
-import 'package:archflow/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -42,10 +39,7 @@ class _AnimatedBenefitItemState extends State<AnimatedBenefitItem>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(-0.3, 0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     Future.delayed(widget.delay, () {
       if (mounted) _controller.forward();
@@ -60,8 +54,6 @@ class _AnimatedBenefitItemState extends State<AnimatedBenefitItem>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return FadeTransition(
       opacity: _fadeAnimation,
       child: SlideTransition(
@@ -78,11 +70,7 @@ class _AnimatedBenefitItemState extends State<AnimatedBenefitItem>
                   color: widget.color.withOpacity(0.15),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.check_rounded,
-                  size: 14,
-                  color: widget.color,
-                ),
+                child: Icon(Icons.check_rounded, size: 14, color: widget.color),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -90,9 +78,7 @@ class _AnimatedBenefitItemState extends State<AnimatedBenefitItem>
                   widget.text,
                   style: GoogleFonts.lato(
                     fontSize: 13.5,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                     height: 1.5,
                     fontWeight: FontWeight.w500,
                   ),

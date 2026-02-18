@@ -20,7 +20,6 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
   PrimaryGoal? _goal;
   Timeline? _timeline;
 
-  /// ---------------- STATE RESTORE ----------------
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -34,7 +33,6 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
     ref.read(onboardingProvider.notifier).previousStep();
   }
 
-  /// ---------------- SUBMIT ----------------
   void _submit() {
     if (_goal == null || _timeline == null) {
       AppSnackBar.show(
@@ -52,31 +50,26 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
     final isEditing = ref.read(onboardingProvider).isEditingFromReview;
 
     if (isEditing) {
-      // Return to Final Review
       notifier.clearEditMode();
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const FinalReviewScreen()),
       );
     } else {
-      // Normal flow
-      notifier.nextStep(); // Or Navigator.push for screen 7
+      notifier.nextStep();
     }
   }
 
-  /// ---------------- UI HELPERS ----------------
-  Widget _card({
-    required bool isDark,
-    required String title,
-    required Widget child,
-  }) {
+  Widget _card({required String title, required Widget child}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        // ✅ Fixed - uses theme
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          // ✅ Fixed - uses theme
+          color: Theme.of(context).dividerColor,
         ),
       ),
       child: Column(
@@ -87,9 +80,8 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
             style: GoogleFonts.lato(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -100,7 +92,6 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
   }
 
   Widget _radioTile<T>({
-    required bool isDark,
     required T value,
     required T? groupValue,
     required String label,
@@ -115,45 +106,34 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
       title: Text(
         label,
         style: GoogleFonts.lato(
-          color: isDark
-              ? AppColors.darkTextPrimary
-              : AppColors.lightTextPrimary,
+          // ✅ Fixed - uses theme
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );
   }
 
-  /// ---------------- BUILD ----------------
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         _handleBackPressed();
         return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
+        // ✅ Removed backgroundColor - uses theme
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
+            icon: const Icon(Icons.arrow_back),
+            // ✅ Removed color - uses theme iconTheme
             onPressed: _handleBackPressed,
           ),
           title: Text(
             'Primary Goal',
             style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
@@ -169,39 +149,15 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
 
               const SizedBox(height: 24),
 
-              // Text(
-              //   'Primary Goal',
-              //   style: GoogleFonts.lato(
-              //     fontSize: 22,
-              //     fontWeight: FontWeight.bold,
-              //     color: isDark
-              //         ? AppColors.darkTextPrimary
-              //         : AppColors.lightTextPrimary,
-              //   ),
-              // ),
-              // const SizedBox(height: 8),
-              // Text(
-              //   'What is your main objective and timeline?',
-              //   style: GoogleFonts.lato(
-              //     fontSize: 14,
-              //     color: isDark
-              //         ? AppColors.darkTextSecondary
-              //         : AppColors.lightTextSecondary,
-              //   ),
-              // ),
-              // const SizedBox(height: 32),
-
               /// 🎯 GOAL
               _card(
-                isDark: isDark,
                 title: 'Primary Goal',
                 child: Column(
                   children: PrimaryGoal.values.map((goal) {
                     return _radioTile(
-                      isDark: isDark,
                       value: goal,
                       groupValue: _goal,
-                      label: goal.displayName, // ✅ Beautiful display
+                      label: goal.displayName,
                       onChanged: (v) => setState(() => _goal = v),
                     );
                   }).toList(),
@@ -210,7 +166,6 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
 
               /// ⏱️ TIMELINE
               _card(
-                isDark: isDark,
                 title: 'Timeline',
                 child: GridView.count(
                   crossAxisCount: 2,
@@ -231,30 +186,24 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
                           border: Border.all(
                             color: isSelected
                                 ? AppColors.brandGreen
-                                : (isDark
-                                      ? AppColors.darkDivider
-                                      : AppColors.lightDivider),
-                            width: isSelected
-                                ? 2
-                                : 1, // ✅ Thicker border when selected
+                                // ✅ Fixed - uses theme
+                                : Theme.of(context).dividerColor,
+                            width: isSelected ? 2 : 1,
                           ),
                           color: isSelected
-                              ? AppColors.brandGreen.withOpacity(
-                                  0.1,
-                                ) // ✅ Subtle background
+                              ? AppColors.brandGreen.withOpacity(0.1)
                               : Colors.transparent,
                         ),
                         child: Text(
-                          t.displayName, // ✅ Beautiful display
+                          t.displayName,
                           style: GoogleFonts.lato(
                             fontWeight: isSelected
                                 ? FontWeight.w600
                                 : FontWeight.normal,
                             color: isSelected
                                 ? AppColors.brandGreen
-                                : (isDark
-                                      ? AppColors.darkTextSecondary
-                                      : AppColors.lightTextSecondary),
+                                // ✅ Fixed - uses theme
+                                : Theme.of(context).textTheme.bodyMedium?.color,
                           ),
                         ),
                       ),
@@ -272,10 +221,7 @@ class _PrimaryGoalScreenState extends ConsumerState<PrimaryGoalScreen> {
                   onPressed: (_goal != null && _timeline != null)
                       ? _submit
                       : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.brandGreen,
-                    foregroundColor: Colors.white,
-                  ),
+                  // ✅ Removed style - uses theme
                   child: Text(
                     'Next',
                     style: GoogleFonts.lato(

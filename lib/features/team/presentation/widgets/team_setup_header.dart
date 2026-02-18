@@ -9,8 +9,6 @@ class TeamSetupHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -46,15 +44,16 @@ class TeamSetupHeader extends StatelessWidget {
             ],
           ),
         ),
-        
+
         const SizedBox(height: 24),
 
         // Title with gradient
         ShaderMask(
           shaderCallback: (bounds) => LinearGradient(
             colors: [
-              isDark ? Colors.white : Colors.black,
-              isDark ? Colors.white70 : Colors.black87,
+              // ✅ Fixed - uses theme
+              Theme.of(context).colorScheme.onBackground,
+              Theme.of(context).colorScheme.onBackground.withOpacity(0.85),
             ],
           ).createShader(bounds),
           child: Text(
@@ -62,13 +61,13 @@ class TeamSetupHeader extends StatelessWidget {
             style: GoogleFonts.lato(
               fontSize: 42,
               fontWeight: FontWeight.w900,
-              color: Colors.white,
+              color: Colors.white, // ✅ Keep white - required for ShaderMask
               height: 1.1,
               letterSpacing: -1,
             ),
           ),
         ),
-        
+
         const SizedBox(height: 16),
 
         // Subtitle with accent
@@ -76,19 +75,15 @@ class TeamSetupHeader extends StatelessWidget {
           padding: const EdgeInsets.only(left: 16),
           decoration: BoxDecoration(
             border: Border(
-              left: BorderSide(
-                color: AppColors.brandGreen,
-                width: 4,
-              ),
+              left: BorderSide(color: AppColors.brandGreen, width: 4),
             ),
           ),
           child: Text(
             'Choose to create a new team from scratch or select from existing team templates.',
             style: GoogleFonts.lato(
               fontSize: 16,
-              color: isDark 
-                  ? AppColors.darkTextSecondary 
-                  : AppColors.lightTextSecondary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).textTheme.bodyMedium?.color,
               height: 1.6,
               fontStyle: FontStyle.italic,
             ),

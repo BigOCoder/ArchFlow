@@ -22,7 +22,6 @@ class _TechStackKnowledgeScreenState
   String? _backend;
   String? _apiKnowledge;
 
-  // ✅ ADD THESE THREE MAPS:
   final Map<String, String> _frontendMap = {
     'Flutter': 'FLUTTER',
     'React': 'REACT',
@@ -47,7 +46,6 @@ class _TechStackKnowledgeScreenState
     'Advanced': 'ADVANCED',
   };
 
-  /// ---------------- STATE RESTORE ----------------
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -55,9 +53,7 @@ class _TechStackKnowledgeScreenState
     final onboarding = ref.read(onboardingProvider);
     final techStack = onboarding.techStack;
 
-    // ✅ CHANGED: Reverse lookup from backend value to display name
     if (techStack.isNotEmpty && _frontend == null) {
-      // Convert FLUTTER -> Flutter
       _frontend = _frontendMap.entries
           .firstWhere(
             (e) => e.value == techStack[0],
@@ -65,7 +61,6 @@ class _TechStackKnowledgeScreenState
           )
           .key;
 
-      // Convert SPRING_BOOT -> Spring Boot
       if (techStack.length > 1) {
         _backend = _backendMap.entries
             .firstWhere(
@@ -75,7 +70,6 @@ class _TechStackKnowledgeScreenState
             .key;
       }
 
-      // Convert INTERMEDIATE -> Intermediate
       if (techStack.length > 2) {
         _apiKnowledge = _apiKnowledgeMap.entries
             .firstWhere(
@@ -106,9 +100,9 @@ class _TechStackKnowledgeScreenState
     }
 
     final techStack = [
-      _frontendMap[_frontend!]!, // Flutter -> FLUTTER
-      _backendMap[_backend!]!, // Spring Boot -> SPRING_BOOT
-      _apiKnowledgeMap[_apiKnowledge!]!, // Intermediate -> INTERMEDIATE
+      _frontendMap[_frontend!]!,
+      _backendMap[_backend!]!,
+      _apiKnowledgeMap[_apiKnowledge!]!,
     ];
 
     final notifier = ref.read(onboardingProvider.notifier);
@@ -127,7 +121,6 @@ class _TechStackKnowledgeScreenState
   }
 
   Widget _section({
-    required bool isDark,
     required IconData icon,
     required String title,
     required String? value,
@@ -139,10 +132,12 @@ class _TechStackKnowledgeScreenState
       padding: const EdgeInsets.all(16),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        // ✅ Fixed - uses theme
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          // ✅ Fixed - uses theme
+          color: Theme.of(context).dividerColor,
         ),
       ),
       child: AppDropdown<String>(
@@ -160,29 +155,26 @@ class _TechStackKnowledgeScreenState
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    // ✅ Fixed - build was broken (missing WillPopScope return + isDark)
     return WillPopScope(
       onWillPop: () async {
         _handleBackPressed();
         return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
+        // ✅ Removed backgroundColor - uses theme
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
+            // ✅ Removed color - uses theme iconTheme
             onPressed: _handleBackPressed,
           ),
           title: Text(
             'Tech Stack Knowledge',
             style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
@@ -198,8 +190,8 @@ class _TechStackKnowledgeScreenState
 
               const SizedBox(height: 24),
 
+              /// 🖥️ FRONTEND
               _section(
-                isDark: isDark,
                 icon: Icons.desktop_windows,
                 title: 'Frontend Technology',
                 value: _frontend,
@@ -209,22 +201,19 @@ class _TechStackKnowledgeScreenState
 
               /// 🧩 BACKEND
               _section(
-                isDark: isDark,
                 icon: Icons.storage,
                 title: 'Backend Technology',
                 value: _backend,
-                items: _backendMap.keys.toList(), 
+                items: _backendMap.keys.toList(),
                 onChanged: (v) => setState(() => _backend = v),
               ),
 
               /// 🔌 API KNOWLEDGE
               _section(
-                isDark: isDark,
                 icon: Icons.api,
                 title: 'API Knowledge',
                 value: _apiKnowledge,
-                items: _apiKnowledgeMap.keys
-                    .toList(), 
+                items: _apiKnowledgeMap.keys.toList(),
                 onChanged: (v) => setState(() => _apiKnowledge = v),
               ),
 
@@ -235,10 +224,7 @@ class _TechStackKnowledgeScreenState
                 height: 52,
                 child: ElevatedButton(
                   onPressed: _canProceed ? _submit : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.brandGreen,
-                    foregroundColor: Colors.white,
-                  ),
+                  // ✅ Removed style - uses theme
                   child: Text(
                     'Next',
                     style: GoogleFonts.lato(

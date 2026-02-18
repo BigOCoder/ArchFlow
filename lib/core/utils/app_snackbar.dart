@@ -10,25 +10,16 @@ class AppSnackBar {
     Color iconColor = AppColors.brandGreen,
     Duration duration = const Duration(seconds: 2),
   }) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
-
     ScaffoldMessenger.of(context).clearSnackBars();
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
         duration: duration,
-        backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
-        margin: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         content: Row(
           children: [
             Icon(icon, color: iconColor),
@@ -38,9 +29,7 @@ class AppSnackBar {
                 message,
                 style: GoogleFonts.lato(
                   fontWeight: FontWeight.w500,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),

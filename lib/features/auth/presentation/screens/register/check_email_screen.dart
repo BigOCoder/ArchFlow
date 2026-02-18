@@ -10,19 +10,10 @@ class CheckEmailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
-          ),
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -39,16 +30,12 @@ class CheckEmailScreen extends StatelessWidget {
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color:
-                      isDark ? AppColors.darkDivider : AppColors.lightDivider,
-                ),
+                border: Border.all(color: Theme.of(context).dividerColor),
               ),
               child: Icon(
                 Icons.mail_outline,
                 size: 32,
-                color:
-                    isDark ? AppColors.darkIcon : AppColors.lightIcon,
+                color: Theme.of(context).iconTheme.color,
               ),
             ),
 
@@ -59,9 +46,7 @@ class CheckEmailScreen extends StatelessWidget {
               style: GoogleFonts.lato(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
 
@@ -72,9 +57,7 @@ class CheckEmailScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.lato(
                 fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
 
@@ -101,15 +84,11 @@ class CheckEmailScreen extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.brandGreen,
-                  foregroundColor: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
                 ),
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) =>
-                          OtpVerificationScreen(email: email),
+                      builder: (_) => OtpVerificationScreen(email: email),
                     ),
                   );
                 },

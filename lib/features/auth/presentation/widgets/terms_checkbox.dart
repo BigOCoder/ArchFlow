@@ -17,9 +17,6 @@ class TermsCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -33,9 +30,7 @@ class TermsCheckbox extends StatelessWidget {
             text: TextSpan(
               style: GoogleFonts.lato(
                 fontSize: 13,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
               children: [
                 const TextSpan(text: 'I agree to Chatify '),

@@ -149,7 +149,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isLoading = ref.watch(
       authProvider.select((s) => s.isLoading),
     ); // ✅ ADD
@@ -158,9 +157,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
           body: SingleChildScrollView(
             padding: const EdgeInsets.only(
               top: 80,
@@ -176,9 +172,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   style: GoogleFonts.lato(
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    color: Theme.of(context).colorScheme.onBackground,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -186,9 +180,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   'Create a new account to continue',
                   style: GoogleFonts.lato(
                     fontSize: 16,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -265,9 +257,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         style: GoogleFonts.lato(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
+                          color: Theme.of(context).colorScheme.onBackground,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -283,9 +273,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         subtitle: Text(
                           'Learning and building projects',
                           style: GoogleFonts.lato(
-                            color: isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.color,
                           ),
                         ),
                         activeColor: AppColors.brandGreen,
@@ -299,9 +289,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         subtitle: Text(
                           'Studying and exploring concepts',
                           style: GoogleFonts.lato(
-                            color: isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.color,
                           ),
                         ),
                         activeColor: AppColors.brandGreen,
@@ -331,9 +321,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           onPressed: isLoading ? null : _submit, // ✅ CHANGED
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.brandGreen,
-                            foregroundColor: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
                           ),
                           child:
                               isLoading // ✅ CHANGED

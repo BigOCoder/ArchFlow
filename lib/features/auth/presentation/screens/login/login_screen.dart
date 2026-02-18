@@ -1,4 +1,3 @@
-
 import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/auth/presentation/providers/auth_provider.dart';
@@ -8,9 +7,9 @@ import 'package:archflow/features/auth/presentation/widgets/remember_me_row.dart
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:archflow/shared/widgets/app_input_decoration.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart'; // ✅ ADD
+import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // ✅ ADD
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -86,7 +85,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isLoading = ref.watch(
       authProvider.select((s) => s.isLoading),
     ); // ✅ ADD
@@ -95,9 +93,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
           body: SingleChildScrollView(
             padding: const EdgeInsets.only(
               top: 80,
@@ -113,9 +108,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   style: GoogleFonts.lato(
                     fontSize: 38,
                     fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    color: Theme.of(context).colorScheme.onBackground,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -123,9 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   'Please enter your email & password',
                   style: GoogleFonts.lato(
                     fontSize: 16,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -202,13 +193,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         width: double.infinity,
                         height: 52,
                         child: ElevatedButton(
-                          onPressed: isLoading ? null : _submit, // ✅ CHANGED
+                          onPressed: isLoading ? null : _submit,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.brandGreen,
                             foregroundColor: Colors.white,
                           ),
-                          child:
-                              isLoading // ✅ CHANGED
+                          child: isLoading
                               ? const CircularProgressIndicator(
                                   color: Colors.white,
                                 )
@@ -242,7 +232,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             child: Text(
                               'Sign up',
                               style: GoogleFonts.lato(
-                                color: AppColors.brandGreen,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

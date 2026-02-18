@@ -101,13 +101,13 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
       _userRoles.removeAt(index);
     });
 
+    // ✅ Fixed - uses theme for SnackBar backgroundColor
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Role "$roleName" removed', style: GoogleFonts.lato()),
         duration: const Duration(seconds: 1),
-        backgroundColor: Theme.of(context).brightness == Brightness.dark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
+        // ✅ Fixed - uses theme
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
     );
   }
@@ -164,9 +164,7 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
       return;
     }
 
-    ref
-        .read(projectOnboardingProvider.notifier)
-        .updateTargetUsers(
+    ref.read(projectOnboardingProvider.notifier).updateTargetUsers(
           primaryUserType: _primaryUserType!,
           userScale: _userScale!,
           userRoles: _userRoles,
@@ -184,8 +182,6 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         ref.read(projectOnboardingProvider.notifier).previousStep();
@@ -194,21 +190,12 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
+          // ✅ Removed backgroundColor - uses theme
           appBar: AppBar(
-            backgroundColor: isDark
-                ? AppColors.darkBackground
-                : AppColors.lightBackground,
-            elevation: 0,
+            // ✅ Removed backgroundColor & elevation - uses theme
             leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-              ),
+              icon: const Icon(Icons.arrow_back),
+              // ✅ Removed color - uses theme iconTheme
               onPressed: () {
                 ref.read(projectOnboardingProvider.notifier).previousStep();
               },
@@ -230,14 +217,13 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                   'Define who will use your application.',
                   style: GoogleFonts.lato(
                     fontSize: 14,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
                 const SizedBox(height: 32),
 
-                /// 1️⃣ Primary User Type (REQUIRED)
+                /// 1️⃣ Primary User Type
                 AppDropdown<UserType>(
                   label: 'Primary User Type',
                   icon: Icons.person_outline,
@@ -259,15 +245,14 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
 
                 const SizedBox(height: 24),
 
-                /// 2️⃣ User Scale (REQUIRED)
+                /// 2️⃣ User Scale
                 Text(
                   'User Scale',
                   style: GoogleFonts.lato(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
 
@@ -298,9 +283,8 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                           scale.displayName,
                           style: GoogleFonts.lato(
                             fontSize: 14,
-                            color: isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary,
+                            // ✅ Fixed - uses theme
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         activeColor: AppColors.brandGreen,
@@ -320,9 +304,8 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                   children: [
                     Expanded(
                       child: Divider(
-                        color: isDark
-                            ? AppColors.darkDivider
-                            : AppColors.lightDivider,
+                        // ✅ Fixed - uses theme
+                        color: Theme.of(context).dividerColor,
                         thickness: 1,
                       ),
                     ),
@@ -333,17 +316,15 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                         style: GoogleFonts.lato(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
+                          // ✅ Fixed - uses theme
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                         ),
                       ),
                     ),
                     Expanded(
                       child: Divider(
-                        color: isDark
-                            ? AppColors.darkDivider
-                            : AppColors.lightDivider,
+                        // ✅ Fixed - uses theme
+                        color: Theme.of(context).dividerColor,
                         thickness: 1,
                       ),
                     ),
@@ -358,9 +339,8 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                   style: GoogleFonts.lato(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -368,9 +348,8 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                   'Define different user roles in your application (e.g., Admin, Customer).',
                   style: GoogleFonts.lato(
                     fontSize: 12,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -395,14 +374,12 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                         margin: const EdgeInsets.only(bottom: 12),
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkSurface
-                              : AppColors.lightSurface,
+                          // ✅ Fixed - uses theme
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isDark
-                                ? AppColors.darkDivider
-                                : AppColors.lightDivider,
+                            // ✅ Fixed - uses theme
+                            color: Theme.of(context).dividerColor,
                           ),
                         ),
                         child: Row(
@@ -414,7 +391,7 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                                 color: AppColors.brandGreen.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Icon(
+                              child: const Icon(
                                 Icons.person_outline,
                                 color: AppColors.brandGreen,
                                 size: 20,
@@ -430,9 +407,8 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                                     style: GoogleFonts.lato(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,
-                                      color: isDark
-                                          ? AppColors.darkTextPrimary
-                                          : AppColors.lightTextPrimary,
+                                      // ✅ Fixed - uses theme
+                                      color: Theme.of(context).colorScheme.onSurface,
                                     ),
                                   ),
                                   if (role.description.isNotEmpty) ...[
@@ -441,9 +417,8 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                                       role.description,
                                       style: GoogleFonts.lato(
                                         fontSize: 12,
-                                        color: isDark
-                                            ? AppColors.darkTextSecondary
-                                            : AppColors.lightTextSecondary,
+                                        // ✅ Fixed - uses theme
+                                        color: Theme.of(context).textTheme.bodyMedium?.color,
                                       ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
@@ -454,9 +429,8 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                             ),
                             Icon(
                               Icons.drag_handle,
-                              color: isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.lightTextSecondary,
+                              // ✅ Fixed - uses theme
+                              color: Theme.of(context).textTheme.bodyMedium?.color,
                               size: 20,
                             ),
                           ],
@@ -467,13 +441,12 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                   const SizedBox(height: 16),
                 ],
 
-                // ✅ UPDATED: Role Name Input (using appInputDecoration)
+                // Role Name Input
                 TextField(
                   controller: _roleNameController,
                   style: GoogleFonts.lato(
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   decoration: appInputDecoration(
                     context: context,
@@ -485,14 +458,13 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
 
                 const SizedBox(height: 12),
 
-                // ✅ UPDATED: Role Description Input (using appInputDecoration)
+                // Role Description Input
                 TextField(
                   controller: _roleDescController,
                   maxLines: 3,
                   style: GoogleFonts.lato(
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   decoration: appInputDecoration(
                     context: context,
@@ -515,13 +487,7 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                       'Add Role',
                       style: GoogleFonts.lato(fontWeight: FontWeight.w600),
                     ),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.brandGreen,
-                      side: const BorderSide(color: AppColors.brandGreen),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                    // ✅ Removed style - uses theme
                   ),
                 ),
 
@@ -533,13 +499,7 @@ class _TargetUsersScreenState extends ConsumerState<TargetUsersScreen> {
                   height: 52,
                   child: ElevatedButton(
                     onPressed: _handleNext,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.brandGreen,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
+                    // ✅ Removed style - uses theme
                     child: Text(
                       'Next',
                       style: GoogleFonts.lato(

@@ -39,7 +39,6 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
     );
     _animationController.forward();
 
-    // ✅ Send welcome message after screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (ref.read(chatProvider).messages.isEmpty) {
         _sendWelcomeMessage();
@@ -48,7 +47,6 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
   }
 
   void _sendWelcomeMessage() {
-    // ✅ DEBUG: Check if projectId is set
     final chatState = ref.read(chatProvider);
     print('🟡 Chat Screen - ProjectId: ${chatState.projectId}');
 
@@ -59,33 +57,12 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
 
     print('✅ ProjectId found: ${chatState.projectId}');
 
-    // ✅ Send simple welcome message
     ref
         .read(chatProvider.notifier)
         .sendMessage(
           'Hello! I just created my project. Can you help me with architecture and requirements?',
         );
   }
-
-  //   void _sendWelcomeMessage() {
-  //     final projectState = ref.read(projectOnboardingProvider);
-
-  //     final summary =
-  //         '''
-  // I'm working on a project called "${projectState.projectName}".
-
-  // Category: ${projectState.category?.displayName ?? 'Not specified'}
-  // Description: ${projectState.description}
-
-  // Problem Statement: ${projectState.problemStatement}
-  // Target Audience: ${projectState.targetAudience}
-  // Proposed Solution: ${projectState.proposedSolution}
-
-  // Can you help me refine the requirements and suggest an architecture?
-  // ''';
-
-  //     ref.read(chatProvider.notifier).sendMessage(summary);
-  //   }
 
   @override
   void dispose() {
@@ -130,27 +107,17 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
     final currentPhase = ref.watch(chatPhaseProvider);
     final error = ref.watch(chatErrorProvider);
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         ref.read(chatProvider.notifier).clearChat();
         return true;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
         appBar: AppBar(
-          elevation: 0,
-          backgroundColor: isDark
-              ? AppColors.darkSurface
-              : AppColors.lightSurface,
+          // ✅ Removed elevation - uses theme
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              color: isDark ? AppColors.darkIcon : AppColors.lightIcon,
-            ),
+            icon: const Icon(Icons.arrow_back_ios_new),
+            // ✅ Removed color - uses theme iconTheme
             onPressed: () {
               ref.read(chatProvider.notifier).clearChat();
               ref.read(projectOnboardingProvider.notifier).previousStep();
@@ -174,9 +141,8 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
               Text(
                 'AI Assistant',
                 style: TextStyle(
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).appBarTheme.titleTextStyle?.color,
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
@@ -184,25 +150,24 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
             ],
           ),
           actions: [
-            // Transparent Done button
             TextButton.icon(
               onPressed: messages.length >= 2 ? _proceedToReview : null,
               icon: Icon(
                 Icons.done,
                 color: messages.length >= 2
                     ? AppColors.brandGreen
-                    : (isDark ? AppColors.darkIcon : AppColors.lightIcon)
-                          .withOpacity(0.3),
+                    // ✅ Fixed - uses theme
+                    : Theme.of(context).iconTheme.color?.withOpacity(0.3),
               ),
               label: Text(
                 'Done',
                 style: TextStyle(
                   color: messages.length >= 2
                       ? AppColors.brandGreen
-                      : (isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary)
-                            .withOpacity(0.5),
+                      // ✅ Fixed - uses theme
+                      : Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.color?.withOpacity(0.5),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -227,12 +192,12 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
           child: Column(
             children: [
               // Phase indicator
-              _buildPhaseIndicator(currentPhase, isDark),
+              _buildPhaseIndicator(currentPhase),
 
               // Messages list
               Expanded(
                 child: messages.isEmpty
-                    ? _buildEmptyState(isDark, isLoading)
+                    ? _buildEmptyState(isLoading)
                     : Stack(
                         children: [
                           ListView.builder(
@@ -260,7 +225,6 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
                             },
                           ),
 
-                          // Scroll to bottom button
                           if (messages.length > 3)
                             Positioned(
                               bottom: 16,
@@ -280,21 +244,20 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
               ),
 
               // Error display
-              if (error != null) _buildErrorBanner(error, isDark),
+              if (error != null) _buildErrorBanner(error),
 
               // Loading indicator
-              if (isLoading) _buildLoadingIndicator(isDark),
+              if (isLoading) _buildLoadingIndicator(),
 
               // Suggestion chips
               if (messages.isNotEmpty && !isLoading)
-                _buildSuggestionChips(currentPhase, isDark),
+                _buildSuggestionChips(currentPhase),
 
               // Input field
               Container(
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightSurface,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).colorScheme.surface,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
@@ -318,7 +281,7 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
     );
   }
 
-  Widget _buildPhaseIndicator(ChatPhase phase, bool isDark) {
+  Widget _buildPhaseIndicator(ChatPhase phase) {
     if (phase == ChatPhase.idle) return const SizedBox.shrink();
 
     return Container(
@@ -357,9 +320,8 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
                 Text(
                   phase.displayName,
                   style: TextStyle(
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
                   ),
@@ -368,9 +330,8 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
                 Text(
                   phase.description,
                   style: TextStyle(
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 12,
                   ),
                 ),
@@ -382,7 +343,7 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
     );
   }
 
-  Widget _buildEmptyState(bool isDark, bool loading) {
+  Widget _buildEmptyState(bool loading) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -412,9 +373,8 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                // ✅ Fixed - uses theme
+                color: Theme.of(context).colorScheme.onBackground,
               ),
               textAlign: TextAlign.center,
             ),
@@ -423,9 +383,8 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
               'I\'ll help you refine your requirements\nand suggest the best architecture',
               style: TextStyle(
                 fontSize: 15,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                // ✅ Fixed - uses theme
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -449,9 +408,8 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
                     'Analyzing your project...',
                     style: TextStyle(
                       fontSize: 14,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                   ),
                 ],
@@ -492,7 +450,7 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
     );
   }
 
-  Widget _buildErrorBanner(String error, bool isDark) {
+  Widget _buildErrorBanner(String error) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(12),
@@ -523,7 +481,7 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
     );
   }
 
-  Widget _buildLoadingIndicator(bool isDark) {
+  Widget _buildLoadingIndicator() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
@@ -540,9 +498,8 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
           Text(
             'AI is thinking...',
             style: TextStyle(
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.lightTextSecondary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).textTheme.bodyMedium?.color,
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -552,7 +509,7 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
     );
   }
 
-  Widget _buildSuggestionChips(ChatPhase phase, bool isDark) {
+  Widget _buildSuggestionChips(ChatPhase phase) {
     final suggestions = _getSuggestions(phase);
     if (suggestions.isEmpty) return const SizedBox.shrink();
 
@@ -573,14 +530,12 @@ class _AIChatScreenState extends ConsumerState<AIChatScreen>
                     ref.read(chatProvider.notifier).sendMessage(suggestion);
                   }
                 },
-                backgroundColor: isDark
-                    ? AppColors.darkSurface
-                    : AppColors.lightSurface,
+                // ✅ Fixed - uses theme
+                backgroundColor: Theme.of(context).colorScheme.surface,
                 side: BorderSide(color: AppColors.brandGreen.withOpacity(0.3)),
                 labelStyle: TextStyle(
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 13,
                 ),
                 padding: const EdgeInsets.symmetric(

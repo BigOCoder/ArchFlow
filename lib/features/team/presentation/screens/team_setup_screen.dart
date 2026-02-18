@@ -50,8 +50,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
     );
   }
 
+  // ✅ Removed isDark param
   Widget _infoCard({
-    required bool isDark,
     required IconData icon,
     required String title,
     required List<Widget> children,
@@ -60,10 +60,12 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        // ✅ Fixed - uses theme
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          // ✅ Fixed - uses theme
+          color: Theme.of(context).dividerColor,
         ),
         boxShadow: [
           BoxShadow(
@@ -82,9 +84,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: isDark
-                      ? AppColors.darkDivider
-                      : AppColors.lightDivider,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).dividerColor,
                 ),
               ),
             ),
@@ -104,9 +105,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                   style: GoogleFonts.lato(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const Spacer(),
@@ -152,7 +152,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
     );
   }
 
-  Widget _infoRow(String label, String value, {required bool isDark}) {
+  // ✅ Removed isDark param
+  Widget _infoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -162,7 +163,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
             width: 6,
             height: 6,
             margin: const EdgeInsets.only(top: 6, right: 10),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.brandGreen,
               shape: BoxShape.circle,
             ),
@@ -172,9 +173,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
               text: TextSpan(
                 style: GoogleFonts.lato(
                   fontSize: 14,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
                 children: [
                   TextSpan(
@@ -191,12 +191,10 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
     );
   }
 
-  // ✅ FIXED: No BuildContext parameter, capture Navigator/ScaffoldMessenger before await
   Future<void> _submit() async {
-    // ✅ Capture these BEFORE any await
     final navigator = Navigator.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    
+
     final onboarding = ref.read(projectOnboardingProvider);
     final notifier = ref.read(projectProvider.notifier);
 
@@ -236,21 +234,18 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
     final success = await notifier.createProject();
 
-    // ✅ Check mounted after await
     if (!mounted) return;
 
-    // ✅ FIXED: Changed !success to success (correct logic)
     if (success) {
       ref.read(chatProvider.notifier).clearChat();
 
-      // ✅ Use captured ScaffoldMessenger (safe after await)
       scaffoldMessenger.showSnackBar(
         SnackBar(
-          content: Row(
+          content: const Row(
             children: [
-              const Icon(Icons.check_circle_outline, color: Colors.white),
-              const SizedBox(width: 12),
-              const Text('Project created successfully!'),
+              Icon(Icons.check_circle_outline, color: Colors.white),
+              SizedBox(width: 12),
+              Text('Project created successfully!'),
             ],
           ),
           backgroundColor: AppColors.brandGreen,
@@ -264,18 +259,15 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
       ref.read(projectOnboardingProvider.notifier).reset();
 
-      // ✅ Check mounted again before navigation
       if (!mounted) return;
 
-      // ✅ Use captured Navigator (safe after await)
       navigator.pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const GitHubIntegrationScreen()),
         (_) => false,
       );
     } else {
       final error = ref.read(projectProvider).error;
-      
-      // ✅ Use captured ScaffoldMessenger
+
       scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Row(
@@ -298,37 +290,33 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isLoading = ref.watch(projectProvider.select((s) => s.isLoading));
     final s = ref.watch(projectOnboardingProvider);
 
     return WillPopScope(
       onWillPop: () async {
-        // ✅ Capture Navigator BEFORE await
         final navigator = Navigator.of(context);
-        
-        // Show confirmation dialog
+
         final shouldDiscard = await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
-            backgroundColor: isDark
-                ? AppColors.darkSurface
-                : AppColors.lightSurface,
+            // ✅ Removed backgroundColor - uses theme
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             title: Text(
               'Discard Project?',
               style: GoogleFonts.lato(
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                // ✅ Fixed - uses theme
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             content: Text(
               'Are you sure you want to go back? Your project creation progress will be lost.',
               style: GoogleFonts.lato(
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                // ✅ Fixed - uses theme
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
             actions: [
@@ -337,9 +325,8 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                 child: Text(
                   'Cancel',
                   style: GoogleFonts.lato(
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -358,17 +345,14 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
           ),
         );
 
-        // ✅ Check mounted after await
         if (!mounted) return false;
 
         if (shouldDiscard == true) {
           ref.read(chatProvider.notifier).clearChat();
           ref.read(projectOnboardingProvider.notifier).reset();
 
-          // ✅ Check mounted again before navigation
           if (!mounted) return false;
 
-          // ✅ Use captured Navigator (safe after await)
           navigator.pushAndRemoveUntil(
             MaterialPageRoute(builder: (_) => const DashboardScreen()),
             (_) => false,
@@ -378,22 +362,16 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
+        // ✅ Removed backgroundColor - uses theme
         appBar: AppBar(
+          // ✅ Removed backgroundColor & elevation - uses theme
           automaticallyImplyLeading: false,
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
-          elevation: 0,
           title: Text(
             'Review & Create',
             style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
@@ -409,7 +387,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
               ),
               const SizedBox(height: 24),
 
-              /// 🎯 HERO CARD - Project Overview
+              /// 🎯 HERO CARD
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -460,9 +438,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      s.projectName.isEmpty
-                          ? 'Untitled Project'
-                          : s.projectName,
+                      s.projectName.isEmpty ? 'Untitled Project' : s.projectName,
                       style: GoogleFonts.lato(
                         color: Colors.white,
                         fontSize: 24,
@@ -497,9 +473,9 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
 
               const SizedBox(height: 32),
 
-              /// 📝 PROJECT BASICS (Step 0)
+              /// 📝 PROJECT BASICS
               _infoCard(
-                isDark: isDark,
+                // ✅ Removed isDark param from all _infoCard calls
                 icon: Icons.edit_document,
                 title: 'Project Basics',
                 onEdit: () {
@@ -511,27 +487,17 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                   );
                 },
                 children: [
-                  _infoRow(
-                    'Project Name',
-                    s.projectName.isEmpty ? 'Not Set' : s.projectName,
-                    isDark: isDark,
-                  ),
-                  _infoRow(
-                    'Category',
-                    s.category?.displayName ?? 'Not Set',
-                    isDark: isDark,
-                  ),
-                  _infoRow(
-                    'Description',
-                    s.description.isEmpty ? 'Not Provided' : s.description,
-                    isDark: isDark,
-                  ),
+                  // ✅ Removed isDark param from all _infoRow calls
+                  _infoRow('Project Name',
+                      s.projectName.isEmpty ? 'Not Set' : s.projectName),
+                  _infoRow('Category', s.category?.displayName ?? 'Not Set'),
+                  _infoRow('Description',
+                      s.description.isEmpty ? 'Not Provided' : s.description),
                 ],
               ),
 
-              /// 👥 TARGET USERS (Step 1)
+              /// 👥 TARGET USERS
               _infoCard(
-                isDark: isDark,
                 icon: Icons.people_outline,
                 title: 'Target Users',
                 onEdit: () {
@@ -543,29 +509,17 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                   );
                 },
                 children: [
-                  _infoRow(
-                    'Primary User Type',
-                    s.primaryUserType?.displayName ?? 'Not Set',
-                    isDark: isDark,
-                  ),
-                  _infoRow(
-                    'User Scale',
-                    s.userScale?.displayName ?? 'Not Set',
-                    isDark: isDark,
-                  ),
+                  _infoRow('Primary User Type',
+                      s.primaryUserType?.displayName ?? 'Not Set'),
+                  _infoRow('User Scale', s.userScale?.displayName ?? 'Not Set'),
                   if (s.userRoles.isNotEmpty)
-                    _infoRow(
-                      'User Roles',
-                      '${s.userRoles.length} roles defined',
-                      isDark: isDark,
-                    ),
+                    _infoRow('User Roles', '${s.userRoles.length} roles defined'),
                 ],
               ),
 
-              /// ✨ FEATURES (Step 2)
+              /// ✨ FEATURES
               if (s.features.isNotEmpty)
                 _infoCard(
-                  isDark: isDark,
                   icon: Icons.star_outline,
                   title: 'Initial Features',
                   onEdit: () {
@@ -580,14 +534,12 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                     return _infoRow(
                       feature.name,
                       feature.priority?.displayName ?? 'No Priority',
-                      isDark: isDark,
                     );
                   }).toList(),
                 ),
 
-              /// 🎯 PROBLEM STATEMENT (Step 3)
+              /// 🎯 PROBLEM STATEMENT
               _infoCard(
-                isDark: isDark,
                 icon: Icons.lightbulb_outline,
                 title: 'Problem Statement',
                 onEdit: () {
@@ -599,31 +551,17 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                   );
                 },
                 children: [
-                  _infoRow(
-                    'Problem',
-                    s.problemStatement.isEmpty
-                        ? 'Not Provided'
-                        : s.problemStatement,
-                    isDark: isDark,
-                  ),
+                  _infoRow('Problem',
+                      s.problemStatement.isEmpty ? 'Not Provided' : s.problemStatement),
                   if (s.targetAudience.isNotEmpty)
-                    _infoRow(
-                      'Target Audience',
-                      s.targetAudience,
-                      isDark: isDark,
-                    ),
+                    _infoRow('Target Audience', s.targetAudience),
                   if (s.proposedSolution.isNotEmpty)
-                    _infoRow(
-                      'Proposed Solution',
-                      s.proposedSolution,
-                      isDark: isDark,
-                    ),
+                    _infoRow('Proposed Solution', s.proposedSolution),
                 ],
               ),
 
-              /// 💻 PROJECT DETAILS (Step 4)
+              /// 💻 TECHNICAL DETAILS
               _infoCard(
-                isDark: isDark,
                 icon: Icons.settings_outlined,
                 title: 'Technical Details',
                 onEdit: () {
@@ -636,39 +574,19 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                 },
                 children: [
                   if (s.platforms.isNotEmpty)
-                    _infoRow(
-                      'Platforms',
-                      s.platforms.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Platforms', s.platforms.join(', ')),
                   if (s.supportedDevices.isNotEmpty)
-                    _infoRow(
-                      'Devices',
-                      s.supportedDevices.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Devices', s.supportedDevices.join(', ')),
                   if (s.expectedTimeline != null)
-                    _infoRow('Timeline', s.expectedTimeline!, isDark: isDark),
+                    _infoRow('Timeline', s.expectedTimeline!),
                   if (s.budgetRange != null)
-                    _infoRow('Budget', s.budgetRange!, isDark: isDark),
+                    _infoRow('Budget', s.budgetRange!),
                   if (s.expectedTraffic != null)
-                    _infoRow(
-                      'Expected Traffic',
-                      s.expectedTraffic!,
-                      isDark: isDark,
-                    ),
+                    _infoRow('Expected Traffic', s.expectedTraffic!),
                   if (s.dataSensitivity.isNotEmpty)
-                    _infoRow(
-                      'Data Sensitivity',
-                      s.dataSensitivity.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Data Sensitivity', s.dataSensitivity.join(', ')),
                   if (s.complianceNeeds.isNotEmpty)
-                    _infoRow(
-                      'Compliance',
-                      s.complianceNeeds.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Compliance', s.complianceNeeds.join(', ')),
                 ],
               ),
 
@@ -693,9 +611,7 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                     style: GoogleFonts.lato(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   activeColor: AppColors.brandGreen,
@@ -710,7 +626,6 @@ class _ProjectReviewScreenState extends ConsumerState<ProjectReviewScreen> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  // ✅ FIXED: No context parameter needed
                   onPressed: _confirmed && !isLoading ? _submit : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.brandGreen,

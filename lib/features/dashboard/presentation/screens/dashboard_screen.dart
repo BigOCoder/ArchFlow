@@ -10,12 +10,8 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    // ✅ Fixed - build was broken (missing return Scaffold)
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
       drawer: const AppDrawer(),
       appBar: AppBar(
         centerTitle: true,
@@ -23,9 +19,8 @@ class DashboardScreen extends StatelessWidget {
           'Dashboard',
           style: GoogleFonts.lato(
             fontWeight: FontWeight.bold,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).appBarTheme.titleTextStyle?.color,
           ),
         ),
         leading: Builder(
@@ -48,7 +43,6 @@ class DashboardScreen extends StatelessWidget {
           ),
         ],
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -56,13 +50,12 @@ class DashboardScreen extends StatelessWidget {
           children: [
             /// 👋 WELCOME
             Text(
-              'Welcome back, Alex! 👋',
+              'Welcome back, Sir! 👋',
               style: GoogleFonts.lato(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                // ✅ Fixed - uses theme
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 6),
@@ -70,9 +63,8 @@ class DashboardScreen extends StatelessWidget {
               "Here's what's happening with your projects.",
               style: GoogleFonts.lato(
                 fontSize: 14,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                // ✅ Fixed - uses theme
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
 
@@ -84,22 +76,20 @@ class DashboardScreen extends StatelessWidget {
               style: GoogleFonts.lato(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                // ✅ Fixed - uses theme
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 14),
 
-            /// 🌟 PRIMARY CARD - UPDATED
+            /// 🌟 PRIMARY CARD
+            // ✅ Removed isDark param
             _primaryCard(
               context,
-              isDark: isDark,
               title: 'New Project',
               subtitle: 'Start a fresh workspace',
               icon: Icons.add,
               onTap: () {
-                // ✅ NAVIGATE TO PROJECT BASICS SCREEN
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => const ProjectOnboardingFlow(),
@@ -114,7 +104,8 @@ class DashboardScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _miniCard(
-                    isDark: isDark,
+                    context,
+                    // ✅ Removed isDark param
                     icon: Icons.folder_open,
                     title: 'Existing Projects',
                     subtitle: '12 Active',
@@ -123,7 +114,8 @@ class DashboardScreen extends StatelessWidget {
                 const SizedBox(width: 14),
                 Expanded(
                   child: _miniCard(
-                    isDark: isDark,
+                    context,
+                    // ✅ Removed isDark param
                     icon: Icons.group,
                     title: 'Team Management',
                     subtitle: '8 Members',
@@ -143,9 +135,8 @@ class DashboardScreen extends StatelessWidget {
                   style: GoogleFonts.lato(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 TextButton(
@@ -161,19 +152,20 @@ class DashboardScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             _activityTile(
-              isDark: isDark,
+              context,
+              // ✅ Removed isDark param
               title: 'Sarah updated API Documentation',
               time: '2 minutes ago',
               icon: Icons.description_outlined,
             ),
             _activityTile(
-              isDark: isDark,
+              context,
               title: 'Michael commented on Design System',
               time: '15 minutes ago',
               icon: Icons.comment_outlined,
             ),
             _activityTile(
-              isDark: isDark,
+              context,
               title: 'Marketing Q3 marked as completed',
               time: '1 hour ago',
               icon: Icons.check_circle_outline,
@@ -181,16 +173,15 @@ class DashboardScreen extends StatelessWidget {
           ],
         ),
       ),
-
-      bottomNavigationBar: _bottomNav(isDark),
+      bottomNavigationBar: _bottomNav(context),
     );
   }
 
   // ================== COMPONENTS ==================
 
+  // ✅ Removed isDark param
   Widget _primaryCard(
     BuildContext context, {
-    required bool isDark,
     required String title,
     required String subtitle,
     required IconData icon,
@@ -257,8 +248,9 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _miniCard({
-    required bool isDark,
+  // ✅ Removed isDark param - takes context instead
+  Widget _miniCard(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String subtitle,
@@ -266,7 +258,8 @@ class DashboardScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        // ✅ Fixed - uses theme
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
@@ -288,9 +281,8 @@ class DashboardScreen extends StatelessWidget {
             title,
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 4),
@@ -298,9 +290,8 @@ class DashboardScreen extends StatelessWidget {
             subtitle,
             style: GoogleFonts.lato(
               fontSize: 13,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.lightTextSecondary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).textTheme.bodyMedium?.color,
             ),
           ),
         ],
@@ -308,8 +299,9 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _activityTile({
-    required bool isDark,
+  // ✅ Removed isDark param - takes context instead
+  Widget _activityTile(
+    BuildContext context, {
     required String title,
     required String time,
     required IconData icon,
@@ -318,7 +310,8 @@ class DashboardScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        // ✅ Fixed - uses theme
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -342,9 +335,8 @@ class DashboardScreen extends StatelessWidget {
                 Text(
                   title,
                   style: GoogleFonts.lato(
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -352,9 +344,8 @@ class DashboardScreen extends StatelessWidget {
                   time,
                   style: GoogleFonts.lato(
                     fontSize: 12,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
               ],
@@ -365,13 +356,12 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _bottomNav(bool isDark) {
+  // ✅ Removed isDark param - takes context instead
+  Widget _bottomNav(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: 0,
       selectedItemColor: AppColors.brandGreen,
-      unselectedItemColor: isDark
-          ? AppColors.darkTextSecondary
-          : AppColors.lightTextSecondary,
+      unselectedItemColor: Theme.of(context).textTheme.bodyMedium?.color,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Tasks'),

@@ -50,7 +50,6 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
   }
 
   Widget _infoCard({
-    required bool isDark,
     required IconData icon,
     required String title,
     required List<Widget> children,
@@ -59,10 +58,12 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        // ✅ Fixed - uses theme
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? AppColors.darkDivider : AppColors.lightDivider,
+          // ✅ Fixed - uses theme
+          color: Theme.of(context).dividerColor,
         ),
         boxShadow: [
           BoxShadow(
@@ -80,13 +81,10 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(
-                  color: isDark
-                      ? AppColors.darkDivider
-                      : AppColors.lightDivider,
-                ),
+                bottom: BorderSide(color: Theme.of(context).dividerColor),
               ),
             ),
+
             child: Row(
               children: [
                 Container(
@@ -103,9 +101,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   style: GoogleFonts.lato(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const Spacer(),
@@ -151,7 +147,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
     );
   }
 
-  Widget _infoRow(String label, String value, {required bool isDark}) {
+  Widget _infoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -171,9 +167,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
               text: TextSpan(
                 style: GoogleFonts.lato(
                   fontSize: 14,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
                 children: [
                   TextSpan(
@@ -241,7 +235,6 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final s = ref.watch(onboardingProvider);
     final profileState = ref.watch(profileProvider);
 
@@ -255,18 +248,13 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Text(
             'Review & Confirm',
             style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
@@ -401,9 +389,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                       style: GoogleFonts.lato(
                         fontWeight: FontWeight.w700,
                         fontSize: 18,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                     ),
                   ],
@@ -427,14 +413,10 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                         width: 180,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkSurface
-                              : AppColors.lightSurface,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isDark
-                                ? AppColors.darkDivider
-                                : AppColors.lightDivider,
+                            color: Theme.of(context).dividerColor,
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -452,9 +434,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                               style: GoogleFonts.lato(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w700,
-                                color: isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.lightTextPrimary,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -466,9 +446,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                                 value: progress,
                                 minHeight: 8,
                                 color: AppColors.brandGreen,
-                                backgroundColor: isDark
-                                    ? AppColors.darkDivider
-                                    : AppColors.lightDivider,
+                                backgroundColor: Theme.of(context).dividerColor,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -491,7 +469,6 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
 
               /// 🎓 Education Background (Step 1)
               _infoCard(
-                isDark: isDark,
                 icon: Icons.school_outlined,
                 title: 'Education Background',
                 onEdit: () {
@@ -506,26 +483,16 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   _infoRow(
                     'Education Level',
                     s.educationLevel?.displayName ?? '—',
-                    isDark: isDark,
                   ),
-                  _infoRow(
-                    'Background',
-                    s.csBackground?.displayName ?? '—',
-                    isDark: isDark,
-                  ),
+                  _infoRow('Background', s.csBackground?.displayName ?? '—'),
                   if (s.coreSubjects.isNotEmpty)
-                    _infoRow(
-                      'Core Subjects',
-                      s.coreSubjects.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Core Subjects', s.coreSubjects.join(', ')),
                 ],
               ),
 
               /// 💻 Skills & Proficiency (Step 2)
               if (s.skills.isNotEmpty)
                 _infoCard(
-                  isDark: isDark,
                   icon: Icons.code_outlined,
                   title: 'Skills & Proficiency',
                   onEdit: () {
@@ -540,14 +507,12 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                     return _infoRow(
                       skill.skill?.displayName ?? '—',
                       skill.level?.displayName ?? '—',
-                      isDark: isDark,
                     );
                   }).toList(),
                 ),
 
               /// 🎯 Primary Goal & Timeline (Step 3)
               _infoCard(
-                isDark: isDark,
                 icon: Icons.flag_outlined,
                 title: 'Primary Goal & Timeline',
                 onEdit: () {
@@ -559,23 +524,14 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   );
                 },
                 children: [
-                  _infoRow(
-                    'Primary Goal',
-                    s.primaryGoal?.displayName ?? '—',
-                    isDark: isDark,
-                  ),
-                  _infoRow(
-                    'Timeline',
-                    s.timeline?.displayName ?? '—',
-                    isDark: isDark,
-                  ),
+                  _infoRow('Primary Goal', s.primaryGoal?.displayName ?? '—'),
+                  _infoRow('Timeline', s.timeline?.displayName ?? '—'),
                 ],
               ),
 
               /// 💻 Tech Stack Knowledge (Step 4)
               if (s.techStack.isNotEmpty)
                 _infoCard(
-                  isDark: isDark,
                   icon: Icons.computer_outlined,
                   title: 'Tech Stack Knowledge',
                   onEdit: () {
@@ -587,23 +543,20 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                     );
                   },
                   children: [
-                    _infoRow('Frontend', s.techStack[0], isDark: isDark),
+                    _infoRow('Frontend', s.techStack[0]),
                     _infoRow(
                       'Backend',
                       s.techStack.length > 1 ? s.techStack[1] : '—',
-                      isDark: isDark,
                     ),
                     _infoRow(
                       'API Knowledge',
                       s.techStack.length > 2 ? s.techStack[2] : '—',
-                      isDark: isDark,
                     ),
                   ],
                 ),
 
               /// 🏗 Architecture Knowledge (Step 5)
               _infoCard(
-                isDark: isDark,
                 icon: Icons.architecture_outlined,
                 title: 'Architecture Knowledge',
                 onEdit: () {
@@ -618,20 +571,14 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   _infoRow(
                     'Experience Level',
                     s.architectureLevel?.displayName ?? '—',
-                    isDark: isDark,
                   ),
                   if (s.familiarConcepts.isNotEmpty)
-                    _infoRow(
-                      'Known Concepts',
-                      s.familiarConcepts.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Known Concepts', s.familiarConcepts.join(', ')),
                 ],
               ),
 
               /// 🗄 Database Experience (Step 6)
               _infoCard(
-                isDark: isDark,
                 icon: Icons.storage_outlined,
                 title: 'Database Experience',
                 onEdit: () {
@@ -643,28 +590,18 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   );
                 },
                 children: [
-                  _infoRow(
-                    'Database Type',
-                    s.databaseType?.displayName ?? '—',
-                    isDark: isDark,
-                  ),
+                  _infoRow('Database Type', s.databaseType?.displayName ?? '—'),
                   _infoRow(
                     'Comfort Level',
                     s.databaseComfortLevel?.displayName ?? '—',
-                    isDark: isDark,
                   ),
                   if (s.databasesUsed.isNotEmpty)
-                    _infoRow(
-                      'Databases Used',
-                      s.databasesUsed.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Databases Used', s.databasesUsed.join(', ')),
                 ],
               ),
 
               /// 🐞 Coding Practice (Step 7)
               _infoCard(
-                isDark: isDark,
                 icon: Icons.bug_report_outlined,
                 title: 'Coding Practice',
                 onEdit: () {
@@ -679,19 +616,13 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   _infoRow(
                     'Coding Frequency',
                     s.codingFrequency?.displayName ?? '—',
-                    isDark: isDark,
                   ),
                   _infoRow(
                     'Debugging Confidence',
                     s.debuggingConfidence?.displayName ?? '—',
-                    isDark: isDark,
                   ),
                   if (s.problemSolvingAreas.isNotEmpty)
-                    _infoRow(
-                      'Focus Areas',
-                      s.problemSolvingAreas.join(', '),
-                      isDark: isDark,
-                    ),
+                    _infoRow('Focus Areas', s.problemSolvingAreas.join(', ')),
                 ],
               ),
 
@@ -716,9 +647,7 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                     style: GoogleFonts.lato(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   activeColor: AppColors.brandGreen,
@@ -736,15 +665,6 @@ class _FinalReviewScreenState extends ConsumerState<FinalReviewScreen> {
                   onPressed: (_confirmed && !profileState.isLoading)
                       ? _submitProfile
                       : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.brandGreen,
-                    foregroundColor: Colors.white,
-                    elevation: _confirmed ? 4 : 0,
-                    shadowColor: AppColors.brandGreen.withOpacity(0.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
                   child: profileState.isLoading
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,

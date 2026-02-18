@@ -45,8 +45,7 @@ class EnvConfig {
   // ==========================================================================
 
   /// GitHub OAuth Client ID
-  static String get githubClientId =>
-      dotenv.env['GITHUB_CLIENT_ID'] ?? '';
+  static String get githubClientId => dotenv.env['GITHUB_CLIENT_ID'] ?? '';
 
   /// GitHub OAuth Client Secret
   static String get githubClientSecret =>

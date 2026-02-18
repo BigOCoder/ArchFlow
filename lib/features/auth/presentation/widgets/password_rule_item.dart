@@ -14,9 +14,6 @@ class PasswordRuleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark =
-        Theme.of(context).brightness == Brightness.dark;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(
@@ -26,9 +23,7 @@ class PasswordRuleItem extends StatelessWidget {
             size: 16,
             color: isValid
                 ? AppColors.brandGreen
-                : (isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary),
+                : Theme.of(context).textTheme.bodyMedium?.color,
           ),
           const SizedBox(width: 8),
           Text(
@@ -37,9 +32,7 @@ class PasswordRuleItem extends StatelessWidget {
               fontSize: 13,
               color: isValid
                   ? AppColors.brandGreen
-                  : (isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary),
+                  : Theme.of(context).textTheme.bodyMedium?.color,
             ),
           ),
         ],

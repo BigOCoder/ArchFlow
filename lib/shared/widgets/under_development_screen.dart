@@ -7,11 +7,8 @@ import 'dart:math' as math;
 
 class UnderDevelopmentScreen extends StatefulWidget {
   final String? featureName;
-  
-  const UnderDevelopmentScreen({
-    super.key,
-    this.featureName,
-  });
+
+  const UnderDevelopmentScreen({super.key, this.featureName});
 
   @override
   State<UnderDevelopmentScreen> createState() => _UnderDevelopmentScreenState();
@@ -34,18 +31,12 @@ class _UnderDevelopmentScreenState extends State<UnderDevelopmentScreen>
     _rotationAnimation = Tween<double>(
       begin: 0,
       end: 2 * math.pi,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.linear,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
 
     _scaleAnimation = Tween<double>(
       begin: 0.95,
       end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -56,28 +47,20 @@ class _UnderDevelopmentScreenState extends State<UnderDevelopmentScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      // ✅ Removed backgroundColor - uses theme
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor:
-            isDark ? AppColors.darkBackground : AppColors.lightBackground,
+        // ✅ Removed elevation & backgroundColor - uses theme
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            color: isDark ? AppColors.darkIcon : AppColors.lightIcon,
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new),
+          // ✅ Removed color - uses theme iconTheme
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Under Development',
           style: GoogleFonts.lato(
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -138,9 +121,8 @@ class _UnderDevelopmentScreenState extends State<UnderDevelopmentScreen>
                 style: GoogleFonts.lato(
                   fontSize: 32,
                   fontWeight: FontWeight.w900,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).colorScheme.onBackground,
                   letterSpacing: 0.5,
                 ),
                 textAlign: TextAlign.center,
@@ -180,9 +162,8 @@ class _UnderDevelopmentScreenState extends State<UnderDevelopmentScreen>
                 style: GoogleFonts.lato(
                   fontSize: 16,
                   height: 1.6,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                  // ✅ Fixed - uses theme
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -194,14 +175,12 @@ class _UnderDevelopmentScreenState extends State<UnderDevelopmentScreen>
                 icon: Icons.rocket_launch_outlined,
                 title: 'Coming Soon',
                 description: 'Expected in next update',
-                isDark: isDark,
               ),
               const SizedBox(height: 12),
               _InfoCard(
                 icon: Icons.notifications_outlined,
                 title: 'Stay Updated',
                 description: 'We\'ll notify you when ready',
-                isDark: isDark,
               ),
 
               const Spacer(),
@@ -220,29 +199,16 @@ class _UnderDevelopmentScreenState extends State<UnderDevelopmentScreen>
                           fontSize: 15,
                         ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                        side: BorderSide(
-                          color: isDark
-                              ? AppColors.darkDivider
-                              : AppColors.lightDivider,
-                          width: 1.5,
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
+                      // ✅ Removed style - uses theme
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Navigate to home or dashboard
-                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.of(
+                          context,
+                        ).popUntil((route) => route.isFirst);
                       },
                       icon: const Icon(Icons.home_outlined, size: 20),
                       label: Text(
@@ -252,15 +218,7 @@ class _UnderDevelopmentScreenState extends State<UnderDevelopmentScreen>
                           fontSize: 15,
                         ),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.brandGreen,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
+                      // ✅ Removed style - uses theme
                     ),
                   ),
                 ],
@@ -279,13 +237,11 @@ class _InfoCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String description;
-  final bool isDark;
 
   const _InfoCard({
     required this.icon,
     required this.title,
     required this.description,
-    required this.isDark,
   });
 
   @override
@@ -293,14 +249,12 @@ class _InfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkSurface.withOpacity(0.5)
-            : AppColors.lightSurface.withOpacity(0.5),
+        // ✅ Fixed - uses theme
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark
-              ? AppColors.darkDivider.withOpacity(0.3)
-              : AppColors.lightDivider.withOpacity(0.3),
+          // ✅ Fixed - uses theme
+          color: Theme.of(context).dividerColor.withOpacity(0.3),
         ),
       ),
       child: Row(
@@ -311,11 +265,7 @@ class _InfoCard extends StatelessWidget {
               color: AppColors.brandGreen.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              icon,
-              color: AppColors.brandGreen,
-              size: 24,
-            ),
+            child: Icon(icon, color: AppColors.brandGreen, size: 24),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -327,9 +277,8 @@ class _InfoCard extends StatelessWidget {
                   style: GoogleFonts.lato(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: isDark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.lightTextPrimary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -337,9 +286,8 @@ class _InfoCard extends StatelessWidget {
                   description,
                   style: GoogleFonts.lato(
                     fontSize: 13,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
+                    // ✅ Fixed - uses theme
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                   ),
                 ),
               ],

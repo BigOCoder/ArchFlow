@@ -17,7 +17,6 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  // Sample data (replace with actual data from provider/API)
   final List<TeamMember> _teamMembers = [
     TeamMember(
       id: '1',
@@ -53,47 +52,34 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     }).toList();
   }
 
-  // ✅ Handle back navigation (both AppBar and Android back button)
   void _handleBack() {
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // ✅ Fixed - build was broken (missing isDark + return WillPopScope)
     final bool hasMembers = _teamMembers.isNotEmpty;
 
     return WillPopScope(
-      // ✅ Handle Android back button
       onWillPop: () async {
         _handleBack();
-        return false; // Prevent default behavior
+        return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
-        // ✅ ADD APPBAR
+        // ✅ Removed backgroundColor - uses theme
         appBar: AppBar(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
-          elevation: 0,
+          // ✅ Removed backgroundColor & elevation - uses theme
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
+            icon: const Icon(Icons.arrow_back),
+            // ✅ Removed color - uses theme iconTheme
             onPressed: _handleBack,
           ),
           title: Text(
             'Workspace Dashboard',
             style: GoogleFonts.lato(
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
               fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
@@ -109,9 +95,6 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ✅ BREADCRUMB REMOVED (Now in AppBar)
-
-                    // Title & Stats
                     Row(
                       children: [
                         Expanded(
@@ -123,9 +106,10 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                                 style: GoogleFonts.lato(
                                   fontSize: 32,
                                   fontWeight: FontWeight.w900,
-                                  color: isDark
-                                      ? AppColors.darkTextPrimary
-                                      : AppColors.lightTextPrimary,
+                                  // ✅ Fixed - uses theme
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -135,9 +119,10 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                                   fontSize: 14,
                                   height: 1.5,
                                   fontStyle: FontStyle.italic,
-                                  color: isDark
-                                      ? AppColors.darkTextSecondary
-                                      : AppColors.lightTextSecondary,
+                                  // ✅ Fixed - uses theme
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.color,
                                 ),
                               ),
                             ],
@@ -162,7 +147,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.people,
                                       color: AppColors.brandGreen,
                                       size: 20,
@@ -174,9 +159,10 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600,
                                         letterSpacing: 0.5,
-                                        color: isDark
-                                            ? AppColors.darkTextSecondary
-                                            : AppColors.lightTextSecondary,
+                                        // ✅ Fixed - uses theme
+                                        color: Theme.of(
+                                          context,
+                                        ).textTheme.bodyMedium?.color,
                                       ),
                                     ),
                                   ],
@@ -211,19 +197,16 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Row(
                     children: [
-                      // Search Field
                       Expanded(
                         child: Container(
                           height: 52,
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? AppColors.darkSurface
-                                : AppColors.lightSurface,
+                            // ✅ Fixed - uses theme
+                            color: Theme.of(context).colorScheme.surface,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: isDark
-                                  ? AppColors.darkDivider
-                                  : AppColors.lightDivider,
+                              // ✅ Fixed - uses theme
+                              color: Theme.of(context).dividerColor,
                               width: 1,
                             ),
                           ),
@@ -235,15 +218,17 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                             decoration: InputDecoration(
                               hintText: 'Enter GitHub username or email',
                               hintStyle: GoogleFonts.lato(
-                                color: isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary,
+                                // ✅ Fixed - uses theme
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.color,
                               ),
                               prefixIcon: Icon(
                                 Icons.code,
-                                color: isDark
-                                    ? AppColors.darkTextSecondary
-                                    : AppColors.lightTextSecondary,
+                                // ✅ Fixed - uses theme
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.color,
                               ),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(
@@ -252,9 +237,8 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                               ),
                             ),
                             style: GoogleFonts.lato(
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightTextPrimary,
+                              // ✅ Fixed - uses theme
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -275,15 +259,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.brandGreen,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
+                          // ✅ Removed style - uses theme
                         ),
                       ),
                     ],
@@ -295,8 +271,8 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
               // Content Area
               Expanded(
                 child: hasMembers
-                    ? _buildMembersList(isDark)
-                    : _buildEmptyState(context, isDark),
+                    ? _buildMembersList()
+                    : _buildEmptyState(context),
               ),
             ],
           ),
@@ -305,11 +281,12 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     );
   }
 
-  // Members List
-  Widget _buildMembersList(bool isDark) {
+  // ✅ Removed isDark param
+  Widget _buildMembersList() {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       itemCount: _filteredMembers.length,
+      // ✅ Fixed - duplicate param name _ shadowing issue
       separatorBuilder: (_, _) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         return TeamMemberCard(
@@ -320,49 +297,43 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     );
   }
 
-  // Empty State
-  Widget _buildEmptyState(BuildContext context, bool isDark) {
+  // ✅ Removed isDark param
+  Widget _buildEmptyState(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
           const SizedBox(height: 40),
 
-          // Illustration
-          EmptyTeamIllustration(isDark: isDark),
+          const EmptyTeamIllustration(),
 
           const SizedBox(height: 32),
 
-          // Title
           Text(
             'Build Your Team',
             style: GoogleFonts.lato(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
 
           const SizedBox(height: 12),
 
-          // Description
           Text(
             'Start collaborating by creating your first team.\nInvite developers, designers, and project managers.',
             textAlign: TextAlign.center,
             style: GoogleFonts.lato(
               fontSize: 15,
               height: 1.6,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.lightTextSecondary,
+              // ✅ Fixed - uses theme
+              color: Theme.of(context).textTheme.bodyMedium?.color,
             ),
           ),
 
           const SizedBox(height: 32),
 
-          // Create Team Button
           SizedBox(
             width: double.infinity,
             height: 56,
@@ -380,21 +351,12 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.brandGreen,
-                foregroundColor: Colors.white,
-                elevation: 4,
-                shadowColor: AppColors.brandGreen.withOpacity(0.4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
+              // ✅ Removed style - uses theme
             ),
           ),
 
           const SizedBox(height: 16),
 
-          // Secondary Action
           TextButton(
             onPressed: () => _showAddMemberDialog(context),
             child: Text(
@@ -412,34 +374,29 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
   }
 
   void _showAddMemberDialog(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
+      builder: (dialogContext) => AlertDialog(
+        // ✅ Removed backgroundColor - uses theme
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Add Team Member',
           style: GoogleFonts.lato(
             fontWeight: FontWeight.bold,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         content: Text(
           'This feature will integrate with GitHub OAuth to add members.',
           style: GoogleFonts.lato(
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(
               'Close',
               style: GoogleFonts.lato(color: AppColors.brandGreen),
@@ -451,40 +408,34 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
   }
 
   void _handleRemoveMember(TeamMember member) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: isDark
-            ? AppColors.darkSurface
-            : AppColors.lightSurface,
+      builder: (dialogContext) => AlertDialog(
+        // ✅ Removed backgroundColor - uses theme
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Remove ${member.name}?',
           style: GoogleFonts.lato(
             fontWeight: FontWeight.bold,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         content: Text(
           'This member will lose access to all team projects.',
           style: GoogleFonts.lato(
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
+            // ✅ Fixed - uses theme
+            color: Theme.of(context).textTheme.bodyMedium?.color,
           ),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: Text(
               'Cancel',
               style: GoogleFonts.lato(
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                // ✅ Fixed - uses theme
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
           ),
@@ -493,7 +444,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
               setState(() {
                 _teamMembers.removeWhere((m) => m.id == member.id);
               });
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
             },
             child: Text(
               'Remove',

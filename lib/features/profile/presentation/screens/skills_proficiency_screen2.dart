@@ -199,17 +199,12 @@ class _SkillsProficiencyScreenState
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         _handleBackPressed();
         return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -219,9 +214,7 @@ class _SkillsProficiencyScreenState
             'Skills & Proficiency',
             style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
@@ -261,9 +254,7 @@ class _SkillsProficiencyScreenState
                           style: GoogleFonts.lato(),
                         ),
                         duration: const Duration(seconds: 1),
-                        backgroundColor: isDark
-                            ? AppColors.darkSurface
-                            : AppColors.lightSurface,
+                        backgroundColor: Theme.of(context).colorScheme.surface,
                       ),
                     );
                   },
@@ -271,15 +262,9 @@ class _SkillsProficiencyScreenState
                     margin: const EdgeInsets.only(bottom: 16),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkSurface
-                          : AppColors.lightSurface,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDark
-                            ? AppColors.darkDivider
-                            : AppColors.lightDivider,
-                      ),
+                      border: Border.all(color: Theme.of(context).dividerColor),
                     ),
                     child: Column(
                       children: [

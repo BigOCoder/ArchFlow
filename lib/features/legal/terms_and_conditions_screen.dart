@@ -1,4 +1,3 @@
-import 'package:archflow/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,27 +6,16 @@ class TermsAndConditionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark
-          ? AppColors.darkBackground
-          : AppColors.lightBackground,
       appBar: AppBar(
         title: Text(
           'Terms & Conditions',
           style: GoogleFonts.lato(
             fontWeight: FontWeight.bold,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+            color: Theme.of(context).appBarTheme.titleTextStyle?.color,
           ),
         ),
-        iconTheme: IconThemeData(
-          color: isDark
-              ? AppColors.darkTextPrimary
-              : AppColors.lightTextPrimary,
-        ),
+        // iconTheme removed - uses theme automatically
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -39,9 +27,7 @@ class TermsAndConditionsScreen extends StatelessWidget {
               style: GoogleFonts.lato(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+                color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
             const SizedBox(height: 16),
@@ -62,9 +48,7 @@ This is a placeholder. Replace with your legal content.
               style: GoogleFonts.lato(
                 fontSize: 14,
                 height: 1.5,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
           ],

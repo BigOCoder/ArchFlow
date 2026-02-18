@@ -46,9 +46,7 @@ class _ProblemStatementScreenState
       return;
     }
 
-    ref
-        .read(projectOnboardingProvider.notifier)
-        .updateProblemStatement(
+    ref.read(projectOnboardingProvider.notifier).updateProblemStatement(
           problemStatement: _mainProblem,
           targetAudience: _currentSolution.isEmpty ? '' : _currentSolution,
           proposedSolution: _whyInsufficient.isEmpty ? '' : _whyInsufficient,
@@ -66,8 +64,6 @@ class _ProblemStatementScreenState
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         ref.read(projectOnboardingProvider.notifier).previousStep();
@@ -76,21 +72,12 @@ class _ProblemStatementScreenState
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          backgroundColor: isDark
-              ? AppColors.darkBackground
-              : AppColors.lightBackground,
+          // ✅ Removed backgroundColor - uses theme
           appBar: AppBar(
-            backgroundColor: isDark
-                ? AppColors.darkBackground
-                : AppColors.lightBackground,
-            elevation: 0,
+            // ✅ Removed backgroundColor & elevation - uses theme
             leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-              ),
+              icon: const Icon(Icons.arrow_back),
+              // ✅ Removed color - uses theme iconTheme
               onPressed: () {
                 ref.read(projectOnboardingProvider.notifier).previousStep();
               },
@@ -114,9 +101,8 @@ class _ProblemStatementScreenState
                     'Describe the real-world problem your project aims to solve.',
                     style: GoogleFonts.lato(
                       fontSize: 14,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.lightTextSecondary,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -130,9 +116,8 @@ class _ProblemStatementScreenState
                       isMultiline: true,
                     ),
                     style: GoogleFonts.lato(
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     maxLines: 5,
                     onChanged: (v) => _mainProblem = v,
@@ -152,9 +137,8 @@ class _ProblemStatementScreenState
                       isMultiline: true,
                     ),
                     style: GoogleFonts.lato(
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     maxLines: 4,
                     onChanged: (v) => _currentSolution = v,
@@ -166,15 +150,13 @@ class _ProblemStatementScreenState
                     initialValue: _whyInsufficient,
                     decoration: appInputDecoration(
                       context: context,
-                      label:
-                          'Why Existing Solutions Are Insufficient (Optional)',
+                      label: 'Why Existing Solutions Are Insufficient (Optional)',
                       hint: 'What gaps exist in current solutions?',
                       isMultiline: true,
                     ),
                     style: GoogleFonts.lato(
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
+                      // ✅ Fixed - uses theme
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     maxLines: 4,
                     onChanged: (v) => _whyInsufficient = v,
@@ -182,19 +164,12 @@ class _ProblemStatementScreenState
 
                   const SizedBox(height: 48),
 
-                  // Next Button
                   SizedBox(
                     width: double.infinity,
                     height: 52,
                     child: ElevatedButton(
                       onPressed: _handleNext,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.brandGreen,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
+                      // ✅ Removed style - uses theme
                       child: Text(
                         'Next',
                         style: GoogleFonts.lato(

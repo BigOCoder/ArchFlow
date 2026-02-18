@@ -7,7 +7,6 @@ import 'package:archflow/features/profile/presentation/screens/final_review_scre
 import 'package:archflow/shared/widgets/app_dropdown.dart';
 import 'package:archflow/shared/widgets/step_header.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -54,7 +53,6 @@ class _DatabaseKnowledgeScreenState
 
   static const List<String> _other = ['Other'];
 
-  /// ---------------- STATE RESTORE ----------------
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -68,7 +66,6 @@ class _DatabaseKnowledgeScreenState
       _loadDatabases(_databaseType!);
 
       for (final db in onboarding.databasesUsed) {
-        // Convert MONGODB -> MongoDB
         final displayName = _databasesMap.entries
             .firstWhere((e) => e.value == db, orElse: () => MapEntry(db, db))
             .key;
@@ -84,7 +81,6 @@ class _DatabaseKnowledgeScreenState
     ref.read(onboardingProvider.notifier).previousStep();
   }
 
-  /// ---------------- HELPERS ----------------
   void _loadDatabases(DatabaseType type) {
     _databases.clear();
 
@@ -111,7 +107,6 @@ class _DatabaseKnowledgeScreenState
       _comfortLevel != null &&
       _databases.values.any((v) => v);
 
-  /// ---------------- SUBMIT ----------------
   void _submit() {
     if (!_canProceed) {
       AppSnackBar.show(
@@ -133,51 +128,55 @@ class _DatabaseKnowledgeScreenState
     notifier.setDatabaseType(_databaseType!);
     notifier.setDatabaseComfortLevel(_comfortLevel!);
     notifier.setDatabasesUsed(selected);
+
     final isEditing = ref.read(onboardingProvider).isEditingFromReview;
 
     if (isEditing) {
-      // Return to Final Review
       notifier.clearEditMode();
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const FinalReviewScreen()),
       );
     } else {
-      // Normal flow
-      notifier.nextStep(); // Or Navigator.push for screen 7
+      notifier.nextStep();
     }
   }
 
-  /// ---------------- BUILD ----------------
+  // ✅ Reusable section card helper
+  Widget _sectionCard({required Widget child, double bottomMargin = 20}) {
+    return Container(
+      margin: EdgeInsets.only(bottom: bottomMargin),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+        ),
+      ),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return WillPopScope(
       onWillPop: () async {
         _handleBackPressed();
         return false;
       },
       child: Scaffold(
-        backgroundColor: isDark
-            ? AppColors.darkBackground
-            : AppColors.lightBackground,
+        // ✅ Removed backgroundColor - uses theme
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
-            ),
+            icon: const Icon(Icons.arrow_back),
+            // ✅ Removed color - uses theme iconTheme
             onPressed: _handleBackPressed,
           ),
           title: Text(
             'Database Knowledge',
             style: GoogleFonts.lato(
               fontWeight: FontWeight.bold,
-              color: isDark
-                  ? AppColors.darkTextPrimary
-                  : AppColors.lightTextPrimary,
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
@@ -191,20 +190,7 @@ class _DatabaseKnowledgeScreenState
               const SizedBox(height: 24),
 
               /// 🗄 DATABASE TYPE
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurface
-                      : AppColors.lightSurface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkDivider
-                        : AppColors.lightDivider,
-                  ),
-                ),
+              _sectionCard(
                 child: AppDropdown<DatabaseType>(
                   label: 'Database Type',
                   icon: Icons.storage,
@@ -231,20 +217,8 @@ class _DatabaseKnowledgeScreenState
 
               /// 🧠 DATABASES USED
               if (_databaseType != null)
-                Container(
-                  margin: const EdgeInsets.only(bottom: 24),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkSurface
-                        : AppColors.lightSurface,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isDark
-                          ? AppColors.darkDivider
-                          : AppColors.lightDivider,
-                    ),
-                  ),
+                _sectionCard(
+                  bottomMargin: 24,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -253,9 +227,7 @@ class _DatabaseKnowledgeScreenState
                         style: GoogleFonts.lato(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? AppColors.darkTextPrimary
-                              : AppColors.lightTextPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -267,9 +239,7 @@ class _DatabaseKnowledgeScreenState
                           title: Text(
                             db,
                             style: GoogleFonts.lato(
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightTextPrimary,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           activeColor: AppColors.brandGreen,
@@ -281,20 +251,7 @@ class _DatabaseKnowledgeScreenState
 
               /// ⚡ COMFORT LEVEL
               if (_databaseType != null)
-                Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkSurface
-                        : AppColors.lightSurface,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isDark
-                          ? AppColors.darkDivider
-                          : AppColors.lightDivider,
-                    ),
-                  ),
+                _sectionCard(
                   child: AppDropdown<ComfortLevel>(
                     label: 'Comfort Level',
                     icon: Icons.trending_up,
@@ -323,10 +280,7 @@ class _DatabaseKnowledgeScreenState
                 height: 52,
                 child: ElevatedButton(
                   onPressed: _canProceed ? _submit : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.brandGreen,
-                    foregroundColor: Colors.white,
-                  ),
+                  // ✅ Removed style - uses theme
                   child: Text(
                     'Next',
                     style: GoogleFonts.lato(

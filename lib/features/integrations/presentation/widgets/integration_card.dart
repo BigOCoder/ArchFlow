@@ -125,13 +125,7 @@ class IntegrationCard extends StatelessWidget {
                   foregroundColor: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.color,
-                  side: BorderSide(
-                    color: Theme.of(context).dividerColor,
-                    width: 1.5,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  side: BorderSide(color: Theme.of(context).dividerColor),
                 ),
                 child: Text(
                   'Skip for now',
@@ -169,10 +163,7 @@ class IntegrationCard extends StatelessWidget {
                     context,
                   ).textTheme.bodyMedium?.color?.withOpacity(0.5),
                   elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Theme.of(context).dividerColor),
-                  ),
+                  side: BorderSide(color: Theme.of(context).dividerColor),
                 ),
               ),
             ),

@@ -2,6 +2,8 @@ import 'package:archflow/core/theme/app_color.dart';
 import 'package:archflow/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:archflow/features/auth/presentation/screens/register/register_screen.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:archflow/features/integrations/presentation/screens/github_integration_screen.dart';
+import 'package:archflow/features/project/presentation/screens/project_onboarding_flow_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -79,7 +81,10 @@ class HomeScreen extends StatelessWidget {
                         },
                         child: Text(
                           'Register',
-                          style: GoogleFonts.lato(fontWeight: FontWeight.w600),
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.brandGreen,
+                          ),
                         ),
                       ),
                     ),
@@ -103,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                             'Continue as a guest',
                             style: GoogleFonts.lato(
                               fontSize: 13,
-                              color: const Color.fromARGB(255, 65, 182, 50),
+                              color: AppColors.brandGreen,
                             ),
                           ),
                         ),
@@ -111,7 +116,7 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                builder: (_) => const DashboardScreen(),
+                                builder: (_) => const ProjectOnboardingFlow(),
                               ),
                             );
                           },
@@ -119,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                             'Continue as a guest',
                             style: GoogleFonts.lato(
                               fontSize: 13,
-                              color: const Color.fromARGB(255, 65, 182, 50),
+                              color: AppColors.brandGreen,
                             ),
                           ),
                         ),
@@ -127,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                builder: (_) => const DashboardScreen(),
+                                builder: (_) => const GitHubIntegrationScreen(),
                               ),
                             );
                           },
@@ -135,7 +140,7 @@ class HomeScreen extends StatelessWidget {
                             'Continue as a guest',
                             style: GoogleFonts.lato(
                               fontSize: 13,
-                              color: const Color.fromARGB(255, 65, 182, 50),
+                              color: AppColors.brandGreen,
                             ),
                           ),
                         ),

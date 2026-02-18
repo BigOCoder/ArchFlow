@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:archflow/core/network/api_client.dart';
 
-const bool useMockTest = true; 
+const bool useMockTest = true;
 
 class AuthRepository {
   final ApiClient _apiClient;

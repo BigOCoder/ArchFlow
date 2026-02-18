@@ -1,4 +1,5 @@
 import 'package:archflow/core/theme/app_color.dart';
+import 'package:archflow/core/utils/app_snackbar.dart';
 import 'package:archflow/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:archflow/features/integrations/presentation/widgets/integration_card.dart';
 import 'package:flutter/material.dart';
@@ -175,15 +176,12 @@ class GitHubIntegrationScreen extends StatelessWidget {
 
   void _handleGitHubConnect(BuildContext context) {
     // TODO: Implement GitHub OAuth flow
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Opening GitHub authorization...',
-          style: GoogleFonts.lato(),
-        ),
-        backgroundColor: AppColors.brandGreen,
-        behavior: SnackBarBehavior.floating,
-      ),
+
+    AppSnackBar.show(
+      context,
+      message: 'Opening GitHub authorization...',
+      icon: Icons.link,
+      iconColor: AppColors.brandGreen,
     );
 
     // Navigate to next screen after connection
@@ -193,17 +191,11 @@ class GitHubIntegrationScreen extends StatelessWidget {
   }
 
   void _handleSkip(BuildContext context) {
-    // Navigate to dashboard without connecting
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'You can connect GitHub later from settings',
-          style: GoogleFonts.lato(),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-
-        behavior: SnackBarBehavior.floating,
-      ),
+    AppSnackBar.show(
+      context,
+      icon: Icons.info_outline,
+      iconColor: AppColors.brandGreen,
+      message: 'You can connect GitHub later from settings',
     );
 
     // Navigate to next screen

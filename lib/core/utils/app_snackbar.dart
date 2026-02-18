@@ -32,7 +32,7 @@ class AppSnackBar {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-            ),
+            ),  
           ],
         ),
       ),

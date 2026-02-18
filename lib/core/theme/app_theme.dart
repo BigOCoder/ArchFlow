@@ -25,7 +25,6 @@ class AppTheme {
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: AppColors.lightTextPrimary,
-      onBackground: AppColors.lightTextPrimary, // ✅ FIXED!
       onError: Colors.white,
     ),
 
@@ -122,7 +121,7 @@ class AppTheme {
         foregroundColor: Colors.white,
         elevation: 0,
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         textStyle: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     ),
@@ -132,7 +131,7 @@ class AppTheme {
         foregroundColor: AppColors.brandGreen,
         side: const BorderSide(color: AppColors.brandGreen, width: 1.5),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         textStyle: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
@@ -192,7 +191,6 @@ class AppTheme {
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: AppColors.darkTextPrimary,
-      onBackground: AppColors.darkTextPrimary,
       onError: Colors.white,
     ),
 

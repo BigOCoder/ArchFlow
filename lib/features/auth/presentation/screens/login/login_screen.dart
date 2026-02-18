@@ -194,10 +194,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         height: 52,
                         child: ElevatedButton(
                           onPressed: isLoading ? null : _submit,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.brandGreen,
-                            foregroundColor: Colors.white,
-                          ),
                           child: isLoading
                               ? const CircularProgressIndicator(
                                   color: Colors.white,
